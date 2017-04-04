@@ -1,0 +1,39 @@
+
+._clientTitle {
+	font-size: 34px; 
+	font-family: Monotype Corsiva; 
+	font-weight: 600; 
+	font-style: italic; 
+}
+
+#clientTitle {
+	color: #ffffff; 
+	text-shadow: 1.5px 1.5px #000000;
+}
+
+#divLoginContainer {
+	margin-top: -20px; 
+	border-radius: 20px; 
+	box-shadow: 1px 1px 1px 1px #000;
+	background: rgba(0, 0, 0, 0.5);
+}
+
+._subHeader {
+	font-size: 14px; 
+	font-family: 
+	Tahoma;color:#fff;
+}
+
+._loginFormLabel {
+	font-size: 12px; 
+	font-family: 
+	Tahoma; color: #fff;
+}
+
+._inputForm {
+	text-align: center; 
+	font-size: 12px; 
+	font-family: tahoma;
+	border-radius: 5px; 
+	box-shadow: .5px .5px .5px .5px #000;
+}

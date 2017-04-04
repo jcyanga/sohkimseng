@@ -1,0 +1,455 @@
+/* dashboardHeader */
+#logo {
+	font-family: Monotype Corsiva; 
+	font-size: 26px;
+}
+
+/*Side Menu*/
+#sideMenu {
+	background: rgba(0, 0, 0, 0.1);
+}
+
+#sideMenuList {
+	font-size: 11.5px; 
+	font-family: Tahoma;
+}
+
+#homeMenu {
+	color: #ffffff;
+}
+
+#roleMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#moduleMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#userPermissionMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#moduleMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#userMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#staffgroupMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#designatedpositionMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#staffMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#customerMenu {
+	font-size: 11.5px; 
+	color: #fff
+}
+
+#supplierMenu {
+	font-size: 11.5px; 
+	color: #fff
+}
+
+#storagelocationMenu {
+	font-size: 11.5px; 
+	color: #fff
+}
+
+#servicecategoryMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#serviceMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#partscategoryMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#partsMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#partsinventoryMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#productcategoryMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#productMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#productinventoryMenu {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#quotationMenu {
+	font-size: 11.5px; 
+	color: #fff
+}
+
+#userMenus {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#staffMenus {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#serviceMenus {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#partsMenus {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+#productMenus {
+	font-size: 11.5px; 
+	color: #ffffff;
+}
+
+.activeMenu {
+	background: #1a2226;
+}
+
+.subMenu {
+	font-size: 11.5px;
+}
+
+/* Content */
+.divContainer {
+	font-family: Tahoma;
+}
+
+.containerHeadWrapper {
+	border-radius: 5px;
+	box-shadow: 1px 1px 1px 1px; 
+	background: #ffffff; 
+	margin: 0 auto;
+}
+
+.divHeaderLabel {
+	font-family: Tahoma; 
+	text-shadow: 1px 1px #eeeeee;
+	color: #1a2226;
+}
+
+.search-label {
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.inputForm {
+	font-size: 11px;
+	border: solid 1px #aaa;
+	border-radius: 5px;
+	box-shadow: inset .5px .5px .5px 0 #707070;
+	text-transform: uppercase;
+	font-family: Tahoma;
+	color: #444;
+}
+
+.formBtn {
+	font-size: 12px;
+	box-shadow: .5px .5px .5px .5px;
+}
+
+.containerContentWrapper {
+	border-radius: 5px;
+	box-shadow: 1px 1px 1px 1px; 
+	background: #ffffff; 
+	margin: 0 auto;
+}
+
+.btnsContainer {
+	margin-top: 35px;
+}
+
+.contentWrapper {
+	margin-top: 25px;
+	font-size: 11px;
+	text-transform: uppercase;
+}
+
+.modal-title {
+	font-family: Tahoma; 
+	color: #1a2226;
+	text-shadow: 1px 1px #eeeeee;
+}
+
+.labelStyle {
+	font-size: 11.5px; 
+	color: #444;
+}
+
+.pdf_headBg {
+	background: #eee;
+	font-size: 11px;
+	text-transform: uppercase;
+	text-align: center;
+}
+
+.modalInventoryDesign {
+	width: 90%;
+}
+
+.modalInventoryDesignRside {
+	border-right: solid 1px #eee;
+}
+
+.modalInventoryDesignLside {
+	border-left: solid 1px #eee;
+}
+
+.selectedItemContainer {
+	border: solid 1px #ccc; 
+	border-radius: 10px;
+}
+
+.selectedItemContent {
+	margin-top: 10px; 
+	margin-left: 10px;
+}
+
+.selectedItemListDesign {
+	width: 98%; 
+	margin: 0 auto;
+}
+
+.selectedBtns {
+	font-size: 11.5px;
+}
+
+.modalUPDesign {
+	width: 70%;
+}
+
+/* Transaction */
+.informationsContainer {
+	width: 99%; 
+	margin: 0 auto;
+	border: solid 1px #ccc;
+}
+
+.headerLabelContainer {
+	border: solid 1px #ccc; 
+	background: #222d32;
+}
+
+.headerLabel {
+	color: #fff; 
+	font-family: Tahoma; 
+	font-size: 12px; 
+	font-weight: 600; 
+	margin-left: 5px;
+}
+
+.labelAlignment {
+	margin-left: 5px;
+}
+
+.transactionForm {
+	font-size: 11px;
+	border: solid 1px #aaa;
+	border-radius: 5px;
+	box-shadow: inset .5px .5px .5px 0 #707070;
+	text-transform: uppercase;
+	font-family: Tahoma;
+	color: #444;
+	text-align: center;
+	width: 65%;
+	font-weight: 600;
+}
+
+.transactionTxtAreaForm {
+	font-size: 11px;
+	border: solid 1px #aaa;
+	border-radius: 5px;
+	box-shadow: inset .5px .5px .5px 0 #707070;
+	text-transform: uppercase;
+	font-family: Tahoma;
+	color: #444;
+	width: 90%;
+}
+
+.inputboxAlignment {
+	margin-top: 10px;
+}
+
+.inputboxWidth {
+	width: 85%;
+}
+
+.btnAlignment {
+	margin-top: 20px;
+}
+
+.servicesContainerAlignment {
+	margin-top: 75px;
+}
+
+.selectedItemLabel {
+	font-size: 14px; 
+	font-weight: 600; 
+	color: #444;
+	font-family: Tahoma;
+}
+
+.inputboxTotalAlignment {
+	text-align: center;
+}
+
+.selectedPartsAndServices {
+	font-family: Tahoma; 
+	font-family: 11px; 
+	font-weight: 600; 
+	color: #444;
+	text-align: center;
+}
+
+.selectedPartsAndServicesFontSize {
+	font-size: 11.5px;
+}
+
+/* Prview Quotation */
+.branchRowContainer {
+	text-align: center; 
+	font-size: 11px;
+	color: #444;
+	font-family: Tahoma, Josefin sans, sans-serif;
+}
+
+.quoteCodeAndDate {
+	color: #444;
+}
+
+.customerRowWrapper {
+	border: solid .5px #73879C; 
+	margin: 0 auto; 
+	font-size: 11px; 
+	font-family: tahoma;
+}
+
+.customerRowContainer {
+	text-transform: uppercase; 
+	padding-left: 5px;
+}
+
+#selecteditems {
+	border: solid .5px #73879C;
+}
+
+.qpreviewth {
+	background: #000; 
+	color: #fff;
+}
+
+.servicespartsContainerHeader {
+	font-size: 11px; 
+	text-align: center; 
+	text-transform: uppercase;
+}
+
+.servicespartsLists {
+	font-size: 10.5px; 
+	text-align: center; 
+	text-transform: uppercase;
+}
+
+.remarksamountdueWrapper {
+	margin: 0 auto; 
+	border: solid .5px #73879C;
+}
+
+.remarksamountdueHeader {
+	font-size: 13px; 
+	font-weight: bold;
+}
+
+.quoPreviewRemarks {
+	margin-top: 10px; 
+	font-size: 11px; 
+	font-weight: bold; 
+	background-color: #fff;
+}
+
+.remarksContent {
+	font-size: 11px;
+	color: #444; 
+	text-transform: uppercase;
+	background: #ccc;
+}
+
+.amountdueContainer {
+	border-left: solid .5px #73879C;
+}
+
+.amountdueTbl {
+	border: 1px solid #eee;
+}
+
+.amountdueTh {
+	font-size: 10.5px;
+}
+
+.amountdueTd {
+	font-size: 11px;
+	color: #444;
+	font-weight: 600;
+}
+
+/* Table inside JQuery */
+.viewTableContent {
+	border: solid 1px #eee; 
+	font-size: 11px; 
+	font-family: 
+	Tahoma; color: #444;
+}
+
+/* form validation style */
+.error {
+   color: #ff0000;
+   font-size: 12px;
+   margin-top: 5px;
+   margin-bottom: 0;
+}
+ 
+.inputTxtError {
+   border: 1px solid #ff0000;
+   color: #0e0e0e;
+}
