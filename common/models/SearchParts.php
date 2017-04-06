@@ -19,7 +19,7 @@ class SearchParts extends Parts
     {
         return [
             [['id', 'parts_category_id', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['parts_code', 'parts_name', 'description', 'unit_of_measure', 'created_at', 'updated_at'], 'safe'],
+            [['parts_code', 'parts_name', 'quantity', 'cost_price', 'gst_price', 'selling_price', 'unit_of_measure', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class SearchParts extends Parts
      */
     public function search($params)
     {
-        $query = Parts::find();
+        $query = Parts::find()->where(['status' => 1]);
 
         // add conditions that should always apply here
 
@@ -70,8 +70,7 @@ class SearchParts extends Parts
             'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'parts_name', $this->parts_name])
-            ->andFilterWhere(['like', 'description', $this->description]);
+        $query->andFilterWhere(['like', 'parts_name', $this->parts_name]);
 
         return $dataProvider;
     }

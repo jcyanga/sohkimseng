@@ -8,8 +8,9 @@ use  yii\helpers\ArrayHelper;
 use common\models\Supplier;
 use common\models\Race;
 
-$dataSupplier = ArrayHelper::map(Supplier::find()->all(),'id', 'name');
-$dataRace = ArrayHelper::map(Race::find()->all(),'id', 'name');
+$dataSupplier = ArrayHelper::map(Supplier::find()->where(['status' => 1])->all(),'id', 'name');
+$dataRace = ArrayHelper::map(Race::find()->where(['status' => 1])->all(),'id', 'name');
+$salesPerson = Yii::$app->user->identity->id;
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SearchQuotation */
@@ -207,11 +208,11 @@ $gridColumns = [
                         <label class="labelStyle"><i class="fa fa-barcode"></i> Quotation Code</label>
                         <?= $form->field($model, 'quotation_code')->textInput(['class' => 'transactionForm form-control', 'id' => 'quotation_code', 'value' => $quotationCode, 'readonly' => 'readonly'])->label(false) ?>
 
-                        <label class="labelStyle"><i class="fa fa-users"></i> Customer Name</label>
-                        <?= $form->field($model, 'customer_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataCustomer, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'customer', 'data-placeholder' => 'CHOOSE CUSTOMER NAME HERE'])->label(false) ?>
-
                         <label class="labelStyle"><i class="fa fa-user-circle-o"></i> Sales Person </label>
-                        <?= $form->field($model, 'user_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataUser, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'sales_person', 'data-placeholder' => 'CHOOSE SALES PERSON HERE'])->label(false) ?>
+                        <?= $form->field($model, 'user_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataUser, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'value' => $salesPerson, 'id' => 'sales_person', 'data-placeholder' => 'CHOOSE SALES PERSON HERE'])->label(false) ?>
+                    
+                        <label class="labelStyle"><i class="fa fa-comments"></i> Remarks</label>
+                        <?= $form->field($model, 'remarks')->textarea(['rows' => 4, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
                         <br/>
 
                     </div>
@@ -220,9 +221,9 @@ $gridColumns = [
                         
                         <label class="labelStyle"><i class="fa fa-calendar-plus-o"></i> Date Issue</label>
                         <?= $form->field($model, 'date_issue')->textInput(['class' => 'transactionForm form-control date_issue', 'id' => 'datepicker', 'value' => $dateNow, 'readonly' => 'readonly'])->label(false) ?>
-
-                        <label class="labelStyle"><i class="fa fa-comments"></i> Remarks</label>
-                        <?= $form->field($model, 'remarks')->textarea(['rows' => 4, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?>    
+                        
+                        <label class="labelStyle"><i class="fa fa-users"></i> Customer Name</label>
+                        <?= $form->field($model, 'customer_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataCustomer, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'customer', 'data-placeholder' => 'CHOOSE CUSTOMER NAME HERE'])->label(false) ?>   
                         <br/>
 
                     </div>

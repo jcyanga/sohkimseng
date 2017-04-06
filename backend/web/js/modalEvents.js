@@ -3588,6 +3588,13 @@ $('#submitPCFormCreate').click(function(){
 
 });
 
+$('.closeNewPc').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-create-pc').modal('hide');
+    	e.preventDefault();
+    }
+});
+
 // Auto-Parts Category Update //
 if( $('._showUpdatePCModal').length ){
 
@@ -3680,6 +3687,13 @@ $('#submitPCFormUpdate').click(function(){
 
 });
 
+$('.closeUpdatePc').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-update-pc').modal('hide');
+    	e.preventDefault();
+    }
+});
+
 // Auto-Parts Category Delete //
 $('.pcDeleteColumn').each(function(){
 
@@ -3762,6 +3776,13 @@ $('._showViewPCModal').each(function(){
 
 }
 
+$('.closeViewPc').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-pc').modal('hide');
+    	e.preventDefault();
+    }
+});
+
 // Auto-Parts Category Forms Clear //
 $('#clearPCForms').click(function(){
 
@@ -3776,10 +3797,10 @@ $('#clearPCForms').click(function(){
 
 // Auto-Parts Category View Close //
 $('#closePCForms').click(function(){
-
-	$('#modal-launcher-view-pc').toggle('fast');
-	window.location.reload();
-
+	if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-pc').modal('hide');
+    	e.preventDefault();
+    }
 });
 
 // Auto-Parts Create //
@@ -3794,28 +3815,35 @@ $('._showCreatePartsModal').click(function(){
 	$('form input, textarea').removeClass('inputTxtError');
 	$('label.error').remove();
 
-	$('#partsCategory').val('');	
+	$('#storageLocation').val('');	
+	$('#supplier').val('');	
+    $('#partsCategory').val('');
     $('#partsName').val('');
-    $('#description').val('');
+    $('#quantity').val('');
     $('#uom').val('');
+    $('#costPrice').val('');
+    $('#reorderLevel').val('');
+    $('#gstPrice').val('');
+    $('#sellingPrice').val('');
 
 });
 
 $('#submitPartsFormCreate').click(function(){
+	var storageLocation = $('#storageLocation').val();
+	var supplier = $('#supplier').val();
 	var partsCode = $('#partsCode').val();
 	var partsCategory = $('#partsCategory').val();
 	var partsName = $('#partsName').val();
-	var description = $('#description').val();
+	var quantity = $('#quantity').val();
 	var uom = $('#uom').val();
+	var costPrice = $('#costPrice').val();
+	var reorderLevel = $('#reorderLevel').val();
+	var gstPrice = $('#gstPrice').val();
+	var sellingPrice = $('#sellingPrice').val();
 
-	if( !onlyLetter(partsName) ) {
+	if( !onlyLetterAndNumber(partsName) ) {
 		alert('Invalid auto-parts name format.');
 		partsName.focus();
-	}
-
-	if( !onlyLetterAndNumber(description) ) {
-		alert('Invalid description format.');
-		description.focus();
 	}
 
 	if( !onlyLetterAndNumber(uom) ) {
@@ -3823,12 +3851,38 @@ $('#submitPartsFormCreate').click(function(){
 		uom.focus();
 	}
 
+	if( !onlyNumber(quantity) ) {
+		alert('Invalid quantity format.');
+		quantity.focus();
+	}
+
+	if( !onlyNumber(reorderLevel) ) {
+		alert('Invalid re-order level format.');
+		reorderLevel.focus();
+	}
+
+	if( !onlyNumber(costPrice) ) {
+		alert('Invalid cost price format.');
+		costPrice.focus();
+	}
+
+	if( !onlyNumber(sellingPrice) ) {
+		alert('Invalid selling price format.');
+		sellingPrice.focus();
+	}
+
 	$.post("?r=parts/create",{
-		partsCategory : partsCategory,
+		storageLocation : storageLocation,
+		supplier : supplier,
 		partsCode : partsCode,
+		partsCategory : partsCategory,
 		partsName : partsName,
-		description : description,
+		quantity : quantity,
 		uom : uom,
+		costPrice : costPrice,
+		reorderLevel : reorderLevel,	
+		gstPrice : gstPrice,
+		sellingPrice : sellingPrice,
 
 	}, 
 	function(data) {
@@ -3838,11 +3892,16 @@ $('#submitPartsFormCreate').click(function(){
 			$('form input').removeClass('inputTxtError');
 		    $('label.error').remove();
 
-		    $('#partsCategory').val('');
-		    $('#partsCode').val('');	
-		    $('#parts_nameame').val('');	
-		    $('#description').val('');
-		    $('#uom').val('');		
+		    $('#storageLocation').val('');
+		    $('#supplier').val('');
+			$('#partsCategory').val('');
+			$('#partsName').val('');
+			$('#quantity').val('');
+			$('#uom').val('');
+			$('#costPrice').val('');
+			$('#reorderLevel').val('');
+			$('#gstPrice').val('');
+			$('#sellingPrice').val('');	
 		    $('#modal-launcher-create-parts').toggle('fast');
 
 			alert(data.message);
@@ -3867,6 +3926,13 @@ $('#submitPartsFormCreate').click(function(){
 
 	});
 
+});
+
+$('.closeNewParts').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-create-parts').modal('hide');
+    	e.preventDefault();
+    }
 });
 
 // Auto-Parts Update //
@@ -3894,11 +3960,17 @@ $('._showUpdatePartsModal').each(function(){
 			var result = data.result;
 			if( data.status == 'Success' ) {
 				$('#partsFormUpdate').find('input:hidden[name=id]').val(result.id);
+				$('#partsFormUpdate').find('select[id=updateStorageLocation]').val(result.storage_location_id).change();
+				$('#partsFormUpdate').find('select[id=updateSupplier]').val(result.supplier_id).change();
 				$('#partsFormUpdate').find('select[id=updatePartsCategory]').val(result.parts_category_id).change();
 				$('#partsFormUpdate').find('input:text[id=updatePartsCode]').val(result.parts_code.toUpperCase());
 				$('#partsFormUpdate').find('input:text[id=updatePartsName]').val(result.parts_name.toUpperCase());
-				$('#partsFormUpdate').find('textarea[id=updateDescription]').val(result.description.toUpperCase());
+				$('#partsFormUpdate').find('input:text[id=updateQuantity]').val(parseInt(result.quantity));
 				$('#partsFormUpdate').find('input:text[id=updateUom]').val(result.unit_of_measure.toUpperCase());
+				$('#partsFormUpdate').find('input:text[id=updateCostPrice]').val(parseFloat(result.cost_price).toFixed(2));
+				$('#partsFormUpdate').find('input:text[id=updateReorderLevel]').val(parseInt(result.reorder_level));
+				$('#partsFormUpdate').find('input:text[id=updateGstPrice]').val(parseInt(result.gst_price));
+				$('#partsFormUpdate').find('input:text[id=updateSellingPrice]').val(parseFloat(result.selling_price).toFixed(2));
 			}
 
 		});
@@ -3909,20 +3981,21 @@ $('._showUpdatePartsModal').each(function(){
 
 $('#submitPartsFormUpdate').click(function(){
 	var id = $('#id').val();
+	var storageLocation = $('#updateStorageLocation').val();
+	var supplier = $('#updateSupplier').val();
 	var partsCode = $('#updatePartsCode').val();
 	var partsCategory = $('#updatePartsCategory').val();
 	var partsName = $('#updatePartsName').val();
-	var description = $('#updateDescription').val();
+	var quantity = $('#updateQuantity').val();
 	var uom = $('#updateUom').val();
-	
-	if( !onlyLetter(partsName) ) {
+	var costPrice = $('#updateCostPrice').val();
+	var reorderLevel = $('#updateReorderLevel').val();
+	var gstPrice = $('#updateGstPrice').val();
+	var sellingPrice = $('#updateSellingPrice').val();
+
+	if( !onlyLetterAndNumber(partsName) ) {
 		alert('Invalid auto-parts name format.');
 		partsName.focus();
-	}
-
-	if( !onlyLetterAndNumber(description) ) {
-		alert('Invalid description format.');
-		description.focus();
 	}
 
 	if( !onlyLetterAndNumber(uom) ) {
@@ -3930,13 +4003,39 @@ $('#submitPartsFormUpdate').click(function(){
 		uom.focus();
 	}
 
+	if( !onlyNumber(quantity) ) {
+		alert('Invalid quantity format.');
+		quantity.focus();
+	}
+
+	if( !onlyNumber(reorderLevel) ) {
+		alert('Invalid re-order level format.');
+		reorderLevel.focus();
+	}
+
+	if( !onlyNumber(costPrice) ) {
+		alert('Invalid cost price format.');
+		costPrice.focus();
+	}
+
+	if( !onlyNumber(sellingPrice) ) {
+		alert('Invalid selling price format.');
+		sellingPrice.focus();
+	}
+
 	$.post("?r=parts/update",{
 		id : id,
-		partsCategory : partsCategory,
+		storageLocation : storageLocation,
+		supplier : supplier,
 		partsCode : partsCode,
+		partsCategory : partsCategory,
 		partsName : partsName,
-		description : description,
+		quantity : quantity,
 		uom : uom,
+		costPrice : costPrice,
+		reorderLevel : reorderLevel,	
+		gstPrice : gstPrice,
+		sellingPrice : sellingPrice,
 		
 	}, 
 	function(data) {
@@ -3947,11 +4046,16 @@ $('#submitPartsFormUpdate').click(function(){
 		    $('label.error').remove();
 		    
 		    $('#id').val('');
-		    $('#updatePartsCategory').val('');
-		    $('#updatePartsCode').val('');
-		    $('#updatePartsName').val('');
-		    $('#updateDescription').val('');
-		    $('#updateUom').val('');
+		    $('#updateStorageLocation').val();
+			$('#updateSupplier').val();
+			$('#updatePartsCategory').val();
+			$('#updatePartsName').val();
+			$('#updateQuantity').val();
+			$('#updateUom').val();
+			$('#updateCostPrice').val();
+			$('#updateReorderLevel').val();
+			$('#updateGstPrice').val();
+			$('#updateSellingPrice').val();
 		    $('#modal-launcher-update-parts').toggle('fast');
 
 			alert(data.message);
@@ -3976,6 +4080,13 @@ $('#submitPartsFormUpdate').click(function(){
 
 	});
 
+});
+
+$('.closeUpdateParts').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-update-parts').modal('hide');
+    	e.preventDefault();
+    }
 });
 
 // Auto-Parts Delete //
@@ -4038,6 +4149,14 @@ $('._showViewPartsModal').each(function(){
 							'<td>'+result.id+'</td>'
 						+'</tr>'+
 						'<tr>'+
+							'<td><b>STORAGE LOCATION</b></td>' +
+							'<td>'+result.storage_location_name.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>SUPPLIER</b></td>' +
+							'<td>'+result.supplier_name.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
 							'<td><b>AUTO-PARTS CODE</b></td>' +
 							'<td>'+result.parts_code.toUpperCase()+'</td>'
 						+'</tr>'+
@@ -4050,12 +4169,28 @@ $('._showViewPartsModal').each(function(){
 							'<td>'+result.parts_name.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
-							'<td><b>DESCRIPTION</b></td>' +
-							'<td>'+result.description.toUpperCase()+'</td>'
-						+'</tr>'+
-						'<tr>'+
 							'<td><b>UNIT OF MEASURE</b></td>' +
 							'<td>'+result.unit_of_measure.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>QUANTITY</b></td>' +
+							'<td>'+parseInt(result.quantity)+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>RE-ORDER LEVEL</b></td>' +
+							'<td>'+parseInt(result.reorder_level)+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>COST PRICE</b></td>' +
+							'<td>'+parseFloat(result.reorder_level).toFixed(2)+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>GST PRICE</b></td>' +
+							'<td>'+parseInt(result.gst_price)+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>SELLING PRICE</b></td>' +
+							'<td>'+parseFloat(result.selling_price).toFixed(2)+'</td>'
 						+'</tr>'+
 						'<tr>'+
 							'<td><b>STATUS</b></td>' +
@@ -4071,6 +4206,13 @@ $('._showViewPartsModal').each(function(){
 });
 
 }
+
+$('.closeViewParts').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-parts').modal('hide');
+    	e.preventDefault();
+    }
+});
 
 // Auto-Parts Forms Clear //
 $('#clearPartsForms').click(function(){
@@ -4092,275 +4234,494 @@ $('#clearPartsForms').click(function(){
 
 // Auto-Parts View Close //
 $('#closePartsForms').click(function(){
-
-	$('#modal-launcher-view-parts').toggle('fast');
-	window.location.reload();
-
+	if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-parts').modal('hide');
+    	e.preventDefault();
+    }
 });
 
-// Auto-Parts in Inventory Create //
-$('._showCreatePIModal').click(function(){
+// Auto-Parts Update Selected Qty
+$('._showUpdateQtySelectedPartsModal').click(function(){
 
-	$('#modal-launcher-create-pi').modal({
-            show: true,
-            backdrop: 'static',
-            keyboard: false,
-        })
-
-	$('form input, textarea').removeClass('inputTxtError');
-	$('label.error').remove();
-
-	$('#parts').val('');	
-    $('#supplier').val('');
-	$('#quantity').val('');	
-    $('#price').val('');
-    $('.selectedItems').remove();
-
-});
-
-$('.add_item').click(function(){
-	var parts = $('#parts').val();
-	var supplier = $('#supplier').val();
-	var quantity = $('#quantity').val();
-	var price = $('#price').val();
-
-	if( quantity == "" || price == "" ) {
-		alert('Key in quantity and price first.');
+	if($('.autopartsSelected:checked').length == 0){
+		alert('Select Auto-parts first.');
 		return false;
-	
-	}else{
-
-		var ctr = $('#ctr').val();
-
-		ctr++;
-
-		$.post("?r=parts-inventory/insert-item-in-list",{
-			parts : parts,
-			supplier : supplier,
-			quantity : quantity,
-			price : price,
-			ctr : ctr,
-
-		}, function(data){
-			$('.insert-in-list').append(data);
-
-		});
-
-		$('#ctr').val(ctr);
-		$('#parts').val('');
-		$('#supplier').val('');
-		$('#quantity').val('');
-		$('#price').val('');
-		
 	}
 
-});
-
-function editItem(ctr)
-{
-	$('.edit-button'+ctr).addClass('hidden');
-	$('.save-button'+ctr).removeClass('hidden');
-
-	$('#quantity-in-list-'+ctr).removeAttr('readonly');
-	$('#price-in-list-'+ctr).removeAttr('readonly');
-}
-
-function saveItem(ctr)
-{
-	$('.edit-button'+ctr).removeClass('hidden');
-	$('.save-button'+ctr).addClass('hidden');
-
-	$('#quantity-in-list-'+ctr).attr('readonly',true);
-	$('#price-in-list-'+ctr).attr('readonly',true);
-}
-
-function removeItem(ctr)
-{
-	$('.item-in-list-'+ctr).remove();
-}
-
-$('#submitPIFormCreate').click(function(){
-
-	var suppliers = $('input:hidden.suppliers').serializeArray();
-	var parts = $('input:hidden.parts').serializeArray();
-	var quantities = $('input:text.quantities').serializeArray();
-	var prices = $('input:text.prices').serializeArray();
-
-	if( suppliers.length == 0 || parts.length == 0 || quantities.length == 0 || prices.length == 0 ) {
-		alert('Add item in the list first.');
-		return false;
-
-	}else{
-			$.post("?r=parts-inventory/create",{
-			supplier : suppliers,
-			parts : parts,
-			quantity : quantities,
-			price : prices
-
-		}, 
-		function(data) {
-			var data = jQuery.parseJSON(data);
-			if( data.status == 'Success') {
-
-				$('form input').removeClass('inputTxtError');
-			    $('label.error').remove();
-
-			    $('#modal-launcher-create-pi').toggle('fast');
-
-				alert(data.message);
-				window.location.reload();
-
-			} else {
-
-				alert('You have an error, please check all the fields.');
-				return false;
-
-			} 
-
-		});
-
-	}
-
-});
-
-// Auto-Parts in Inventory Update //
-if( $('._showUpdatePIModal').length ){
-
-$('._showUpdatePIModal').each(function(){
-	$(this).click(function(){
-	
-	$('#modal-launcher-update-pi').modal({
+	$('#modal-launcher-updateqty-selected-parts').modal({
         show: true,
         backdrop: 'static',
         keyboard: false,
 
     })
 
-	$('form input, textarea').removeClass('inputTxtError');
-	$('label.error').remove();
+	$('.autopartsSelected:checked').each(function(index, value){
+		
+		$.get('?r=parts/get-selected-partsinfo',{
+			partsId: $(this).val(),
 
-		$.get("?r=parts-inventory/get-data", {
-			id : $(this).attr('id'),
-	
-		},
-		function(data){
+		},function(data){
 			var data = jQuery.parseJSON(data);
 			var result = data.result;
+
 			if( data.status == 'Success' ) {
-				$('#piFormUpdate').find('input:hidden[name=id]').val(result.id);
-				$('#piFormUpdate').find('select[id=updateSupplier]').val(result.supplier_id).change();
-				$('#piFormUpdate').find('select[id=updateParts]').val(result.parts_id).change();
-				$('#piFormUpdate').find('input:text[id=updateQuantity]').val(result.quantity);
-				$('#piFormUpdate').find('input:text[id=updatePrice]').val(parseFloat(result.price).toFixed(2));
+				var html = '<table class="table table-hover table-striped viewTableContent">'+
+						'<tr>'+
+							'<td><b><span class="fa fa-cogs"></span> AUTO-PARTS NAME</b></td>' +
+							'<td style="text-align:center;" ><b><span class="fa fa-tags"></span> OLD QUANTITY</b></td>' +
+							'<td style="text-align:center;" ><b><span class="fa fa-database"></span> NEW QUANTITY</b></td>' 
+						+'</tr>'+
+						'<tr>'+
+							'<td style="width:50%;" >'+
+								'<span class="fa fa-gg-circle"> '+result.parts_name.toUpperCase()+
+								'<input type="hidden" name="partsId[]" id="partsId-'+ result.id  +'" class="selectedPartsId inputForm form-control partsId-'+ result.id  +'" value="'+parseInt(result.id)+'" />'+
+							'</td>'+
+							'<td>'+
+								'<input type="text" id="editOldQty-'+ result.id  +'" class="inputForm form-control editOldQty-'+ result.id  +'" placeholder="0" style="text-align:center;" onchange="updateSelectedPartsQty('+ result.id +')" />'+
+								'<input type="hidden" name="oldQty[]" id="oldQty-'+ result.id  +'" class="selectedPartsOldQty inputForm form-control oldQty-'+ result.id  +'" value="'+parseInt(result.quantity)+'" />'+
+							'</td>'+
+							'<td>'+
+								'<input type="text" name="newQty[]" id="newQty-'+ result.id  +'" class="selectedPartsNewQty inputForm form-control newQty-'+ result.id  +'" value="'+parseInt(result.quantity)+'" readonly="readonly" style="text-align:center;" />'+
+							'</td>'
+						+'</tr>'+
+					'</table>';
+
+				$('#viewSelectedParts').append(html);
 			}
 
 		});
+
 	});
+});
+
+function updateSelectedPartsQty(n){
+	var editOldQty = $('#editOldQty-'+n).val();
+	var oldQty = $('#oldQty-'+n).val();
+	var newQty = $('#newQty-'+n).val();
+
+	if( !onlyNumber(editOldQty) ){
+		alert('Invalid old quantity value.');
+		$('#editOldQty-'+n).val('');
+		$('#newQty-'+n).val(parseInt(oldQty));
+		return false;
+	}
+	
+	if(editOldQty == null || editOldQty == ''){
+		$('#newQty-'+n).val(parseInt(oldQty));
+		return true;
+
+	}else{
+		$('#newQty-'+n).val(parseInt(editOldQty) + parseInt(oldQty));
+		return true;
+
+	}
+
+}
+
+$('#submitPartsQtyFormUpdate').click(function(){
+	var partsId = $('input:hidden.selectedPartsId').serializeArray();
+	var oldQty = $('input:hidden.selectedPartsOldQty').serializeArray();
+	var newQty = $('input:text.selectedPartsNewQty').serializeArray();
+
+	$.post('?r=parts/save-updated-parts-qty',{
+		partsId : partsId,
+		oldQty : oldQty,
+		newQty : newQty,
+
+	},function(data){
+		var data = jQuery.parseJSON(data);
+			
+		if( data.status == 'Success' ) {
+			alert(data.message);
+			window.location.reload();	
+		}
+
+	});
+
+});
+
+$('.closeUpdateQtySelectedParts').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-updateqty-selected-parts').modal('hide');
+    	e.preventDefault();
+    }
+});
+
+// Auto-Parts Update Qty
+if( $('._showUpdatePartsQtyModal').length ){
+
+$('._showUpdatePartsQtyModal').each(function(){
+	$(this).click(function(){
+		
+		$('#modal-launcher-update-partsqty').modal({
+            backdrop: 'static',
+            keyboard: true,
+        })
+
+        var partsId = $(this).attr('id');
+
+        $.get("?r=parts/get-data-for-view",{
+        	id : partsId,
+
+        },function(data){
+        	var data = jQuery.parseJSON(data);		
+        	var result = data.result;
+
+        	var html = '<table class="table table-hover table-striped viewTableContent">'+
+						'<tr>'+
+							'<td><b>ID</b></td>' +
+							'<td>'+result.id+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>SUPPLIER NAME</b></td>' +
+							'<td>'+result.supplier_name.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>CATEGORY NAME</b></td>' +
+							'<td>'+result.parts_category_name.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>PARTS CODE</b></td>' +
+							'<td>'+result.parts_code.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>PARTS NAME</b></td>' +
+							'<td>'+result.parts_name.toUpperCase()+'</td>'
+						+'</tr>'+
+							'<td><b>QUANTITY</b></td>' +
+							'<td>'+'<button type="button" class="btn btn-info btn-xs" onclick="addQty('+partsId+')" style="margin-top: -10px;" ><i class="fa fa-plus-circle"></i></button> '+' <label style="font-size:22px; font-weight: 600;" id="partsQty" >'+result.quantity+'</label> '+' '+	' <button type="button" class="btn btn-info btn-xs" onclick="deductQty('+partsId+')"  style="margin-top: -10px;" ><i class="fa fa-minus-circle"></i></button>'+'</td>'
+						+'</tr>'
+				+'</table>';
+
+				$('#p-modal-form').find('input:hidden[id=partsId]').val(partsId);
+				$('#p-modal-form').find('input:hidden[id=partsOldQty]').val(parseInt(result.quantity));
+				$('#p-modal-form').find('input:hidden[id=partsNewQty]').val(parseInt(result.quantity));
+				$('#parts_information').html(html);
+
+        });
+
+	});
+
 });
 
 }
 
-$('#submitPIFormUpdate').click(function(){
-	var id = $('#id').val();
-	var supplier = $('#updateSupplier').val();
-	var parts = $('#updateParts').val();
-	var quantity = $('#updateQuantity').val();
-	var price = $('#updatePrice').val();
+function addQty()
+{
+	var partsOldQty = $('#partsOldQty').val();
+	var partsNewQty = $('#partsNewQty').val();
+	var totalQty = parseInt(partsNewQty) + parseInt(1);
 	
-	if( !onlyNumber(quantity) ) {
-		alert('Invalid quantity format.');
-		quantity.focus();
-	}
+	$('#partsNewQty').val(parseInt(totalQty));
+	$('#partsQty').html(parseInt(totalQty));
+	return true;
+}
 
-	if( !onlyNumber(price) ) {
-		alert('Invalid price format.');
-		price.focus();
-	}
+function deductQty(id)
+{
+	var partsOldQty = $('#partsOldQty').val();
+	var partsNewQty = $('#partsNewQty').val();
+	var totalQty = parseInt(partsNewQty) - parseInt(1);
+	
+	$('#partsNewQty').val(parseInt(totalQty));
+	$('#partsQty').html(parseInt(totalQty));
+	return true;
+}
 
-	$.post("?r=parts-inventory/update",{
-		id : id,
-		supplier : supplier,
-		parts : parts,
-		quantity : quantity,
-		price : price,
-		
-	}, 
-	function(data) {
+$('#modal-submit-partsqty').click(function(){
+	var partsId = $('#partsId').val();
+	var partsOldQty = $('#partsOldQty').val();
+	var partsNewQty = $('#partsNewQty').val();
+
+	$.post('?r=parts/update-stock-quantity',{
+		partsId : partsId,
+		partsOldQty : partsOldQty,
+		partsNewQty : partsNewQty
+
+	},function(data){
 		var data = jQuery.parseJSON(data);
-		if( data.status == 'Success') {
 
-			$('form input').removeClass('inputTxtError');
-		    $('label.error').remove();
-		    
-		    $('#id').val('');
-		    $('#updateSupplier').val('');
-		    $('#updateParts').val('');
-		    $('#updateQuantity').val('');
-		    $('#updatePrice').val('');
-		    $('#modal-launcher-update-pi').toggle('fast');
+		$('#partsId').val('');
+		$('#partsOldQty').val('');
+		$('#partsNewQty').val('');
 
-			alert(data.message);
-			window.location.reload();
-
-		} else {
-
-			$('form input').removeClass('inputTxtError');
-		    $('label.error').remove();
-
-			$.each(data.message, function(field, message) {
-	    		var errMsg = '<label class="error" for="'+ field + '">'+ message +'</label>';
-	            $('#piFormUpdate').find('input[name="' + 'PartsInventory[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
-	            $('#piFormUpdate').find('select[name="' + 'PartsInventory[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
-	        });
-	      
-	      	var keys = Object.keys(data.message);
-	      	$('#piFormUpdate').find('input[name="'+ 'PartsInventory[' + keys[0] + ']' +'"]').focus();	
-	      	return false;
-
-		} 
+		alert(data.message);
+		window.location.reload();	
 
 	});
 
 });
 
+$('.closeUpdatePartsQty').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-update-partsqty').modal('hide');
+    	e.preventDefault();
+    }
+});
+
+// Auto-Parts in Inventory Create //
+// $('._showCreatePIModal').click(function(){
+
+// 	$('#modal-launcher-create-pi').modal({
+//             show: true,
+//             backdrop: 'static',
+//             keyboard: false,
+//         })
+
+// 	$('form input, textarea').removeClass('inputTxtError');
+// 	$('label.error').remove();
+
+// 	$('#parts').val('');	
+//     $('#supplier').val('');
+// 	$('#quantity').val('');	
+//     $('#price').val('');
+//     $('.selectedItems').remove();
+
+// });
+
+// $('.add_item').click(function(){
+// 	var parts = $('#parts').val();
+// 	var supplier = $('#supplier').val();
+// 	var quantity = $('#quantity').val();
+// 	var price = $('#price').val();
+
+// 	if( quantity == "" || price == "" ) {
+// 		alert('Key in quantity and price first.');
+// 		return false;
+	
+// 	}else{
+
+// 		var ctr = $('#ctr').val();
+
+// 		ctr++;
+
+// 		$.post("?r=parts-inventory/insert-item-in-list",{
+// 			parts : parts,
+// 			supplier : supplier,
+// 			quantity : quantity,
+// 			price : price,
+// 			ctr : ctr,
+
+// 		}, function(data){
+// 			$('.insert-in-list').append(data);
+
+// 		});
+
+// 		$('#ctr').val(ctr);
+// 		$('#parts').val('');
+// 		$('#supplier').val('');
+// 		$('#quantity').val('');
+// 		$('#price').val('');
+		
+// 	}
+
+// });
+
+// function editItem(ctr)
+// {
+// 	$('.edit-button'+ctr).addClass('hidden');
+// 	$('.save-button'+ctr).removeClass('hidden');
+
+// 	$('#quantity-in-list-'+ctr).removeAttr('readonly');
+// 	$('#price-in-list-'+ctr).removeAttr('readonly');
+// }
+
+// function saveItem(ctr)
+// {
+// 	$('.edit-button'+ctr).removeClass('hidden');
+// 	$('.save-button'+ctr).addClass('hidden');
+
+// 	$('#quantity-in-list-'+ctr).attr('readonly',true);
+// 	$('#price-in-list-'+ctr).attr('readonly',true);
+// }
+
+// function removeItem(ctr)
+// {
+// 	$('.item-in-list-'+ctr).remove();
+// }
+
+// $('#submitPIFormCreate').click(function(){
+
+// 	var suppliers = $('input:hidden.suppliers').serializeArray();
+// 	var parts = $('input:hidden.parts').serializeArray();
+// 	var quantities = $('input:text.quantities').serializeArray();
+// 	var prices = $('input:text.prices').serializeArray();
+
+// 	if( suppliers.length == 0 || parts.length == 0 || quantities.length == 0 || prices.length == 0 ) {
+// 		alert('Add item in the list first.');
+// 		return false;
+
+// 	}else{
+// 			$.post("?r=parts-inventory/create",{
+// 			supplier : suppliers,
+// 			parts : parts,
+// 			quantity : quantities,
+// 			price : prices
+
+// 		}, 
+// 		function(data) {
+// 			var data = jQuery.parseJSON(data);
+// 			if( data.status == 'Success') {
+
+// 				$('form input').removeClass('inputTxtError');
+// 			    $('label.error').remove();
+
+// 			    $('#modal-launcher-create-pi').toggle('fast');
+
+// 				alert(data.message);
+// 				window.location.reload();
+
+// 			} else {
+
+// 				alert('You have an error, please check all the fields.');
+// 				return false;
+
+// 			} 
+
+// 		});
+
+// 	}
+
+// });
+
+// Auto-Parts in Inventory Update //
+// if( $('._showUpdatePIModal').length ){
+
+// $('._showUpdatePIModal').each(function(){
+// 	$(this).click(function(){
+	
+// 	$('#modal-launcher-update-pi').modal({
+//         show: true,
+//         backdrop: 'static',
+//         keyboard: false,
+
+//     })
+
+// 	$('form input, textarea').removeClass('inputTxtError');
+// 	$('label.error').remove();
+
+// 		$.get("?r=parts-inventory/get-data", {
+// 			id : $(this).attr('id'),
+	
+// 		},
+// 		function(data){
+// 			var data = jQuery.parseJSON(data);
+// 			var result = data.result;
+// 			if( data.status == 'Success' ) {
+// 				$('#piFormUpdate').find('input:hidden[name=id]').val(result.id);
+// 				$('#piFormUpdate').find('select[id=updateSupplier]').val(result.supplier_id).change();
+// 				$('#piFormUpdate').find('select[id=updateParts]').val(result.parts_id).change();
+// 				$('#piFormUpdate').find('input:text[id=updateQuantity]').val(result.quantity);
+// 				$('#piFormUpdate').find('input:text[id=updatePrice]').val(parseFloat(result.price).toFixed(2));
+// 			}
+
+// 		});
+// 	});
+// });
+
+// }
+
+// $('#submitPIFormUpdate').click(function(){
+// 	var id = $('#id').val();
+// 	var supplier = $('#updateSupplier').val();
+// 	var parts = $('#updateParts').val();
+// 	var quantity = $('#updateQuantity').val();
+// 	var price = $('#updatePrice').val();
+	
+// 	if( !onlyNumber(quantity) ) {
+// 		alert('Invalid quantity format.');
+// 		quantity.focus();
+// 	}
+
+// 	if( !onlyNumber(price) ) {
+// 		alert('Invalid price format.');
+// 		price.focus();
+// 	}
+
+// 	$.post("?r=parts-inventory/update",{
+// 		id : id,
+// 		supplier : supplier,
+// 		parts : parts,
+// 		quantity : quantity,
+// 		price : price,
+		
+// 	}, 
+// 	function(data) {
+// 		var data = jQuery.parseJSON(data);
+// 		if( data.status == 'Success') {
+
+// 			$('form input').removeClass('inputTxtError');
+// 		    $('label.error').remove();
+		    
+// 		    $('#id').val('');
+// 		    $('#updateSupplier').val('');
+// 		    $('#updateParts').val('');
+// 		    $('#updateQuantity').val('');
+// 		    $('#updatePrice').val('');
+// 		    $('#modal-launcher-update-pi').toggle('fast');
+
+// 			alert(data.message);
+// 			window.location.reload();
+
+// 		} else {
+
+// 			$('form input').removeClass('inputTxtError');
+// 		    $('label.error').remove();
+
+// 			$.each(data.message, function(field, message) {
+// 	    		var errMsg = '<label class="error" for="'+ field + '">'+ message +'</label>';
+// 	            $('#piFormUpdate').find('input[name="' + 'PartsInventory[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+// 	            $('#piFormUpdate').find('select[name="' + 'PartsInventory[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+// 	        });
+	      
+// 	      	var keys = Object.keys(data.message);
+// 	      	$('#piFormUpdate').find('input[name="'+ 'PartsInventory[' + keys[0] + ']' +'"]').focus();	
+// 	      	return false;
+
+// 		} 
+
+// 	});
+
+// });
+
 // Auto-Parts in Inventory Delete //
-$('.piDeleteColumn').each(function(){
+// $('.piDeleteColumn').each(function(){
 
-$(this).click(function() {    
-	var yes = confirm ("Are you sure you want to delete this record?");
+// $(this).click(function() {    
+// 	var yes = confirm ("Are you sure you want to delete this record?");
        
-	if(yes) {
-		$.post("?r=parts-inventory/delete-column",{
-			id : $(this).attr('id'),
+// 	if(yes) {
+// 		$.post("?r=parts-inventory/delete-column",{
+// 			id : $(this).attr('id'),
 
-		},
-		function(data){
-			var data = jQuery.parseJSON(data);
+// 		},
+// 		function(data){
+// 			var data = jQuery.parseJSON(data);
 			
-			if( data.status == 'Success' ) {
-				alert(data.message);
-				window.location.reload();	
+// 			if( data.status == 'Success' ) {
+// 				alert(data.message);
+// 				window.location.reload();	
 
-			}
+// 			}
 
-		});
-	}
+// 		});
+// 	}
 
-});
+// });
 
-});
+// });
 
 // Auto-Parts in Inventory Forms Clear //
-$('#clearPIForms').click(function(){
+// $('#clearPIForms').click(function(){
 
-	$('#piFormCreate').find('select[id=supplier]').val('');
-	$('#piFormCreate').find('select[id=parts]').val('');
-	$('#piFormCreate').find('input:text[id=quantity]').val('');
-	$('#piFormCreate').find('input:text[id=price]').val('');
-	$('#piFormCreate').find('input:hidden[id=ctr]').val('0');
-	$('.selectedItems').remove();
+// 	$('#piFormCreate').find('select[id=supplier]').val('');
+// 	$('#piFormCreate').find('select[id=parts]').val('');
+// 	$('#piFormCreate').find('input:text[id=quantity]').val('');
+// 	$('#piFormCreate').find('input:text[id=price]').val('');
+// 	$('#piFormCreate').find('input:hidden[id=ctr]').val('0');
+// 	$('.selectedItems').remove();
 	
-});
+// });
 
 // Product Category Create //
 $('._showCreatePRCModal').click(function(){
@@ -4431,6 +4792,13 @@ $('#submitPRCFormCreate').click(function(){
 
 	});
 
+});
+
+$('.closeNewPrc').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-create-prc').modal('hide');
+    	e.preventDefault();
+    }
 });
 
 // Product Category Update //
@@ -4525,6 +4893,13 @@ $('#submitPRCFormUpdate').click(function(){
 
 });
 
+$('.closeUpdatePrc').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-update-prc').modal('hide');
+    	e.preventDefault();
+    }
+});
+
 // Product Category Delete //
 $('.prcDeleteColumn').each(function(){
 
@@ -4607,6 +4982,13 @@ $('._showViewPRCModal').each(function(){
 
 }
 
+$('.closeViewPrc').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-prc').modal('hide');
+    	e.preventDefault();
+    }
+});
+
 // Product Category Forms Clear //
 $('#clearPRCForms').click(function(){
 
@@ -4621,10 +5003,10 @@ $('#clearPRCForms').click(function(){
 
 // Product Category View Close //
 $('#closePRCForms').click(function(){
-
-	$('#modal-launcher-view-prc').toggle('fast');
-	window.location.reload();
-
+	if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-prc').modal('hide');
+    	e.preventDefault();
+    }
 });
 
 // Product Create //
@@ -4639,28 +5021,35 @@ $('._showCreateProductModal').click(function(){
 	$('form input, textarea').removeClass('inputTxtError');
 	$('label.error').remove();
 
-	$('#productCategory').val('');	
+	$('#storageLocation').val('');	
+	$('#supplier').val('');	
+    $('#productCategory').val('');
     $('#productName').val('');
-    $('#description').val('');
+    $('#quantity').val('');
     $('#uom').val('');
+    $('#costPrice').val('');
+    $('#reorderLevel').val('');
+    $('#gstPrice').val('');
+    $('#sellingPrice').val('');
 
 });
 
 $('#submitProductFormCreate').click(function(){
+	var storageLocation = $('#storageLocation').val();
+	var supplier = $('#supplier').val();
 	var productCode = $('#productCode').val();
 	var productCategory = $('#productCategory').val();
 	var productName = $('#productName').val();
-	var description = $('#description').val();
+	var quantity = $('#quantity').val();
 	var uom = $('#uom').val();
+	var costPrice = $('#costPrice').val();
+	var reorderLevel = $('#reorderLevel').val();
+	var gstPrice = $('#gstPrice').val();
+	var sellingPrice = $('#sellingPrice').val();
 
-	if( !onlyLetter(productName) ) {
+	if( !onlyLetterAndNumber(productName) ) {
 		alert('Invalid product name format.');
 		productName.focus();
-	}
-
-	if( !onlyLetterAndNumber(description) ) {
-		alert('Invalid description format.');
-		description.focus();
 	}
 
 	if( !onlyLetterAndNumber(uom) ) {
@@ -4668,12 +5057,38 @@ $('#submitProductFormCreate').click(function(){
 		uom.focus();
 	}
 
+	if( !onlyNumber(quantity) ) {
+		alert('Invalid quantity format.');
+		quantity.focus();
+	}
+
+	if( !onlyNumber(reorderLevel) ) {
+		alert('Invalid re-order level format.');
+		reorderLevel.focus();
+	}
+
+	if( !onlyNumber(costPrice) ) {
+		alert('Invalid cost price format.');
+		costPrice.focus();
+	}
+
+	if( !onlyNumber(sellingPrice) ) {
+		alert('Invalid selling price format.');
+		sellingPrice.focus();
+	}
+
 	$.post("?r=product/create",{
+		storageLocation : storageLocation,
+		supplier : supplier,
 		productCode : productCode,
 		productCategory : productCategory,
 		productName : productName,
-		description : description,
+		quantity : quantity,
 		uom : uom,
+		costPrice : costPrice,
+		reorderLevel : reorderLevel,	
+		gstPrice : gstPrice,
+		sellingPrice : sellingPrice,
 
 	}, 
 	function(data) {
@@ -4683,11 +5098,16 @@ $('#submitProductFormCreate').click(function(){
 			$('form input').removeClass('inputTxtError');
 		    $('label.error').remove();
 
-		    $('#productCode').val('');
-		    $('#productCategory').val('');	
-		    $('#productName').val('');	
-		    $('#description').val('');
-		    $('#uom').val('');		
+		    $('#storageLocation').val('');
+		    $('#supplier').val('');
+			$('#productCategory').val('');
+			$('#productName').val('');
+			$('#quantity').val('');
+			$('#uom').val('');
+			$('#costPrice').val('');
+			$('#reorderLevel').val('');
+			$('#gstPrice').val('');
+			$('#sellingPrice').val('');	
 		    $('#modal-launcher-create-product').toggle('fast');
 
 			alert(data.message);
@@ -4712,6 +5132,13 @@ $('#submitProductFormCreate').click(function(){
 
 	});
 
+});
+
+$('.closeNewProduct').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-create-product').modal('hide');
+    	e.preventDefault();
+    }
 });
 
 // Product Update //
@@ -4739,11 +5166,17 @@ $('._showUpdateProductModal').each(function(){
 			var result = data.result;
 			if( data.status == 'Success' ) {
 				$('#productFormUpdate').find('input:hidden[name=id]').val(result.id);
-				$('#productFormUpdate').find('input:text[id=updateProductCode]').val(result.product_code.toUpperCase());
+				$('#productFormUpdate').find('select[id=updateStorageLocation]').val(result.storage_location_id).change();
+				$('#productFormUpdate').find('select[id=updateSupplier]').val(result.supplier_id).change();
 				$('#productFormUpdate').find('select[id=updateProductCategory]').val(result.product_category_id).change();
+				$('#productFormUpdate').find('input:text[id=updateProductCode]').val(result.product_code.toUpperCase());
 				$('#productFormUpdate').find('input:text[id=updateProductName]').val(result.product_name.toUpperCase());
-				$('#productFormUpdate').find('textarea[id=updateDescription]').val(result.description.toUpperCase());
+				$('#productFormUpdate').find('input:text[id=updateQuantity]').val(parseInt(result.quantity));
 				$('#productFormUpdate').find('input:text[id=updateUom]').val(result.unit_of_measure.toUpperCase());
+				$('#productFormUpdate').find('input:text[id=updateCostPrice]').val(parseFloat(result.cost_price).toFixed(2));
+				$('#productFormUpdate').find('input:text[id=updateReorderLevel]').val(parseInt(result.reorder_level));
+				$('#productFormUpdate').find('input:text[id=updateGstPrice]').val(parseInt(result.gst_price));
+				$('#productFormUpdate').find('input:text[id=updateSellingPrice]').val(parseFloat(result.selling_price).toFixed(2));
 			}
 
 		});
@@ -4754,20 +5187,21 @@ $('._showUpdateProductModal').each(function(){
 
 $('#submitProductFormUpdate').click(function(){
 	var id = $('#id').val();
+	var storageLocation = $('#updateStorageLocation').val();
+	var supplier = $('#updateSupplier').val();
 	var productCode = $('#updateProductCode').val();
 	var productCategory = $('#updateProductCategory').val();
 	var productName = $('#updateProductName').val();
-	var description = $('#updateDescription').val();
+	var quantity = $('#updateQuantity').val();
 	var uom = $('#updateUom').val();
-	
-	if( !onlyLetter(productName) ) {
+	var costPrice = $('#updateCostPrice').val();
+	var reorderLevel = $('#updateReorderLevel').val();
+	var gstPrice = $('#updateGstPrice').val();
+	var sellingPrice = $('#updateSellingPrice').val();
+
+	if( !onlyLetterAndNumber(productName) ) {
 		alert('Invalid product name format.');
 		productName.focus();
-	}
-
-	if( !onlyLetterAndNumber(description) ) {
-		alert('Invalid description format.');
-		description.focus();
 	}
 
 	if( !onlyLetterAndNumber(uom) ) {
@@ -4775,13 +5209,39 @@ $('#submitProductFormUpdate').click(function(){
 		uom.focus();
 	}
 
+	if( !onlyNumber(quantity) ) {
+		alert('Invalid quantity format.');
+		quantity.focus();
+	}
+
+	if( !onlyNumber(reorderLevel) ) {
+		alert('Invalid re-order level format.');
+		reorderLevel.focus();
+	}
+
+	if( !onlyNumber(costPrice) ) {
+		alert('Invalid cost price format.');
+		costPrice.focus();
+	}
+
+	if( !onlyNumber(sellingPrice) ) {
+		alert('Invalid selling price format.');
+		sellingPrice.focus();
+	}
+
 	$.post("?r=product/update",{
 		id : id,
+		storageLocation : storageLocation,
+		supplier : supplier,
 		productCode : productCode,
 		productCategory : productCategory,
 		productName : productName,
-		description : description,
+		quantity : quantity,
 		uom : uom,
+		costPrice : costPrice,
+		reorderLevel : reorderLevel,	
+		gstPrice : gstPrice,
+		sellingPrice : sellingPrice,
 		
 	}, 
 	function(data) {
@@ -4792,10 +5252,16 @@ $('#submitProductFormUpdate').click(function(){
 		    $('label.error').remove();
 		    
 		    $('#id').val('');
-		    $('#updateProductCategory').val('');
-		    $('#updateProductName').val('');
-		    $('#updateDescription').val('');
-		    $('#updatePrice').val('');
+		    $('#updateStorageLocation').val();
+			$('#updateSupplier').val();
+			$('#updateProductCategory').val();
+			$('#updateProductName').val();
+			$('#updateQuantity').val();
+			$('#updateUom').val();
+			$('#updateCostPrice').val();
+			$('#updateReorderLevel').val();
+			$('#updateGstPrice').val();
+			$('#updateSellingPrice').val();
 		    $('#modal-launcher-update-product').toggle('fast');
 
 			alert(data.message);
@@ -4820,6 +5286,13 @@ $('#submitProductFormUpdate').click(function(){
 
 	});
 
+});
+
+$('.closeUpdateProduct').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-update-product').modal('hide');
+    	e.preventDefault();
+    }
 });
 
 // Product Delete //
@@ -4882,6 +5355,10 @@ $('._showViewProductModal').each(function(){
 							'<td>'+result.id+'</td>'
 						+'</tr>'+
 						'<tr>'+
+							'<td><b>SUPPLIER NAME</b></td>' +
+							'<td>'+result.supplier_name.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
 							'<td><b>PRODUCT CODE</b></td>' +
 							'<td>'+result.product_code.toUpperCase()+'</td>'
 						+'</tr>'+
@@ -4890,16 +5367,32 @@ $('._showViewProductModal').each(function(){
 							'<td>'+result.product_category_name.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
-							'<td><b>PRODUCT CATEGORY</b></td>' +
+							'<td><b>PRODUCT NAME</b></td>' +
 							'<td>'+result.product_name.toUpperCase()+'</td>'
-						+'</tr>'+
-						'<tr>'+
-							'<td><b>DESCRIPTION</b></td>' +
-							'<td>'+result.description.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
 							'<td><b>UNIT OF MEASURE</b></td>' +
 							'<td>'+result.unit_of_measure.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>QUANTITY</b></td>' +
+							'<td>'+parseInt(result.quantity)+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>RE-ORDER LEVEL</b></td>' +
+							'<td>'+parseInt(result.reorder_level)+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>COST PRICE</b></td>' +
+							'<td>'+parseFloat(result.cost_price).toFixed(2)+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>GST PRICE</b></td>' +
+							'<td>'+parseInt(result.gst_price)+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>SELLING PRICE</b></td>' +
+							'<td>'+parseFloat(result.selling_price).toFixed(2)+'</td>'
 						+'</tr>'+
 						'<tr>'+
 							'<td><b>STATUS</b></td>' +
@@ -4915,6 +5408,13 @@ $('._showViewProductModal').each(function(){
 });
 
 }
+
+$('.closeViewProduct').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-product').modal('hide');
+    	e.preventDefault();
+    }
+});
 
 // Product Forms Clear //
 $('#clearProductForms').click(function(){
@@ -4935,275 +5435,494 @@ $('#clearProductForms').click(function(){
 
 // Product View Close //
 $('#closeProductForms').click(function(){
-
-	$('#modal-launcher-view-product').toggle('fast');
-	window.location.reload();
-
+	if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-product').modal('hide');
+    	e.preventDefault();
+    }
 });
 
-// Product in Inventory Create //
-$('._showCreatePRIModal').click(function(){
+// Product Update Selected Qty
+$('._showUpdateQtySelectedProductModal').click(function(){
 
-	$('#modal-launcher-create-pri').modal({
-            show: true,
-            backdrop: 'static',
-            keyboard: false,
-        })
-
-	$('form input, textarea').removeClass('inputTxtError');
-	$('label.error').remove();
-
-	$('#product').val('');	
-    $('#supplier').val('');
-	$('#quantity').val('');	
-    $('#price').val('');
-    $('.selectedItems').remove();
-
-});
-
-$('._addItem').click(function(){
-	var product = $('#product').val();
-	var supplier = $('#supplier').val();
-	var quantity = $('#quantity').val();
-	var price = $('#price').val();
-
-	if( quantity == "" || price == "" ) {
-		alert('Key in quantity and price first.');
+	if($('.productSelected:checked').length == 0){
+		alert('Select Product first.');
 		return false;
-	
-	}else{
-
-		var ctr = $('#ctr').val();
-
-		ctr++;
-
-		$.post("?r=product-inventory/insert-item-in-list",{
-			product : product,
-			supplier : supplier,
-			quantity : quantity,
-			price : price,
-			ctr : ctr,
-
-		}, function(data){
-			$('.insert-in-list').append(data);
-
-		});
-
-		$('#ctr').val(ctr);
-		$('#product').val('');
-		$('#supplier').val('');
-		$('#quantity').val('');
-		$('#price').val('');
-		
 	}
 
-});
-
-function editSelectedItem(ctr)
-{
-	$('._editButton'+ctr).addClass('hidden');
-	$('._saveButton'+ctr).removeClass('hidden');
-
-	$('#quantity-in-list-'+ctr).removeAttr('readonly');
-	$('#price-in-list-'+ctr).removeAttr('readonly');
-}
-
-function saveSelectedItem(ctr)
-{
-	$('._editButton'+ctr).removeClass('hidden');
-	$('._saveButton'+ctr).addClass('hidden');
-
-	$('#quantity-in-list-'+ctr).attr('readonly',true);
-	$('#price-in-list-'+ctr).attr('readonly',true);
-}
-
-function removeSelectedItem(ctr)
-{
-	$('.item-in-list-'+ctr).remove();
-}
-
-$('#submitPRIFormCreate').click(function(){
-
-	var suppliers = $('input:hidden.suppliers').serializeArray();
-	var products = $('input:hidden.products').serializeArray();
-	var quantities = $('input:text.quantities').serializeArray();
-	var prices = $('input:text.prices').serializeArray();
-
-	if( suppliers.length == 0 || products.length == 0 || quantities.length == 0 || prices.length == 0 ) {
-		alert('Add item in the list first.');
-		return false;
-
-	}else{
-			$.post("?r=product-inventory/create",{
-			supplier : suppliers,
-			products : products,
-			quantity : quantities,
-			price : prices
-
-		}, 
-		function(data) {
-			var data = jQuery.parseJSON(data);
-			if( data.status == 'Success') {
-
-				$('form input').removeClass('inputTxtError');
-			    $('label.error').remove();
-
-			    $('#modal-launcher-create-pri').toggle('fast');
-
-				alert(data.message);
-				window.location.reload();
-
-			} else {
-
-				alert('You have an error, please check all the fields.');
-				return false;
-
-			} 
-
-		});
-
-	}
-
-});
-
-// Product in Inventory Update //
-if( $('._showUpdatePRIModal').length ){
-
-$('._showUpdatePRIModal').each(function(){
-	$(this).click(function(){
-	
-	$('#modal-launcher-update-pri').modal({
+	$('#modal-launcher-updateqty-selected-product').modal({
         show: true,
         backdrop: 'static',
         keyboard: false,
 
     })
 
-	$('form input, textarea').removeClass('inputTxtError');
-	$('label.error').remove();
+	$('.productSelected:checked').each(function(index, value){
+		
+		$.get('?r=product/get-selected-productinfo',{
+			productId: $(this).val(),
 
-		$.get("?r=product-inventory/get-data", {
-			id : $(this).attr('id'),
-	
-		},
-		function(data){
+		},function(data){
 			var data = jQuery.parseJSON(data);
 			var result = data.result;
+
 			if( data.status == 'Success' ) {
-				$('#priFormUpdate').find('input:hidden[name=id]').val(result.id);
-				$('#priFormUpdate').find('select[id=updateSupplier]').val(result.supplier_id).change();
-				$('#priFormUpdate').find('select[id=updateProduct]').val(result.product_id).change();
-				$('#priFormUpdate').find('input:text[id=updateQuantity]').val(result.quantity);
-				$('#priFormUpdate').find('input:text[id=updatePrice]').val(parseFloat(result.price).toFixed(2));
+				var html = '<table class="table table-hover table-striped viewTableContent">'+
+						'<tr>'+
+							'<td><b><span class="fa fa-cubes"></span> PRODUCT NAME</b></td>' +
+							'<td style="text-align:center;" ><b><span class="fa fa-tags"></span> OLD QUANTITY</b></td>' +
+							'<td style="text-align:center;" ><b><span class="fa fa-database"></span> NEW QUANTITY</b></td>' 
+						+'</tr>'+
+						'<tr>'+
+							'<td style="width:50%;" >'+
+								'<span class="fa fa-gg"> '+result.product_name.toUpperCase()+
+								'<input type="hidden" name="productId[]" id="productId-'+ result.id  +'" class="selectedProductId inputForm form-control productId-'+ result.id  +'" value="'+parseInt(result.id)+'" />'+
+							'</td>'+
+							'<td>'+
+								'<input type="text" id="editOldProductQty-'+ result.id  +'" class="inputForm form-control editOldProductQty-'+ result.id  +'" placeholder="0" style="text-align:center;" onchange="updateSelectedProductQty('+ result.id +')" />'+
+								'<input type="hidden" name="oldProductQty[]" id="oldProductQty-'+ result.id  +'" class="selectedProductOldQty inputForm form-control oldQty-'+ result.id  +'" value="'+parseInt(result.quantity)+'" />'+
+							'</td>'+
+							'<td>'+
+								'<input type="text" name="newProductQty[]" id="newProductQty-'+ result.id  +'" class="selectedProductNewQty inputForm form-control newProductQty-'+ result.id  +'" value="'+parseInt(result.quantity)+'" readonly="readonly" style="text-align:center;" />'+
+							'</td>'
+						+'</tr>'+
+					'</table>';
+
+				$('#viewSelectedProduct').append(html);
 			}
 
 		});
+
 	});
+});
+
+function updateSelectedProductQty(n){
+	var editOldProductQty = $('#editOldProductQty-'+n).val();
+	var oldProductQty = $('#oldProductQty-'+n).val();
+	var newProductQty = $('#newProductQty-'+n).val();
+
+	if( !onlyNumber(editOldProductQty) ){
+		alert('Invalid old product quantity value.');
+		$('#editOldProductQty-'+n).val('');
+		$('#newProductQty-'+n).val(parseInt(oldProductQty));
+		return false;
+	}
+	
+	if(editOldProductQty == null || editOldProductQty == ''){
+		$('#newProductQty-'+n).val(parseInt(oldProductQty));
+		return true;
+
+	}else{
+		$('#newProductQty-'+n).val(parseInt(editOldProductQty) + parseInt(oldProductQty));
+		return true;
+
+	}
+
+}
+
+$('#submitProductQtyFormUpdate').click(function(){
+	var productId = $('input:hidden.selectedProductId').serializeArray();
+	var oldProductQty = $('input:hidden.selectedProductOldQty').serializeArray();
+	var newProductQty = $('input:text.selectedProductNewQty').serializeArray();
+
+	$.post('?r=product/save-updated-product-qty',{
+		productId : productId,
+		oldProductQty : oldProductQty,
+		newProductQty : newProductQty,
+
+	},function(data){
+		var data = jQuery.parseJSON(data);
+			
+		if( data.status == 'Success' ) {
+			alert(data.message);
+			window.location.reload();	
+		}
+
+	});
+
+});
+
+$('.closeUpdateQtySelectedProduct').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-updateqty-selected-product').modal('hide');
+    	e.preventDefault();
+    }
+});
+
+// Product Update Qty
+if( $('._showUpdateProductQtyModal').length ){
+
+$('._showUpdateProductQtyModal').each(function(){
+	$(this).click(function(){
+		
+		$('#modal-launcher-update-productqty').modal({
+            backdrop: 'static',
+            keyboard: true,
+        })
+
+        var productId = $(this).attr('id');
+
+        $.get("?r=product/get-data-for-view",{
+        	id : productId,
+
+        },function(data){
+        	var data = jQuery.parseJSON(data);		
+        	var result = data.result;
+
+        	var html = '<table class="table table-hover table-striped viewTableContent">'+
+						'<tr>'+
+							'<td><b>ID</b></td>' +
+							'<td>'+result.id+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>SUPPLIER NAME</b></td>' +
+							'<td>'+result.supplier_name.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>CATEGORY NAME</b></td>' +
+							'<td>'+result.product_category_name.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>PRODUCT CODE</b></td>' +
+							'<td>'+result.product_code.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>PRODUCT NAME</b></td>' +
+							'<td>'+result.product_name.toUpperCase()+'</td>'
+						+'</tr>'+
+							'<td><b>QUANTITY</b></td>' +
+							'<td>'+'<button type="button" class="btn btn-info btn-xs" onclick="addProductQty('+productId+')" style="margin-top: -10px;" ><i class="fa fa-plus-circle"></i></button> '+' <label style="font-size:22px; font-weight: 600;" id="productQty" >'+result.quantity+'</label> '+' '+	' <button type="button" class="btn btn-info btn-xs" onclick="deductProductQty('+productId+')"  style="margin-top: -10px;" ><i class="fa fa-minus-circle"></i></button>'+'</td>'
+						+'</tr>'
+				+'</table>';
+
+				$('#product-modal-form').find('input:hidden[id=productId]').val(productId);
+				$('#product-modal-form').find('input:hidden[id=productOldQty]').val(parseInt(result.quantity));
+				$('#product-modal-form').find('input:hidden[id=productNewQty]').val(parseInt(result.quantity));
+				$('#product_information').html(html);
+
+        });
+
+	});
+
 });
 
 }
 
-$('#submitPRIFormUpdate').click(function(){
-	var id = $('#id').val();
-	var supplier = $('#updateSupplier').val();
-	var product = $('#updateProduct').val();
-	var quantity = $('#updateQuantity').val();
-	var price = $('#updatePrice').val();
+function addProductQty()
+{
+	var productOldQty = $('#productOldQty').val();
+	var productNewQty = $('#productNewQty').val();
+	var totalProductQty = parseInt(productNewQty) + parseInt(1);
 	
-	if( !onlyNumber(quantity) ) {
-		alert('Invalid quantity format.');
-		quantity.focus();
-	}
+	$('#productNewQty').val(parseInt(totalProductQty));
+	$('#productQty').html(parseInt(totalProductQty));
+	return true;
+}
 
-	if( !onlyNumber(price) ) {
-		alert('Invalid price format.');
-		price.focus();
-	}
+function deductProductQty(id)
+{
+	var productOldQty = $('#productOldQty').val();
+	var productNewQty = $('#productNewQty').val();
+	var totalProductQty = parseInt(productNewQty) - parseInt(1);
+	
+	$('#productNewQty').val(parseInt(totalProductQty));
+	$('#productQty').html(parseInt(totalProductQty));
+	return true;
+}
 
-	$.post("?r=product-inventory/update",{
-		id : id,
-		supplier : supplier,
-		product : product,
-		quantity : quantity,
-		price : price,
-		
-	}, 
-	function(data) {
+$('#modal-submit-productqty').click(function(){
+	var productId = $('#productId').val();
+	var productOldQty = $('#productOldQty').val();
+	var productNewQty = $('#productNewQty').val();
+
+	$.post('?r=product/update-stock-quantity',{
+		productId : productId,
+		productOldQty : productOldQty,
+		productNewQty : productNewQty
+
+	},function(data){
 		var data = jQuery.parseJSON(data);
-		if( data.status == 'Success') {
 
-			$('form input').removeClass('inputTxtError');
-		    $('label.error').remove();
-		    
-		    $('#id').val('');
-		    $('#updateSupplier').val('');
-		    $('#updateProduct').val('');
-		    $('#updateQuantity').val('');
-		    $('#updatePrice').val('');
-		    $('#modal-launcher-update-pri').toggle('fast');
+		$('#productId').val('');
+		$('#productOldQty').val('');
+		$('#productNewQty').val('');
 
-			alert(data.message);
-			window.location.reload();
-
-		} else {
-
-			$('form input').removeClass('inputTxtError');
-		    $('label.error').remove();
-
-			$.each(data.message, function(field, message) {
-	    		var errMsg = '<label class="error" for="'+ field + '">'+ message +'</label>';
-	            $('#priFormUpdate').find('input[name="' + 'ProductInventory[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
-	            $('#priFormUpdate').find('select[name="' + 'ProductInventory[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
-	        });
-	      
-	      	var keys = Object.keys(data.message);
-	      	$('#priFormUpdate').find('input[name="'+ 'ProductInventory[' + keys[0] + ']' +'"]').focus();	
-	      	return false;
-
-		} 
+		alert(data.message);
+		window.location.reload();	
 
 	});
 
 });
 
+$('.closeUpdateProductQty').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-update-productqty').modal('hide');
+    	e.preventDefault();
+    }
+});
+
+// Product in Inventory Create //
+// $('._showCreatePRIModal').click(function(){
+
+// 	$('#modal-launcher-create-pri').modal({
+//             show: true,
+//             backdrop: 'static',
+//             keyboard: false,
+//         })
+
+// 	$('form input, textarea').removeClass('inputTxtError');
+// 	$('label.error').remove();
+
+// 	$('#product').val('');	
+//     $('#supplier').val('');
+// 	$('#quantity').val('');	
+//     $('#price').val('');
+//     $('.selectedItems').remove();
+
+// });
+
+// $('._addItem').click(function(){
+// 	var product = $('#product').val();
+// 	var supplier = $('#supplier').val();
+// 	var quantity = $('#quantity').val();
+// 	var price = $('#price').val();
+
+// 	if( quantity == "" || price == "" ) {
+// 		alert('Key in quantity and price first.');
+// 		return false;
+	
+// 	}else{
+
+// 		var ctr = $('#ctr').val();
+
+// 		ctr++;
+
+// 		$.post("?r=product-inventory/insert-item-in-list",{
+// 			product : product,
+// 			supplier : supplier,
+// 			quantity : quantity,
+// 			price : price,
+// 			ctr : ctr,
+
+// 		}, function(data){
+// 			$('.insert-in-list').append(data);
+
+// 		});
+
+// 		$('#ctr').val(ctr);
+// 		$('#product').val('');
+// 		$('#supplier').val('');
+// 		$('#quantity').val('');
+// 		$('#price').val('');
+		
+// 	}
+
+// });
+
+// function editSelectedItem(ctr)
+// {
+// 	$('._editButton'+ctr).addClass('hidden');
+// 	$('._saveButton'+ctr).removeClass('hidden');
+
+// 	$('#quantity-in-list-'+ctr).removeAttr('readonly');
+// 	$('#price-in-list-'+ctr).removeAttr('readonly');
+// }
+
+// function saveSelectedItem(ctr)
+// {
+// 	$('._editButton'+ctr).removeClass('hidden');
+// 	$('._saveButton'+ctr).addClass('hidden');
+
+// 	$('#quantity-in-list-'+ctr).attr('readonly',true);
+// 	$('#price-in-list-'+ctr).attr('readonly',true);
+// }
+
+// function removeSelectedItem(ctr)
+// {
+// 	$('.item-in-list-'+ctr).remove();
+// }
+
+// $('#submitPRIFormCreate').click(function(){
+
+// 	var suppliers = $('input:hidden.suppliers').serializeArray();
+// 	var products = $('input:hidden.products').serializeArray();
+// 	var quantities = $('input:text.quantities').serializeArray();
+// 	var prices = $('input:text.prices').serializeArray();
+
+// 	if( suppliers.length == 0 || products.length == 0 || quantities.length == 0 || prices.length == 0 ) {
+// 		alert('Add item in the list first.');
+// 		return false;
+
+// 	}else{
+// 			$.post("?r=product-inventory/create",{
+// 			supplier : suppliers,
+// 			products : products,
+// 			quantity : quantities,
+// 			price : prices
+
+// 		}, 
+// 		function(data) {
+// 			var data = jQuery.parseJSON(data);
+// 			if( data.status == 'Success') {
+
+// 				$('form input').removeClass('inputTxtError');
+// 			    $('label.error').remove();
+
+// 			    $('#modal-launcher-create-pri').toggle('fast');
+
+// 				alert(data.message);
+// 				window.location.reload();
+
+// 			} else {
+
+// 				alert('You have an error, please check all the fields.');
+// 				return false;
+
+// 			} 
+
+// 		});
+
+// 	}
+
+// });
+
+// Product in Inventory Update //
+// if( $('._showUpdatePRIModal').length ){
+
+// $('._showUpdatePRIModal').each(function(){
+// 	$(this).click(function(){
+	
+// 	$('#modal-launcher-update-pri').modal({
+//         show: true,
+//         backdrop: 'static',
+//         keyboard: false,
+
+//     })
+
+// 	$('form input, textarea').removeClass('inputTxtError');
+// 	$('label.error').remove();
+
+// 		$.get("?r=product-inventory/get-data", {
+// 			id : $(this).attr('id'),
+	
+// 		},
+// 		function(data){
+// 			var data = jQuery.parseJSON(data);
+// 			var result = data.result;
+// 			if( data.status == 'Success' ) {
+// 				$('#priFormUpdate').find('input:hidden[name=id]').val(result.id);
+// 				$('#priFormUpdate').find('select[id=updateSupplier]').val(result.supplier_id).change();
+// 				$('#priFormUpdate').find('select[id=updateProduct]').val(result.product_id).change();
+// 				$('#priFormUpdate').find('input:text[id=updateQuantity]').val(result.quantity);
+// 				$('#priFormUpdate').find('input:text[id=updatePrice]').val(parseFloat(result.price).toFixed(2));
+// 			}
+
+// 		});
+// 	});
+// });
+
+// }
+
+// $('#submitPRIFormUpdate').click(function(){
+// 	var id = $('#id').val();
+// 	var supplier = $('#updateSupplier').val();
+// 	var product = $('#updateProduct').val();
+// 	var quantity = $('#updateQuantity').val();
+// 	var price = $('#updatePrice').val();
+	
+// 	if( !onlyNumber(quantity) ) {
+// 		alert('Invalid quantity format.');
+// 		quantity.focus();
+// 	}
+
+// 	if( !onlyNumber(price) ) {
+// 		alert('Invalid price format.');
+// 		price.focus();
+// 	}
+
+// 	$.post("?r=product-inventory/update",{
+// 		id : id,
+// 		supplier : supplier,
+// 		product : product,
+// 		quantity : quantity,
+// 		price : price,
+		
+// 	}, 
+// 	function(data) {
+// 		var data = jQuery.parseJSON(data);
+// 		if( data.status == 'Success') {
+
+// 			$('form input').removeClass('inputTxtError');
+// 		    $('label.error').remove();
+		    
+// 		    $('#id').val('');
+// 		    $('#updateSupplier').val('');
+// 		    $('#updateProduct').val('');
+// 		    $('#updateQuantity').val('');
+// 		    $('#updatePrice').val('');
+// 		    $('#modal-launcher-update-pri').toggle('fast');
+
+// 			alert(data.message);
+// 			window.location.reload();
+
+// 		} else {
+
+// 			$('form input').removeClass('inputTxtError');
+// 		    $('label.error').remove();
+
+// 			$.each(data.message, function(field, message) {
+// 	    		var errMsg = '<label class="error" for="'+ field + '">'+ message +'</label>';
+// 	            $('#priFormUpdate').find('input[name="' + 'ProductInventory[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+// 	            $('#priFormUpdate').find('select[name="' + 'ProductInventory[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+// 	        });
+	      
+// 	      	var keys = Object.keys(data.message);
+// 	      	$('#priFormUpdate').find('input[name="'+ 'ProductInventory[' + keys[0] + ']' +'"]').focus();	
+// 	      	return false;
+
+// 		} 
+
+// 	});
+
+// });
+
 // Product in Inventory Delete //
-$('.priDeleteColumn').each(function(){
+// $('.priDeleteColumn').each(function(){
 
-$(this).click(function() {    
-	var yes = confirm ("Are you sure you want to delete this record?");
+// $(this).click(function() {    
+// 	var yes = confirm ("Are you sure you want to delete this record?");
        
-	if(yes) {
-		$.post("?r=product-inventory/delete-column",{
-			id : $(this).attr('id'),
+// 	if(yes) {
+// 		$.post("?r=product-inventory/delete-column",{
+// 			id : $(this).attr('id'),
 
-		},
-		function(data){
-			var data = jQuery.parseJSON(data);
+// 		},
+// 		function(data){
+// 			var data = jQuery.parseJSON(data);
 			
-			if( data.status == 'Success' ) {
-				alert(data.message);
-				window.location.reload();	
+// 			if( data.status == 'Success' ) {
+// 				alert(data.message);
+// 				window.location.reload();	
 
-			}
+// 			}
 
-		});
-	}
+// 		});
+// 	}
 
-});
+// });
 
-});
+// });
 
 // Product in Inventory Forms Clear //
-$('#clearPRIForms').click(function(){
+// $('#clearPRIForms').click(function(){
 
-	$('#priFormCreate').find('select[id=supplier]').val('');
-	$('#priFormCreate').find('select[id=product]').val('');
-	$('#priFormCreate').find('input:text[id=quantity]').val('');
-	$('#priFormCreate').find('input:text[id=price]').val('');
-	$('#priFormCreate').find('input:hidden[id=ctr]').val('0');
-	$('.selectedItems').remove();
+// 	$('#priFormCreate').find('select[id=supplier]').val('');
+// 	$('#priFormCreate').find('select[id=product]').val('');
+// 	$('#priFormCreate').find('input:text[id=quantity]').val('');
+// 	$('#priFormCreate').find('input:text[id=price]').val('');
+// 	$('#priFormCreate').find('input:hidden[id=ctr]').val('0');
+// 	$('.selectedItems').remove();
 	
-});
+// });
 
 // User Permission Create //
 $('._showCreateUPModal').click(function(){
@@ -6003,7 +6722,7 @@ function onlyLetter(element)
 
 function onlyLetterAndNumber(element)
 {
-	var alphanum = /^[a-zA-Z0-9\s\.\#\-]*$/;
+	var alphanum = /^[a-zA-Z0-9\s\.\#\-\,]*$/;
 	
 	if(element.match(alphanum)) {
 		return true;
@@ -6014,7 +6733,7 @@ function onlyLetterAndNumber(element)
 
 function onlyNumber(element)
 {
-	var num = /^[0-9]*$/;
+	var num = /^[0-9\+\-\s]*$/;
 	
 	if(element.match(num)) {
 		return true;
@@ -6033,5 +6752,4 @@ function onlyForEmail(element)
 		return false;
 	}
 }
-
 

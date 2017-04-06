@@ -41,12 +41,10 @@ class PartsInventory extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['parts_id', 'supplier_id', 'quantity', 'price', 'status'], 'required', 'message' => 'Fill up all the required fields.'],
-            [['parts_id', 'supplier_id', 'quantity', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['price'], 'number'],
-            [['date_imported', 'created_at', 'updated_at'], 'safe'],
+            [['parts_id', 'old_quantity', 'new_quantity', 'type'], 'required', 'message' => 'Fill up all the required fields.'],
+            [['parts_id', 'old_quantity', 'new_quantity', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['datetime_imported', 'created_at', 'updated_at'], 'safe'],
             [['parts_id'], 'exist', 'skipOnError' => true, 'targetClass' => Parts::className(), 'targetAttribute' => ['parts_id' => 'id']],
-            [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => Supplier::className(), 'targetAttribute' => ['supplier_id' => 'id']],
         ];
     }
 
@@ -58,7 +56,6 @@ class PartsInventory extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'parts_id' => 'Parts ID',
-            'supplier_id' => 'Supplier ID',
             'quantity' => 'Quantity',
             'price' => 'Price',
             'status' => 'Status',
@@ -78,22 +75,13 @@ class PartsInventory extends \yii\db\ActiveRecord
         return $this->hasOne(Parts::className(), ['id' => 'parts_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSupplier()
-    {
-        return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
-    }
-
     // Active Record joining relations
     public function getPartsInventoryList()
     {
         $rows = new Query();
 
-        $result = $rows->select(['parts_inventory.*', 'supplier.name', 'parts.parts_name'])
+        $result = $rows->select(['parts_inventory.*', 'parts.parts_name', 'parts_inventory.old_quantity' , 'parts_inventory.new_quantity', 'parts_inventory.type' ])
             ->from('parts_inventory')
-            ->leftJoin('supplier', 'parts_inventory.supplier_id = supplier.id')
             ->leftJoin('parts', 'parts_inventory.parts_id = parts.id')
             ->all();
 

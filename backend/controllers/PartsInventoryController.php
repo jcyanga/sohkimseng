@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 
 use common\models\Parts;
 use common\models\Supplier;
+use common\models\PartsCategory;
 
 use Dompdf\Dompdf;
 
@@ -43,12 +44,18 @@ class PartsInventoryController extends Controller
     {
         $searchModel = new SearchPartsInventory();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $supplierModel = new Supplier();
+        $partscategoryModel = new PartsCategory();
+        $partsModel = new Parts();
         $model = new PartsInventory();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'model' => $model,
+            'supplierModel' => $supplierModel,
+            'partscategoryModel' => $partscategoryModel,
+            'partsModel' => $partsModel,
         ]);
     }
 

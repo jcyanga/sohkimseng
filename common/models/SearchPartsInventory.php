@@ -18,9 +18,8 @@ class SearchPartsInventory extends PartsInventory
     public function rules()
     {
         return [
-            [['id', 'parts_id', 'supplier_id', 'quantity', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['price'], 'number'],
-            [['date_imported', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'parts_id', 'old_quantity', 'new_quantity', 'type', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['datetime_imported', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -42,7 +41,7 @@ class SearchPartsInventory extends PartsInventory
      */
     public function search($params)
     {
-        $query = PartsInventory::find();
+        $query = PartsInventory::find()->where(['status' => 1])->orderBy(['id' => SORT_DESC]);
 
         // add conditions that should always apply here
 
@@ -59,19 +58,8 @@ class SearchPartsInventory extends PartsInventory
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'parts_id' => $this->parts_id,
-            'supplier_id' => $this->supplier_id,
-            'quantity' => $this->quantity,
-            'price' => $this->price,
-            'status' => $this->status,
-            'date_imported' => $this->date_imported,
-            'created_at' => $this->created_at,
-            'created_by' => $this->created_by,
-            'updated_at' => $this->updated_at,
-            'updated_by' => $this->updated_by,
-        ]);
+        $query->andFilterWhere(['like', 'parts_id', $this->parts_id])
+            ->orFilterWhere(['like', 'type', $this->type]);
 
         return $dataProvider;
     }

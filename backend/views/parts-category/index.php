@@ -99,7 +99,7 @@ $gridColumns = [
 <div class="col-md-12 col-sm-12 col-xs-12">
 <div class="row">
 
-<div class="col-md-4">
+<div class="col-md-4 pull-right">
 
     <div class="row">    
         <div class="col-md-6">
@@ -120,11 +120,11 @@ $gridColumns = [
 </div>
 
 <!-- Create -->
-<div class="modal fade" id="modal-launcher-create-pc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade modalBackground" id="modal-launcher-create-pc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close closeNewPc" >&times;</button>
                 <h5 class="modal-title" id="myModalLabel"><i class="fa fa-laptop"></i> New Auto-Parts Category</h5>
             </div>
 
@@ -142,7 +142,7 @@ $gridColumns = [
 
         <div class="modal-footer">
             <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearPCForms', 'class' => 'formBtn btn btn-default']) ?>
-            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Submit Auto-Parts Information', ['id' => 'submitPCFormCreate', 'class' => 'formBtn btn btn-primary']) ?>
+            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Submit Record', ['id' => 'submitPCFormCreate', 'class' => 'formBtn btn btn-primary']) ?>
         </div>
 
         </div>
@@ -150,11 +150,11 @@ $gridColumns = [
 </div>
 
 <!-- Update -->
-<div class="modal fade" id="modal-launcher-update-pc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade modalBackground" id="modal-launcher-update-pc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close closeUpdatePc" >&times;</button>
                 <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Update Auto-Parts Category</h5>
             </div>
 
@@ -173,7 +173,7 @@ $gridColumns = [
 
         <div class="modal-footer">
             <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearPCForms', 'class' => 'formBtn btn btn-default']) ?>
-            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Save Auto-Parts Information', ['id' => 'submitPCFormUpdate', 'class' => 'formBtn btn btn-primary']) ?>
+            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Save Record', ['id' => 'submitPCFormUpdate', 'class' => 'formBtn btn btn-primary']) ?>
         </div>
 
         </div>
@@ -181,11 +181,11 @@ $gridColumns = [
 </div>
 
 <!-- View -->
-<div class="modal fade" id="modal-launcher-view-pc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade modalBackground" id="modal-launcher-view-pc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close closeViewPc" >&times;</button>
                 <h5 class="modal-title" id="myModalLabel"><i class="fa fa-desktop"></i> View Auto-Parts Category Information</h5>
             </div>
 
@@ -205,3 +205,4 @@ $gridColumns = [
 <a id="divLink" style="display: none;"></a>
 
 </div>
+

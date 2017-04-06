@@ -6,6 +6,9 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model common\models\SearchPartsInventory */
 /* @var $form yii\widgets\ActiveForm */
+
+$dataInventoryType = array('0' => '- CHOOSE TYPE HERE - ', '1' => 'STOCK-IN', '2' => 'STOCK-OUT', '3' => 'STOCK-ADJUSTMENT' );
+
 ?>
 
 <div class="parts-inventory-search">
@@ -22,11 +25,11 @@ use yii\widgets\ActiveForm;
     <br/>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'parts_id')->dropdownList($dataParts, ['style' => 'width: 100%;', 'class' => 'inputForm select2'])->label(false) ?>
+        <?= $form->field($model, 'type')->dropdownList($dataInventoryType, ['style' => 'width: 100%;', 'class' => 'inputForm select2'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'supplier_id')->dropdownList($dataSupplier, ['style' => 'width: 100%;', 'class' => 'inputForm select2'])->label(false) ?>
+        <?= $form->field($model, 'parts_id')->dropdownList(['0' => '- CHOOSE AUTO-PARTS HERE -'] + $dataParts, ['style' => 'width: 100%;', 'class' => 'inputForm select2'])->label(false) ?>
     </div>
 
 </div>

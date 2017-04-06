@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 04, 2017 at 01:47 PM
+-- Generation Time: Apr 06, 2017 at 01:27 PM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -194,21 +194,11 @@ CREATE TABLE `invoice` (
   `updated_by` int(5) NOT NULL,
   `do` int(5) NOT NULL,
   `paid` int(5) NOT NULL,
-  `deleted` int(5) NOT NULL
+  `deleted` int(5) NOT NULL,
+  `payment_type_id` int(5) NOT NULL,
+  `discount_amount` double NOT NULL,
+  `discount_remarks` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `invoice`
---
-
-INSERT INTO `invoice` (`id`, `quotation_code`, `invoice_no`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `net`, `remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `do`, `paid`, `deleted`) VALUES
-(1, '0', 'INV201703001', 3, 6, '2017-03-03', 1501, 105.07, 1606.07, 'for test case', 1, '2017-03-02 13:13:37', 2, '0000-00-00 00:00:00', 0, 0, 0, 0),
-(2, '0', 'INV201703001', 3, 6, '2017-03-03', 1501, 105.07, 1606.07, 'for test case', 1, '2017-03-02 13:13:40', 2, '0000-00-00 00:00:00', 0, 0, 0, 0),
-(3, '0', 'INV201703001', 3, 6, '2017-03-03', 1501, 105.07, 1606.07, 'for test case', 1, '2017-03-02 13:15:15', 2, '0000-00-00 00:00:00', 0, 0, 0, 0),
-(4, '0', 'INV201703004', 3, 3, '2017-03-03', 72, 5.04, 77.04, 'for test case', 1, '2017-03-02 13:15:46', 2, '0000-00-00 00:00:00', 0, 0, 0, 0),
-(5, '0', 'INV201703005', 3, 3, '2017-03-03', 176, 12.32, 188.32, 'for test case', 1, '2017-03-02 13:17:00', 2, '0000-00-00 00:00:00', 0, 0, 0, 0),
-(6, '0', 'INV201703006', 3, 3, '2017-03-03', 101, 7.07, 108.07, 'for test case', 1, '2017-03-02 13:20:23', 2, '0000-00-00 00:00:00', 0, 0, 0, 0),
-(7, '0', 'INV201703007', 3, 3, '2017-03-03', 109, 0.00, 109, 'FOR TEST CASE', 1, '2017-03-02 13:21:08', 2, '2017-03-02 13:45:52', 2, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -231,14 +221,6 @@ CREATE TABLE `invoice_detail` (
   `updated_by` int(5) NOT NULL,
   `deleted` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `invoice_detail`
---
-
-INSERT INTO `invoice_detail` (`id`, `invoice_id`, `description`, `quantity`, `unit_price`, `sub_total`, `type`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
-(3, 7, 4, 3, 3, 9, 1, 1, '2017-03-02 13:45:52', 2, '2017-03-02 13:45:52', 2, 0),
-(4, 7, 4, 1, 100, 100, 0, 1, '2017-03-02 13:45:52', 2, '2017-03-02 13:45:52', 2, 0);
 
 -- --------------------------------------------------------
 
@@ -308,7 +290,19 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m170404_061727_add_designated_position_id_to_staff_table', 1491286715),
 ('m170404_061939_create_designated_position_foreignkey', 1491286930),
 ('m170404_080009_add_columns_to_customer_table', 1491293117),
-('m170404_080843_add_company_name_column_to_customer_table', 1491293392);
+('m170404_080843_add_company_name_column_to_customer_table', 1491293392),
+('m170405_025933_add_columns_to_parts_table', 1491361366),
+('m170405_030356_create_supplier_foreignkey', 1491361488),
+('m170405_050015_add_columns_to_parts_inventory_table', 1491368637),
+('m170405_071119_add_columns_to_product_table', 1491376326),
+('m170405_071334_create_supplier_to_product_foreignkey', 1491456541),
+('m170406_052219_add_storage_location_id_column_to_parts_table', 1491456542),
+('m170406_052726_add_columns_to_product_inventory_table', 1491456546),
+('m170406_052825_add_storage_location_id_column_to_product_table', 1491456546),
+('m170406_052952_create_storage_location_foreignkey', 1491456670),
+('m170406_111715_add_columns_to_quotation_and_invoice_table', 1491477583),
+('m170406_112007_create_payment_type_table', 1491477726),
+('m170406_112228_create_payment_type_foreignkey', 1491478026);
 
 -- --------------------------------------------------------
 
@@ -343,11 +337,17 @@ INSERT INTO `module` (`id`, `name`, `status`, `created_at`, `created_by`, `updat
 
 CREATE TABLE `parts` (
   `id` int(11) NOT NULL,
+  `supplier_id` int(5) NOT NULL,
+  `storage_location_id` int(5) NOT NULL,
   `parts_category_id` int(5) NOT NULL,
   `parts_code` varchar(100) NOT NULL,
   `parts_name` varchar(150) NOT NULL,
-  `description` text NOT NULL,
   `unit_of_measure` varchar(100) NOT NULL,
+  `quantity` int(50) NOT NULL,
+  `cost_price` double NOT NULL,
+  `gst_price` double NOT NULL,
+  `selling_price` double NOT NULL,
+  `reorder_level` int(10) NOT NULL,
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
@@ -359,9 +359,13 @@ CREATE TABLE `parts` (
 -- Dumping data for table `parts`
 --
 
-INSERT INTO `parts` (`id`, `parts_category_id`, `parts_code`, `parts_name`, `description`, `unit_of_measure`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(4, 2, 'PARTS-2017-25448', 'for test ', 'for test only', 'large', 1, '2017-02-04 22:04:33', 1, '0000-00-00 00:00:00', 0),
-(5, 1, 'PARTS-2017-37040', 'TIRE TEST', 'FOR TIRE TEST ', 'KILOGRAM', 1, '2017-02-04 22:14:37', 1, '2017-02-04 22:18:00', 1);
+INSERT INTO `parts` (`id`, `supplier_id`, `storage_location_id`, `parts_category_id`, `parts_code`, `parts_name`, `unit_of_measure`, `quantity`, `cost_price`, `gst_price`, `selling_price`, `reorder_level`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 1, 1, 1, 'parts-2017-80692', 'bumper', 'pieces', 25, 120, 7, 150, 10, 1, '2017-04-06 14:12:29', 1, '0000-00-00 00:00:00', 0),
+(2, 1, 1, 1, 'parts-2017-70705', 'cowl screen', 'pieces', 25, 99, 7, 120, 10, 1, '2017-04-06 14:14:36', 1, '0000-00-00 00:00:00', 0),
+(3, 2, 2, 2, 'parts-2017-76511', 'hinges', 'pieces', 35, 120, 7, 150, 10, 1, '2017-04-06 16:53:33', 1, '0000-00-00 00:00:00', 0),
+(4, 2, 2, 2, 'parts-2017-20208', 'fuel tank', 'pieces', 25, 99, 7, 130, 10, 1, '2017-04-06 14:15:59', 1, '0000-00-00 00:00:00', 0),
+(5, 3, 4, 4, 'parts-2017-58484', 'window regulator', 'pieces', 35, 130, 7, 175, 10, 1, '2017-04-06 14:16:36', 1, '0000-00-00 00:00:00', 0),
+(6, 3, 4, 4, 'parts-2017-30373', 'window seal', 'pieces', 27, 120, 7, 150, 10, 1, '2017-04-06 14:17:20', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -385,8 +389,10 @@ CREATE TABLE `parts_category` (
 --
 
 INSERT INTO `parts_category` (`id`, `name`, `description`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'tire', 'tireless', 1, '2017-02-04 14:28:17', 1, '0000-00-00 00:00:00', 0),
-(2, 'TESTING CASE', 'FOR TESTING CASE ONLY', 1, '2017-02-04 14:30:31', 1, '2017-02-04 14:32:54', 1);
+(1, 'body components', 'for body and main parts of the vehicle', 1, '2017-02-04 14:28:17', 1, '2017-04-05 13:12:48', 1),
+(2, 'doors', 'for doors of the vehicle', 1, '2017-02-04 14:30:31', 1, '2017-04-05 13:13:06', 1),
+(3, 'testing cases', 'for testing case only', 0, '2017-04-05 10:53:45', 1, '2017-04-05 10:55:11', 1),
+(4, 'windows', 'for windows of the vehicle', 1, '2017-04-05 13:13:22', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -397,11 +403,14 @@ INSERT INTO `parts_category` (`id`, `name`, `description`, `status`, `created_at
 CREATE TABLE `parts_inventory` (
   `id` int(11) NOT NULL,
   `parts_id` int(5) NOT NULL,
-  `supplier_id` int(5) NOT NULL,
-  `quantity` int(10) NOT NULL,
-  `price` double NOT NULL,
+  `old_quantity` int(25) NOT NULL,
+  `new_quantity` int(25) NOT NULL,
+  `qty_purchased` int(25) NOT NULL,
+  `type` int(5) NOT NULL,
+  `invoice_no` varchar(50) NOT NULL,
+  `datetime_imported` datetime NOT NULL,
+  `datetime_purchased` datetime NOT NULL,
   `status` int(5) NOT NULL,
-  `date_imported` date NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
   `updated_at` datetime NOT NULL,
@@ -412,20 +421,35 @@ CREATE TABLE `parts_inventory` (
 -- Dumping data for table `parts_inventory`
 --
 
-INSERT INTO `parts_inventory` (`id`, `parts_id`, `supplier_id`, `quantity`, `price`, `status`, `date_imported`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 4, 1, 1, 1, 1, '2017-02-05', '2017-02-05 19:36:20', 1, '2017-02-05 19:36:20', 1),
-(2, 4, 1, 1, 1, 1, '2017-02-05', '2017-02-05 21:27:20', 1, '2017-02-05 21:27:20', 1),
-(3, 5, 2, 2, 2, 1, '2017-02-05', '2017-02-05 21:27:20', 1, '2017-02-05 21:27:20', 1),
-(4, 5, 2, 3, 3, 1, '2017-02-05', '2017-02-05 21:27:48', 1, '2017-02-05 21:27:48', 1),
-(5, 4, 2, 15, 25, 1, '2017-02-08', '2017-02-08 18:38:38', 1, '2017-02-08 18:38:38', 1),
-(6, 5, 2, 10, 10, 1, '2017-02-05', '2017-02-05 21:37:50', 1, '2017-02-05 21:37:50', 1),
-(7, 5, 1, 15, 20, 1, '2017-02-05', '2017-02-05 21:37:50', 1, '2017-02-05 21:37:50', 1),
-(8, 4, 2, 20, 30, 1, '2017-02-05', '2017-02-05 21:37:50', 1, '2017-02-05 21:37:50', 1),
-(10, 4, 2, 14, 15, 1, '2017-02-05', '2017-02-05 21:41:17', 1, '2017-02-05 21:41:17', 1),
-(11, 4, 1, 15, 15, 1, '2017-02-08', '2017-02-08 18:39:10', 1, '2017-02-08 18:39:10', 1),
-(13, 5, 1, 30, 50, 1, '2017-02-08', '2017-02-08 18:39:43', 1, '2017-02-08 18:39:43', 1),
-(15, 5, 2, 13, 14, 1, '2017-02-08', '2017-02-08 18:40:10', 1, '2017-02-08 18:40:10', 1),
-(16, 5, 2, 2, 2, 1, '2017-02-08', '2017-02-08 19:24:02', 1, '2017-02-08 19:24:02', 1);
+INSERT INTO `parts_inventory` (`id`, `parts_id`, `old_quantity`, `new_quantity`, `qty_purchased`, `type`, `invoice_no`, `datetime_imported`, `datetime_purchased`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 1, 25, 25, 0, 1, '', '2017-04-06 14:12:29', '0000-00-00 00:00:00', 1, '2017-04-06 14:12:29', 1, '2017-04-06 14:12:29', 1),
+(2, 2, 25, 25, 0, 1, '', '2017-04-06 14:14:37', '0000-00-00 00:00:00', 1, '2017-04-06 14:14:37', 1, '2017-04-06 14:14:37', 1),
+(3, 3, 35, 35, 0, 1, '', '2017-04-06 14:15:24', '0000-00-00 00:00:00', 1, '2017-04-06 14:15:24', 1, '2017-04-06 14:15:24', 1),
+(4, 4, 20, 20, 0, 1, '', '2017-04-06 14:15:59', '0000-00-00 00:00:00', 1, '2017-04-06 14:15:59', 1, '2017-04-06 14:15:59', 1),
+(5, 5, 30, 30, 0, 1, '', '2017-04-06 14:16:36', '0000-00-00 00:00:00', 1, '2017-04-06 14:16:36', 1, '2017-04-06 14:16:36', 1),
+(6, 6, 30, 30, 0, 1, '', '2017-04-06 14:17:21', '0000-00-00 00:00:00', 1, '2017-04-06 14:17:21', 1, '2017-04-06 14:17:21', 1),
+(7, 4, 20, 25, 0, 3, '', '2017-04-06 14:56:28', '0000-00-00 00:00:00', 1, '2017-04-06 14:56:28', 1, '2017-04-06 14:56:28', 1),
+(8, 4, 20, 25, 0, 3, '', '2017-04-06 14:56:33', '0000-00-00 00:00:00', 1, '2017-04-06 14:56:33', 1, '2017-04-06 14:56:33', 1),
+(9, 6, 30, 27, 0, 3, '', '2017-04-06 14:58:20', '0000-00-00 00:00:00', 1, '2017-04-06 14:58:20', 1, '2017-04-06 14:58:20', 1),
+(10, 5, 30, 35, 0, 3, '', '2017-04-06 14:59:08', '0000-00-00 00:00:00', 1, '2017-04-06 14:59:08', 1, '2017-04-06 14:59:08', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payment_type`
+--
+
+CREATE TABLE `payment_type` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `description` text NOT NULL,
+  `interest` int(5) NOT NULL,
+  `status` int(5) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `created_by` int(5) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `updated_by` int(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -435,11 +459,17 @@ INSERT INTO `parts_inventory` (`id`, `parts_id`, `supplier_id`, `quantity`, `pri
 
 CREATE TABLE `product` (
   `id` int(11) NOT NULL,
+  `supplier_id` int(5) NOT NULL,
+  `storage_location_id` int(5) NOT NULL,
   `product_category_id` int(5) NOT NULL,
   `product_code` varchar(100) NOT NULL,
   `product_name` varchar(150) NOT NULL,
-  `description` text NOT NULL,
   `unit_of_measure` varchar(100) NOT NULL,
+  `quantity` int(50) NOT NULL,
+  `cost_price` double NOT NULL,
+  `gst_price` double NOT NULL,
+  `selling_price` double NOT NULL,
+  `reorder_level` int(10) NOT NULL,
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
@@ -451,9 +481,15 @@ CREATE TABLE `product` (
 -- Dumping data for table `product`
 --
 
-INSERT INTO `product` (`id`, `product_category_id`, `product_code`, `product_name`, `description`, `unit_of_measure`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(3, 3, 'PRODUCTS-2017-09424', 'SAN MIG LIGHT', 'DRINK MODERATELY', 'KILOGRAM', 1, '2017-02-06 11:34:28', 1, '2017-02-06 11:49:51', 1),
-(4, 3, 'PRODUCTS-2017-34902', 'PIATOS', 'JUNK FOODS ', 'PIECES', 1, '2017-02-06 11:39:56', 1, '2017-02-06 11:49:38', 1);
+INSERT INTO `product` (`id`, `supplier_id`, `storage_location_id`, `product_category_id`, `product_code`, `product_name`, `unit_of_measure`, `quantity`, `cost_price`, `gst_price`, `selling_price`, `reorder_level`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 1, 1, 1, 'product-2017-96678', 'blade micro fiber cleaning cloth pack of 3', 'pieces', 30, 88, 7, 100, 10, 1, '2017-04-06 15:45:43', 1, '0000-00-00 00:00:00', 0),
+(2, 1, 1, 1, 'product-2017-19360', 'blade micro fiber cleaning cloth pack of 5', 'pieces', 25, 88, 7, 100, 10, 1, '2017-04-06 15:46:37', 1, '0000-00-00 00:00:00', 0),
+(3, 2, 2, 3, 'product-2017-02318', 'blades tireder blacker 250ml', 'ml', 30, 120, 7, 165, 10, 1, '2017-04-06 16:57:30', 1, '0000-00-00 00:00:00', 0),
+(4, 2, 2, 3, 'product-2017-96593', 'blade scratch remover 200ml', 'ml', 40, 88, 7, 120, 10, 1, '2017-04-06 15:48:01', 1, '0000-00-00 00:00:00', 0),
+(5, 3, 4, 4, 'product-2017-37770', 'blade gluegun off 200ml ', 'ml', 35, 100, 7, 175, 10, 1, '2017-04-06 16:57:47', 1, '0000-00-00 00:00:00', 0),
+(6, 3, 4, 4, 'product-2017-82860', 'blade wiper wash 1l blue', 'l', 35, 120, 7, 175, 10, 1, '2017-04-06 15:49:06', 1, '0000-00-00 00:00:00', 0),
+(7, 4, 5, 5, 'product-2017-66351', 'bosch fc2 compacter 12v horn', 'pieces', 25, 730, 7, 850, 10, 1, '2017-04-06 16:58:17', 1, '0000-00-00 00:00:00', 0),
+(8, 4, 5, 5, 'product-2017-73060', 'korsa 60bo1200 12v shell type horn', 'pieces', 40, 600, 7, 700, 10, 1, '2017-04-06 15:50:26', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -477,8 +513,10 @@ CREATE TABLE `product_category` (
 --
 
 INSERT INTO `product_category` (`id`, `name`, `description`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'test', 'sadsa 233', 1, '2017-02-04 16:58:26', 1, '0000-00-00 00:00:00', 0),
-(3, 'for test case', 'for test case purposes only', 1, '2017-02-04 17:03:34', 1, '0000-00-00 00:00:00', 0);
+(1, 'car care', 'all products for car caring', 1, '2017-02-04 16:58:26', 1, '2017-04-06 15:05:33', 1),
+(3, 'exterior accessories', 'all kinds of external accessories', 1, '2017-02-04 17:03:34', 1, '2017-04-06 15:06:10', 1),
+(4, 'interior accessories', 'all kinds of internal accessories', 1, '2017-04-06 15:06:34', 1, '0000-00-00 00:00:00', 0),
+(5, 'auto electronics', 'all kinds of auto electricity', 1, '2017-04-06 15:07:15', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -489,11 +527,14 @@ INSERT INTO `product_category` (`id`, `name`, `description`, `status`, `created_
 CREATE TABLE `product_inventory` (
   `id` int(11) NOT NULL,
   `product_id` int(5) NOT NULL,
-  `supplier_id` int(5) NOT NULL,
-  `quantity` int(10) NOT NULL,
-  `price` double NOT NULL,
+  `old_quantity` int(25) NOT NULL,
+  `new_quantity` int(25) NOT NULL,
+  `type` int(5) NOT NULL,
+  `qty_purchased` int(25) NOT NULL,
+  `invoice_no` varchar(50) NOT NULL,
+  `datetime_imported` datetime NOT NULL,
+  `datetime_purchased` datetime NOT NULL,
   `status` int(5) NOT NULL,
-  `date_imported` date NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
   `updated_at` datetime NOT NULL,
@@ -504,13 +545,22 @@ CREATE TABLE `product_inventory` (
 -- Dumping data for table `product_inventory`
 --
 
-INSERT INTO `product_inventory` (`id`, `product_id`, `supplier_id`, `quantity`, `price`, `status`, `date_imported`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 3, 2, 5, 100, 1, '2017-02-06', '2017-02-06 12:24:14', 1, '2017-02-06 12:24:14', 1),
-(2, 3, 2, 30, 75, 1, '2017-02-06', '2017-02-06 12:23:59', 1, '2017-02-06 12:23:59', 1),
-(3, 4, 2, 15, 125, 1, '2017-02-06', '2017-02-06 12:23:48', 1, '2017-02-06 12:23:48', 1),
-(5, 4, 2, 10, 15, 1, '2017-02-08', '2017-02-08 19:15:39', 1, '2017-02-08 19:15:39', 1),
-(6, 3, 2, 100, 200, 1, '2017-02-08', '2017-02-08 19:15:39', 1, '2017-02-08 19:15:39', 1),
-(7, 4, 2, 10, 100, 1, '2017-02-24', '2017-02-24 11:18:21', 1, '2017-02-24 11:18:21', 1);
+INSERT INTO `product_inventory` (`id`, `product_id`, `old_quantity`, `new_quantity`, `type`, `qty_purchased`, `invoice_no`, `datetime_imported`, `datetime_purchased`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 2, 30, 30, 1, 0, '', '2017-04-06 15:46:37', '0000-00-00 00:00:00', 1, '2017-04-06 15:46:37', 1, '2017-04-06 15:46:37', 1),
+(2, 3, 25, 25, 1, 0, '', '2017-04-06 15:47:31', '0000-00-00 00:00:00', 1, '2017-04-06 15:47:31', 1, '2017-04-06 15:47:31', 1),
+(3, 4, 40, 40, 1, 0, '', '2017-04-06 15:48:01', '0000-00-00 00:00:00', 1, '2017-04-06 15:48:01', 1, '2017-04-06 15:48:01', 1),
+(4, 5, 30, 30, 1, 0, '', '2017-04-06 15:48:26', '0000-00-00 00:00:00', 1, '2017-04-06 15:48:26', 1, '2017-04-06 15:48:26', 1),
+(5, 6, 30, 30, 1, 0, '', '2017-04-06 15:49:07', '0000-00-00 00:00:00', 1, '2017-04-06 15:49:07', 1, '2017-04-06 15:49:07', 1),
+(6, 7, 25, 25, 1, 0, '', '2017-04-06 15:49:51', '0000-00-00 00:00:00', 1, '2017-04-06 15:49:51', 1, '2017-04-06 15:49:51', 1),
+(7, 8, 40, 40, 1, 0, '', '2017-04-06 15:50:26', '0000-00-00 00:00:00', 1, '2017-04-06 15:50:26', 1, '2017-04-06 15:50:26', 1),
+(8, 2, 30, 31, 3, 0, '', '2017-04-06 17:50:55', '0000-00-00 00:00:00', 1, '2017-04-06 17:50:55', 1, '2017-04-06 17:50:55', 1),
+(9, 5, 30, 32, 3, 0, '', '2017-04-06 17:50:56', '0000-00-00 00:00:00', 1, '2017-04-06 17:50:56', 1, '2017-04-06 17:50:56', 1),
+(10, 3, 25, 28, 3, 0, '', '2017-04-06 17:50:56', '0000-00-00 00:00:00', 1, '2017-04-06 17:50:56', 1, '2017-04-06 17:50:56', 1),
+(11, 5, 32, 35, 3, 0, '', '2017-04-06 17:51:22', '0000-00-00 00:00:00', 1, '2017-04-06 17:51:22', 1, '2017-04-06 17:51:22', 1),
+(12, 6, 30, 35, 3, 0, '', '2017-04-06 17:51:22', '0000-00-00 00:00:00', 1, '2017-04-06 17:51:22', 1, '2017-04-06 17:51:22', 1),
+(13, 4, 41, 40, 3, 0, '', '2017-04-06 18:26:08', '0000-00-00 00:00:00', 1, '2017-04-06 18:26:08', 1, '2017-04-06 18:26:08', 1),
+(14, 2, 31, 25, 3, 0, '', '2017-04-06 18:26:20', '0000-00-00 00:00:00', 1, '2017-04-06 18:26:20', 1, '2017-04-06 18:26:20', 1),
+(15, 3, 28, 30, 3, 0, '', '2017-04-06 18:26:31', '0000-00-00 00:00:00', 1, '2017-04-06 18:26:31', 1, '2017-04-06 18:26:31', 1);
 
 -- --------------------------------------------------------
 
@@ -534,18 +584,11 @@ CREATE TABLE `quotation` (
   `updated_by` int(5) NOT NULL,
   `status` int(5) NOT NULL,
   `invoice_created` int(5) NOT NULL,
-  `deleted` int(5) NOT NULL
+  `deleted` int(5) NOT NULL,
+  `payment_type_id` int(5) NOT NULL,
+  `discount_amount` double NOT NULL,
+  `discount_remarks` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `quotation`
---
-
-INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `net`, `remarks`, `created_at`, `created_by`, `updated_at`, `updated_by`, `status`, `invoice_created`, `deleted`) VALUES
-(1, 'QUO201702001', 3, 3, '2017-02-28', 186, 0, 186, 'FOR TEST CASE purposes only', '2017-02-28 11:11:44', 2, '2017-03-01 12:53:09', 2, 1, 0, 0),
-(2, 'QUO201702002', 3, 1, '2017-02-28', 462, 32.34, 494.34, 'test', '2017-02-28 14:41:25', 2, '0000-00-00 00:00:00', 0, 1, 0, 0),
-(3, 'QUO201703003', 3, 6, '2017-03-02', 44, 3.08, 47.08, 'for test case only', '2017-03-01 17:16:32', 2, '0000-00-00 00:00:00', 0, 1, 0, 0),
-(4, 'QUO201703004', 3, 1, '2017-03-03', 1501, 105.07, 1606.07, 'testing purposes', '2017-03-03 10:22:40', 1, '0000-00-00 00:00:00', 0, 1, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -568,22 +611,6 @@ CREATE TABLE `quotation_detail` (
   `status` int(5) NOT NULL,
   `deleted` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `quotation_detail`
---
-
-INSERT INTO `quotation_detail` (`id`, `quotation_id`, `description`, `quantity`, `unit_price`, `sub_total`, `type`, `created_at`, `created_by`, `updated_at`, `updated_by`, `status`, `deleted`) VALUES
-(4, 2, 3, 3, 4, 12, 1, '2017-02-28 14:41:25', 2, '0000-00-00 00:00:00', 0, 1, 0),
-(5, 2, 3, 3, 150, 450, 0, '2017-02-28 14:41:25', 2, '0000-00-00 00:00:00', 0, 1, 0),
-(6, 1, 3, 4, 15, 60, 0, '2017-03-01 12:53:09', 2, '2017-03-01 12:53:09', 2, 1, 0),
-(7, 1, 1, 2, 3, 6, 1, '2017-03-01 12:53:09', 2, '2017-03-01 12:53:09', 2, 1, 0),
-(8, 1, 2, 4, 5, 20, 1, '2017-03-01 12:53:09', 2, '2017-03-01 12:53:09', 2, 1, 0),
-(9, 1, 4, 1, 100, 100, 0, '2017-03-01 12:53:09', 2, '2017-03-01 12:53:09', 2, 1, 0),
-(10, 3, 2, 2, 4, 8, 1, '2017-03-01 17:16:32', 2, '2017-03-01 17:16:32', 2, 1, 0),
-(11, 3, 1, 3, 12, 36, 0, '2017-03-01 17:16:32', 2, '2017-03-01 17:16:32', 2, 1, 0),
-(12, 4, 2, 1, 1, 1, 1, '2017-03-03 10:22:40', 1, '2017-03-03 10:22:40', 1, 1, 0),
-(13, 4, 3, 1, 1500, 1500, 0, '2017-03-03 10:22:40', 1, '2017-03-03 10:22:40', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -661,11 +688,12 @@ CREATE TABLE `service` (
 --
 
 INSERT INTO `service` (`id`, `service_category_id`, `service_name`, `description`, `price`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 3, 'teLstra', 'test only', 100, 1, '2017-02-03 14:30:00', 1, '0000-00-00 00:00:00', 0),
-(3, 1, 'automotive', 'wheel alignment', 1500, 1, '2017-02-03 17:59:46', 1, '2017-02-03 18:00:42', 1),
-(4, 1, 'breaking', 'we offer all kinds of auto parts', 100, 1, '2017-02-04 11:26:28', 1, '0000-00-00 00:00:00', 0),
-(5, 1, 'qwe', 'qwerty', 250, 1, '2017-02-04 12:10:08', 1, '2017-02-04 12:11:56', 1),
-(6, 3, 'testing case', '123 testing case', 100, 0, '2017-04-04 19:43:50', 1, '2017-04-04 19:44:37', 1);
+(1, 3, 'rental of forklift', 'renting of forklifts', 250, 1, '2017-02-03 14:30:00', 1, '2017-04-06 14:20:06', 1),
+(3, 5, 'forklift solid tyres', 'checking of all forklift tyres', 300, 1, '2017-02-03 17:59:46', 1, '2017-04-06 14:21:01', 1),
+(4, 5, 'forklift servicing', 'all service that needed a forklift', 500, 1, '2017-02-04 11:26:28', 1, '2017-04-06 14:21:32', 1),
+(5, 6, 'trade in or scrapped of used lorries', 'trading of non usable lorries', 750, 1, '2017-02-04 12:10:08', 1, '2017-04-06 14:23:45', 1),
+(6, 3, 'testing case', '123 testing case', 100, 0, '2017-04-04 19:43:50', 1, '2017-04-04 19:44:37', 1),
+(7, 6, 'trade in scrapped of used forklift', 'trading of non usable forklifts', 900, 1, '2017-04-06 14:23:19', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -689,9 +717,11 @@ CREATE TABLE `service_category` (
 --
 
 INSERT INTO `service_category` (`id`, `name`, `description`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'Test', 'testing case only', 1, '2017-02-03 11:48:30', 1, '0000-00-00 00:00:00', 0),
-(3, 'test case', 'for testing purposes only', 1, '2017-02-03 11:54:37', 1, '2017-02-03 11:56:32', 1),
-(4, 'TESTINGs', '123 TESTing', 0, '2017-04-04 19:30:42', 1, '2017-04-04 19:31:02', 1);
+(1, 'sales', 'selling of forklift', 1, '2017-02-03 11:48:30', 1, '2017-04-06 14:17:57', 1),
+(3, 'rental', 'renting of forklift', 1, '2017-02-03 11:54:37', 1, '2017-04-06 14:18:14', 1),
+(4, 'TESTINGs', '123 TESTing', 0, '2017-04-04 19:30:42', 1, '2017-04-04 19:31:02', 1),
+(5, 'servicing', 'all kinds of service with forklift', 1, '2017-04-06 14:18:54', 1, '0000-00-00 00:00:00', 0),
+(6, 'trade in', 'trading of items that needed forklift', 1, '2017-04-06 14:19:30', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -772,9 +802,11 @@ CREATE TABLE `storage_location` (
 --
 
 INSERT INTO `storage_location` (`id`, `rack`, `bay`, `level`, `position`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'A', '02', 'D', '2', 1, '2017-02-03 10:54:55', 1, '0000-00-00 00:00:00', 0),
-(2, 'testing case', 'testing case', 'testing case', 'testing case', 1, '2017-02-03 10:55:26', 1, '2017-02-03 11:03:22', 1),
-(3, 'B', '2', '5', 'TOP', 0, '2017-04-04 19:25:27', 1, '2017-04-04 19:25:42', 1);
+(1, 'a', 'a1', '1', 'bottom', 1, '2017-02-03 10:54:55', 1, '2017-04-06 14:02:19', 1),
+(2, 'a', 'a2', '2', 'bottom', 1, '2017-02-03 10:55:26', 1, '2017-04-06 14:02:41', 1),
+(4, 'a', 'a3', '3', 'middle', 1, '2017-04-06 14:03:00', 1, '0000-00-00 00:00:00', 0),
+(5, 'a', 'a4', '4', 'middle', 1, '2017-04-06 14:03:15', 1, '0000-00-00 00:00:00', 0),
+(6, 'a', 'a5', '5', 'top', 1, '2017-04-06 14:03:24', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -800,9 +832,11 @@ CREATE TABLE `supplier` (
 --
 
 INSERT INTO `supplier` (`id`, `supplier_code`, `name`, `address`, `contact_number`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'SUPPLIERS-2017-19873', 'test', '123 test', '1234567', 1, '2017-02-02 20:13:23', 1, '0000-00-00 00:00:00', 0),
-(2, 'SUPPLIERS-2017-78164', 'san miguel corporation', 'san miguel avenue julia vargas pasig city', '4855585', 1, '2017-02-02 20:13:54', 1, '2017-02-03 09:42:03', 1),
-(3, 'SUPPLIERS-2017-91732', 'TESTINGs', '123 TESTing', '123456', 0, '2017-04-04 19:18:47', 1, '2017-04-04 19:19:01', 1);
+(1, 'suppliers-2017-60189', 'advance automotive center', '2734e taft avenue ext pasay city', '028311296', 1, '2017-04-06 13:58:37', 1, '0000-00-00 00:00:00', 0),
+(2, 'suppliers-2017-82599', 'alto motor parts', '385d banawe st qc', '027113053', 1, '2017-04-06 13:59:06', 1, '0000-00-00 00:00:00', 0),
+(3, 'suppliers-2017-54287', 'atco auto supply', '275860 taft avenue extension pasay city', '028316365', 1, '2017-04-06 13:59:35', 1, '0000-00-00 00:00:00', 0),
+(4, 'suppliers-2017-35259', 'autospecs motor sales', '37h banawe st qc', '027115046', 1, '2017-04-06 13:59:59', 1, '0000-00-00 00:00:00', 0),
+(5, 'suppliers-2017-10441', 'bbw sales international', '35b banawe st qc', '027417906', 1, '2017-04-06 14:00:29', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -964,7 +998,8 @@ ALTER TABLE `gst`
 ALTER TABLE `invoice`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk-invoice-user_id` (`user_id`),
-  ADD KEY `fk-invoice-customer_id` (`customer_id`);
+  ADD KEY `fk-invoice-customer_id` (`customer_id`),
+  ADD KEY `fk-invoice-payment_type_id` (`payment_type_id`);
 
 --
 -- Indexes for table `invoice_detail`
@@ -992,7 +1027,9 @@ ALTER TABLE `module`
 ALTER TABLE `parts`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `name` (`parts_name`),
-  ADD KEY `fk-parts-parts_category_id` (`parts_category_id`);
+  ADD KEY `fk-parts-parts_category_id` (`parts_category_id`),
+  ADD KEY `fk-parts-supplier_id` (`supplier_id`),
+  ADD KEY `fk-parts-storage_location_id` (`storage_location_id`);
 
 --
 -- Indexes for table `parts_category`
@@ -1006,8 +1043,14 @@ ALTER TABLE `parts_category`
 --
 ALTER TABLE `parts_inventory`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk-parts_inventory-parts_id` (`parts_id`),
-  ADD KEY `fk-parts_inventory-supplier_id` (`supplier_id`);
+  ADD KEY `fk-parts_inventory-parts_id` (`parts_id`);
+
+--
+-- Indexes for table `payment_type`
+--
+ALTER TABLE `payment_type`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Indexes for table `product`
@@ -1015,7 +1058,9 @@ ALTER TABLE `parts_inventory`
 ALTER TABLE `product`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `product_name` (`product_name`),
-  ADD KEY `fk-product-product_category_id` (`product_category_id`);
+  ADD KEY `fk-product-product_category_id` (`product_category_id`),
+  ADD KEY `fk-product-supplier_id` (`supplier_id`),
+  ADD KEY `fk-product-storage_location_id` (`storage_location_id`);
 
 --
 -- Indexes for table `product_category`
@@ -1029,8 +1074,7 @@ ALTER TABLE `product_category`
 --
 ALTER TABLE `product_inventory`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk-product_inventory-product_id` (`product_id`),
-  ADD KEY `fk-product_inventory-supplier_id` (`supplier_id`);
+  ADD KEY `fk-product_inventory-product_id` (`product_id`);
 
 --
 -- Indexes for table `quotation`
@@ -1038,7 +1082,8 @@ ALTER TABLE `product_inventory`
 ALTER TABLE `quotation`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk-quotation-user_id` (`user_id`),
-  ADD KEY `fk-quotation-customer_id` (`customer_id`);
+  ADD KEY `fk-quotation-customer_id` (`customer_id`),
+  ADD KEY `fk-quotation-payment_type_id` (`payment_type_id`);
 
 --
 -- Indexes for table `quotation_detail`
@@ -1147,12 +1192,12 @@ ALTER TABLE `gst`
 -- AUTO_INCREMENT for table `invoice`
 --
 ALTER TABLE `invoice`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `invoice_detail`
 --
 ALTER TABLE `invoice_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `module`
 --
@@ -1162,42 +1207,47 @@ ALTER TABLE `module`
 -- AUTO_INCREMENT for table `parts`
 --
 ALTER TABLE `parts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `parts_category`
 --
 ALTER TABLE `parts_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `parts_inventory`
 --
 ALTER TABLE `parts_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+--
+-- AUTO_INCREMENT for table `payment_type`
+--
+ALTER TABLE `payment_type`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `product_category`
 --
 ALTER TABLE `product_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `product_inventory`
 --
 ALTER TABLE `product_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `quotation`
 --
 ALTER TABLE `quotation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `quotation_detail`
 --
 ALTER TABLE `quotation_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `race`
 --
@@ -1212,12 +1262,12 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT for table `service`
 --
 ALTER TABLE `service`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `service_category`
 --
 ALTER TABLE `service_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `staff`
 --
@@ -1232,12 +1282,12 @@ ALTER TABLE `staff_group`
 -- AUTO_INCREMENT for table `storage_location`
 --
 ALTER TABLE `storage_location`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `user`
 --
@@ -1276,6 +1326,7 @@ ALTER TABLE `auth_item_child`
 --
 ALTER TABLE `invoice`
   ADD CONSTRAINT `fk-invoice-customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk-invoice-payment_type_id` FOREIGN KEY (`payment_type_id`) REFERENCES `payment_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk-invoice-user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
@@ -1288,33 +1339,36 @@ ALTER TABLE `invoice_detail`
 -- Constraints for table `parts`
 --
 ALTER TABLE `parts`
-  ADD CONSTRAINT `fk-parts-parts_category_id` FOREIGN KEY (`parts_category_id`) REFERENCES `parts_category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk-parts-parts_category_id` FOREIGN KEY (`parts_category_id`) REFERENCES `parts_category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk-parts-storage_location_id` FOREIGN KEY (`storage_location_id`) REFERENCES `storage_location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk-parts-supplier_id` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `parts_inventory`
 --
 ALTER TABLE `parts_inventory`
-  ADD CONSTRAINT `fk-parts_inventory-parts_id` FOREIGN KEY (`parts_id`) REFERENCES `parts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk-parts_inventory-supplier_id` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk-parts_inventory-parts_id` FOREIGN KEY (`parts_id`) REFERENCES `parts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `product`
 --
 ALTER TABLE `product`
-  ADD CONSTRAINT `fk-product-product_category_id` FOREIGN KEY (`product_category_id`) REFERENCES `product_category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk-product-product_category_id` FOREIGN KEY (`product_category_id`) REFERENCES `product_category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk-product-storage_location_id` FOREIGN KEY (`storage_location_id`) REFERENCES `storage_location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk-product-supplier_id` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `product_inventory`
 --
 ALTER TABLE `product_inventory`
-  ADD CONSTRAINT `fk-product_inventory-product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk-product_inventory-supplier_id` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk-product_inventory-product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `quotation`
 --
 ALTER TABLE `quotation`
   ADD CONSTRAINT `fk-quotation-customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk-quotation-payment_type_id` FOREIGN KEY (`payment_type_id`) REFERENCES `payment_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk-quotation-user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --

@@ -12,15 +12,21 @@ use yii\db\Query;
  * @property integer $product_category_id
  * @property string $product_name
  * @property string $product_code
- * @property string $description
  * @property string $unit_of_measure
  * @property integer $status
+ * @property integer $quantity
+ * @property integer $cost_price
+ * @property integer $gst_price
+ * @property integer $selling_price
+ * @property integer $reorder_level
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
  *
  * @property ProductCategory $productCategory
+ * @property Supplier $supplier
+ * @property StorageLocations $storageLocation
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -38,13 +44,14 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['product_category_id', 'product_code', 'product_name', 'description', 'unit_of_measure', 'status'], 'required', 'message' => 'Fill up all the required fields.'],
+            [['supplier_id', 'storage_location_id', 'product_category_id', 'product_code', 'product_name', 'quantity', 'cost_price', 'gst_price', 'selling_price', 'unit_of_measure', 'reorder_level', 'status'], 'required', 'message' => 'Fill up all the required fields.'],
             [['product_category_id', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['description'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['product_name'], 'string', 'max' => 150],
             [['product_name'], 'unique', 'message' => 'Product name already exist.'],
             [['product_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProductCategory::className(), 'targetAttribute' => ['product_category_id' => 'id']],
+            [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => Supplier::className(), 'targetAttribute' => ['supplier_id' => 'id']],
+            [['storage_location_id'], 'exist', 'skipOnError' => true, 'targetClass' => StorageLocations::className(), 'targetAttribute' => ['storage_location_id' => 'id']],
         ];
     }
 
@@ -58,7 +65,6 @@ class Product extends \yii\db\ActiveRecord
             'product_category_id' => 'Product Category ID',
             'product_name' => 'Product Name',
             'product_code' => 'Product Code',
-            'description' => 'Description',
             'unit_of_measure' => 'Unit of Measure',
             'status' => 'Status',
             'created_at' => 'Created At',
@@ -76,14 +82,26 @@ class Product extends \yii\db\ActiveRecord
         return $this->hasOne(ProductCategory::className(), ['id' => 'product_category_id']);
     }
 
+    public function getSupplier()
+    {
+        return $this->hasOne(Supplier::className(), ['id' => 'supplier_id']);
+    }
+
+    public function getStorageLocation()
+    {
+        return $this->hasOne(StorageLocations::className(), ['id' => 'storage_location_id']);
+    }
+
     // Active Record joining relations
     public function getProductById($id)
     {
         $rows = new Query();
 
-        $result = $rows->select(['product.*', 'product_category.name'])
+        $result = $rows->select(['product.*', 'product_category.name', 'supplier.name as supplierName', 'storage_location.rack as storagelocationName' ])
             ->from('product')
             ->leftJoin('product_category', 'product.product_category_id = product_category.id')
+            ->leftJoin('supplier', 'product.supplier_id = supplier.id')
+            ->leftJoin('storage_location', 'product.storage_location_id = storage_location.id')
             ->where(['product.id' => $id])
             ->one();
 
@@ -95,9 +113,11 @@ class Product extends \yii\db\ActiveRecord
     {
         $rows = new Query();
 
-        $result = $rows->select(['product.*', 'product_category.name'])
+        $result = $rows->select(['product.*', 'product_category.name', 'supplier.name as supplierName', 'storage_location.rack as storagelocationName' ])
             ->from('product')
             ->leftJoin('product_category', 'product.product_category_id = product_category.id')
+            ->leftJoin('supplier', 'product.supplier_id = supplier.id')
+            ->leftJoin('storage_location', 'product.storage_location_id = storage_location.id')
             ->all();
 
         return $result;

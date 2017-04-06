@@ -77,7 +77,7 @@ $gridColumns = [
 <div class="row">
 
     <div class="col-md-2 pull-right">  
-        <?= Html::button('<li class=\'fa fa-plus-square\'></li> New Product Category',['class' => '_showCreatePRCModal formBtn btn btn-block btn-success btn-xs']) ?>
+        <?= Html::button('<li class=\'fa fa-plus-square\'></li> New Product Category',['class' => '_showCreatePRCModal formBtn btn btn-block btn-success btn-sm']) ?>
     </div>
 
 </div>
@@ -120,12 +120,12 @@ $gridColumns = [
 </div>
 
 <!-- Create -->
-<div class="modal fade" id="modal-launcher-create-prc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade modalBackground" id="modal-launcher-create-prc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-user-plus"></i> New Product Category Information</h5>
+                <button type="button" class="close closeNewPrc" >&times;</button>
+                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-user-plus"></i> New Product Category </h5>
             </div>
 
         <div class="modal-body">
@@ -142,7 +142,7 @@ $gridColumns = [
 
         <div class="modal-footer">
             <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearPRCForms', 'class' => 'formBtn btn btn-default']) ?>
-            <?= Html::submitButton('<li class=\'fa fa-check\'></li> Submit', ['id' => 'submitPRCFormCreate', 'class' => 'formBtn btn btn-primary']) ?>
+            <?= Html::submitButton('<li class=\'fa fa-check\'></li> Submit Record', ['id' => 'submitPRCFormCreate', 'class' => 'formBtn btn btn-primary']) ?>
         </div>
 
         </div>
@@ -150,12 +150,12 @@ $gridColumns = [
 </div>
 
 <!-- Update -->
-<div class="modal fade" id="modal-launcher-update-prc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade modalBackground" id="modal-launcher-update-prc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Update Product Category Information</h5>
+                <button type="button" class="close closeUpdatePrc" >&times;</button>
+                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Update Product Category </h5>
             </div>
 
         <div class="modal-body">
@@ -173,7 +173,7 @@ $gridColumns = [
 
         <div class="modal-footer">
             <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearPRCForms', 'class' => 'formBtn btn btn-default']) ?>
-            <?= Html::submitButton('<li class=\'fa fa-check\'></li> Submit', ['id' => 'submitPRCFormUpdate', 'class' => 'formBtn btn btn-primary']) ?>
+            <?= Html::submitButton('<li class=\'fa fa-check\'></li> Save Record', ['id' => 'submitPRCFormUpdate', 'class' => 'formBtn btn btn-primary']) ?>
         </div>
 
         </div>
@@ -181,11 +181,11 @@ $gridColumns = [
 </div>
 
 <!-- View -->
-<div class="modal fade" id="modal-launcher-view-prc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade modalBackground" id="modal-launcher-view-prc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close closeViewPrc" >&times;</button>
                 <h5 class="modal-title" id="myModalLabel"><i class="fa fa-desktop"></i> View Product Category Information</h5>
             </div>
 

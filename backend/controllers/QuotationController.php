@@ -58,7 +58,7 @@ class QuotationController extends Controller
         // for date issue //
         $dateNow = date('d-m-Y');
         // get customer list //
-        $dataCustomer = ArrayHelper::map(Customer::find()->where('status = 1')->all(),'id', 'fullname');
+        $dataCustomer = ArrayHelper::map(Customer::find()->where(['status' => 1])->all(),'id', 'fullname');
         // get user list //
         $dataUser = ArrayHelper::map(User::find()->where('role_id <> 1', ['status' => 1])->all(),'id', 'fullname');
         // get parts //

@@ -12,6 +12,7 @@ $this->title = 'Suppliers Maintenance';
 $this->params['breadcrumbs'][] = $this->title;
 
 $supplierCode = 'SUPPLIERS' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
+
 ?>
 
 <div class="supplier-index divContainer">

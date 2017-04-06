@@ -24,7 +24,7 @@ use yii\widgets\ActiveForm;
     <div class="col-md-4">
         <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Auto-Parts Category name here.'])->label(false) ?>
     </div>
-
+    
 </div>
 
 <div class="row">

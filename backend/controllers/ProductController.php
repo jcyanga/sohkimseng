@@ -8,6 +8,7 @@ use common\models\SearchProduct;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use common\models\ProductInventory;
 
 use Dompdf\Dompdf;
 
@@ -72,17 +73,38 @@ class ProductController extends Controller
 
         if ( Yii::$app->request->post() ) {
             
-            $model->product_code = Yii::$app->request->post('productCode');
+            $model->storage_location_id = Yii::$app->request->post('storageLocation');
+            $model->supplier_id = Yii::$app->request->post('supplier');
+            $model->product_code = strtolower(Yii::$app->request->post('productCode'));
             $model->product_category_id = Yii::$app->request->post('productCategory');
-            $model->product_name = Yii::$app->request->post('productName');
-            $model->description = Yii::$app->request->post('description');
-            $model->unit_of_measure = Yii::$app->request->post('uom');
+            $model->product_name = strtolower(Yii::$app->request->post('productName'));
+            $model->unit_of_measure = strtolower(Yii::$app->request->post('uom'));
+            $model->quantity = Yii::$app->request->post('quantity');
+            $model->cost_price = Yii::$app->request->post('costPrice');
+            $model->gst_price = Yii::$app->request->post('gstPrice');
+            $model->selling_price = Yii::$app->request->post('sellingPrice');
+            $model->reorder_level = Yii::$app->request->post('reorderLevel'); 
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
 
             if($model->validate()) {
                $model->save();
+
+                $productinventoryModel = new ProductInventory();
+
+                $productinventoryModel->product_id = $model->id;
+                $productinventoryModel->old_quantity = Yii::$app->request->post('quantity');
+                $productinventoryModel->new_quantity = Yii::$app->request->post('quantity');
+                $productinventoryModel->type = 1;
+                $productinventoryModel->datetime_imported = date('Y-m-d H:i:s');
+                $productinventoryModel->status = 1;
+                $productinventoryModel->created_at = date('Y-m-d H:i:s');
+                $productinventoryModel->created_by = Yii::$app->user->identity->id;
+                $productinventoryModel->updated_at = date('Y-m-d H:i:s');
+                $productinventoryModel->updated_by = Yii::$app->user->identity->id;
+                $productinventoryModel->save();
+
                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
 
             } else {
@@ -111,14 +133,20 @@ class ProductController extends Controller
 
         if ( Yii::$app->request->post() ) {
             
-            $model->product_code = Yii::$app->request->post('productCode');
+            $model->storage_location_id = Yii::$app->request->post('storageLocation');
+            $model->supplier_id = Yii::$app->request->post('supplier');
+            $model->product_code = strtolower(Yii::$app->request->post('productCode'));
             $model->product_category_id = Yii::$app->request->post('productCategory');
-            $model->product_name = Yii::$app->request->post('productName');
-            $model->description = Yii::$app->request->post('description');
-            $model->unit_of_measure = Yii::$app->request->post('uom');
+            $model->product_name = strtolower(Yii::$app->request->post('productName'));
+            $model->unit_of_measure = strtolower(Yii::$app->request->post('uom'));
+            $model->quantity = Yii::$app->request->post('quantity');
+            $model->cost_price = Yii::$app->request->post('costPrice');
+            $model->gst_price = Yii::$app->request->post('gstPrice');
+            $model->selling_price = Yii::$app->request->post('sellingPrice');
+            $model->reorder_level = Yii::$app->request->post('reorderLevel'); 
             $model->status = 1;
-            $model->updated_at = date('Y-m-d H:i:s');
-            $model->updated_by = Yii::$app->user->identity->id;
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
 
             if($model->validate()) {
                $model->save();
@@ -143,11 +171,17 @@ class ProductController extends Controller
 
         $data = array();
         $data['id'] = $getProducts->id;
+        $data['storage_location_id'] = $getProducts->storage_location_id;
+        $data['supplier_id'] = $getProducts->supplier_id;
         $data['product_code'] = $getProducts->product_code;
         $data['product_category_id'] = $getProducts->product_category_id;
         $data['product_name'] = $getProducts->product_name;
-        $data['description'] = $getProducts->description;
         $data['unit_of_measure'] = $getProducts->unit_of_measure;
+        $data['quantity'] = $getProducts->quantity;
+        $data['cost_price'] = $getProducts->cost_price;
+        $data['gst_price'] = $getProducts->gst_price;
+        $data['selling_price'] = $getProducts->selling_price;
+        $data['reorder_level'] = $getProducts->reorder_level;
         $data['status'] = $getProducts->status;
 
         return json_encode(['status' => 'Success', 'result' => $data ]);
@@ -161,12 +195,18 @@ class ProductController extends Controller
 
         $data = array();
         $data['id'] = $getProducts['id'];
-        $data['product_code'] = $getProducts['product_code'];
         $data['product_name'] = $getProducts['product_name'];
-        $data['description'] = $getProducts['description'];
+        $data['product_code'] = $getProducts['product_code'];
+        $data['quantity'] = $getProducts['quantity'];
+        $data['cost_price'] = $getProducts['cost_price'];
+        $data['gst_price'] = $getProducts['gst_price'];
+        $data['selling_price'] = $getProducts['selling_price'];
+        $data['reorder_level'] = $getProducts['reorder_level'];
         $data['unit_of_measure'] = $getProducts['unit_of_measure'];
         $data['status'] = $getProducts['status'];
         $data['product_category_name'] = $getProducts['name'];
+        $data['supplier_name'] = $getProducts['supplierName'];
+        $data['storage_location_name'] = $getProducts['storagelocationName'];
 
         return json_encode(['status' => 'Success', 'result' => $data ]);
     }
@@ -186,7 +226,9 @@ class ProductController extends Controller
 
     public function actionDeleteColumn()
     {
-        $this->findModel(Yii::$app->request->post('id'))->delete();
+        $model = $this->findModel(Yii::$app->request->post('id'));
+        $model->status = 0;
+        $model->save();
         
         return json_encode(['status' => 'Success', 'message' => 'Your record was successfully deleted in the database.']);
     }
@@ -222,4 +264,65 @@ class ProductController extends Controller
 
         $dompdf->stream('ProductList-' . date('m-d-Y'));
     }
+
+    public function actionGetSelectedProductinfo()
+    {
+        $getProducts = Product::find()->where(['id' => Yii::$app->request->get('productId')])->andWhere(['status' => 1])->one(); 
+
+        $data = array();
+        $data['id'] = $getProducts['id'];
+        $data['product_name'] = $getProducts['product_name'];
+        $data['quantity'] = $getProducts['quantity'];
+
+        return json_encode(['status' => 'Success', 'result' => $data ]);
+    }
+
+    public function actionSaveUpdatedProductQty()
+    {
+        foreach( Yii::$app->request->post('productId') as $pkey => $pvalue ) {
+
+            $productInfo = Product::find()->where(['id' => Yii::$app->request->post('productId')[$pkey]['value'] ])->one();
+            $productInfo->quantity = Yii::$app->request->post('newProductQty')[$pkey]['value'];
+            $productInfo->save();
+            
+            $productinventoryModel = new ProductInventory();
+            $productinventoryModel->product_id = Yii::$app->request->post('productId')[$pkey]['value'];
+            $productinventoryModel->old_quantity = Yii::$app->request->post('oldProductQty')[$pkey]['value'];
+            $productinventoryModel->new_quantity = Yii::$app->request->post('newProductQty')[$pkey]['value'];
+            $productinventoryModel->type = 3;
+            $productinventoryModel->datetime_imported = date('Y-m-d H:i:s');
+            $productinventoryModel->status = 1;
+            $productinventoryModel->created_at = date('Y-m-d H:i:s');
+            $productinventoryModel->created_by = Yii::$app->user->identity->id;
+            $productinventoryModel->updated_at = date('Y-m-d H:i:s');
+            $productinventoryModel->updated_by = Yii::$app->user->identity->id;
+            $productinventoryModel->save();
+        
+        }
+
+        return json_encode(['status' => 'Success', 'message' => 'Your record was successfully updated in the database.']);   
+    }
+
+    public function actionUpdateStockQuantity()
+    {
+        $productinventoryModel = new ProductInventory();
+        $productinventoryModel->product_id = Yii::$app->request->post('productId');
+        $productinventoryModel->old_quantity = Yii::$app->request->post('productOldQty');
+        $productinventoryModel->new_quantity = Yii::$app->request->post('productNewQty');
+        $productinventoryModel->type = 3;
+        $productinventoryModel->datetime_imported = date('Y-m-d H:i:s');
+        $productinventoryModel->status = 1;
+        $productinventoryModel->created_at = date('Y-m-d H:i:s');
+        $productinventoryModel->created_by = Yii::$app->user->identity->id;
+        $productinventoryModel->updated_at = date('Y-m-d H:i:s');
+        $productinventoryModel->updated_by = Yii::$app->user->identity->id;
+        $productinventoryModel->save();
+
+        $productInfo = Product::find()->where(['id' => Yii::$app->request->post('productId') ])->one();
+        $productInfo->quantity = Yii::$app->request->post('productNewQty');
+        $productInfo->save();
+
+        return json_encode(['status' => 'Success', 'message' => 'Your record was successfully updated in the database.']);  
+    }
+
 }

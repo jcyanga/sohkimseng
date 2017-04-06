@@ -71,8 +71,8 @@ class ProductCategoryController extends Controller
 
         if ( Yii::$app->request->post() ) {
             
-            $model->name = Yii::$app->request->post('name');
-            $model->description = Yii::$app->request->post('description');
+            $model->name = strtolower(Yii::$app->request->post('name'));
+            $model->description = strtolower(Yii::$app->request->post('description'));
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
@@ -107,8 +107,8 @@ class ProductCategoryController extends Controller
 
         if ( Yii::$app->request->post() ) {
             
-            $model->name = Yii::$app->request->post('name');
-            $model->description = Yii::$app->request->post('description');
+            $model->name = strtolower(Yii::$app->request->post('name'));
+            $model->description = strtolower(Yii::$app->request->post('description'));
             $model->status = 1;
             $model->updated_at = date('Y-m-d H:i:s');
             $model->updated_by = Yii::$app->user->identity->id;
@@ -158,7 +158,9 @@ class ProductCategoryController extends Controller
 
     public function actionDeleteColumn()
     {
-        $this->findModel(Yii::$app->request->post('id'))->delete();
+        $model = $this->findModel(Yii::$app->request->post('id'));
+        $model->status = 0;
+        $model->save();
         
         return json_encode(['status' => 'Success', 'message' => 'Your record was successfully deleted in the database.']);
     }
@@ -181,7 +183,7 @@ class ProductCategoryController extends Controller
 
     public function actionExportPdf() 
     {
-        $result = ProductCategory::find()->all();
+        $result = ProductCategory::find()->where(['status' => 1])->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
 
         $dompdf = new Dompdf();

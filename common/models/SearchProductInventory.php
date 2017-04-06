@@ -18,9 +18,8 @@ class SearchProductInventory extends ProductInventory
     public function rules()
     {
         return [
-            [['id', 'product_id', 'supplier_id', 'quantity', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['price'], 'number'],
-            [['date_imported', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'product_id', 'old_quantity', 'new_quantity', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['datetime_imported', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -42,7 +41,7 @@ class SearchProductInventory extends ProductInventory
      */
     public function search($params)
     {
-        $query = ProductInventory::find();
+        $query = ProductInventory::find()->where(['status' => 1])->orderBy(['id' => SORT_DESC]);
 
         // add conditions that should always apply here
 
@@ -62,11 +61,8 @@ class SearchProductInventory extends ProductInventory
         $query->andFilterWhere([
             'id' => $this->id,
             'product_id' => $this->product_id,
-            'supplier_id' => $this->supplier_id,
-            'quantity' => $this->quantity,
-            'price' => $this->price,
             'status' => $this->status,
-            'date_imported' => $this->date_imported,
+            'datetime_imported' => $this->datetime_imported,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
             'updated_at' => $this->updated_at,

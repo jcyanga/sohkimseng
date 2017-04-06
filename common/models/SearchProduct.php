@@ -18,8 +18,8 @@ class SearchProduct extends Product
     public function rules()
     {
         return [
-            [['id', 'product_category_id', 'status', 'created_by', 'updated_by'], 'integer'],
-            [['product_name', 'product_code', 'description', 'unit_of_measure', 'created_at', 'updated_at'], 'safe'],
+            [['id', 'product_category_id', 'supplier_id', 'storage_location_id', 'quantity', 'cost_price', 'selling_price', 'reorder_level', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['product_name', 'product_code', 'gst_price', 'unit_of_measure', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class SearchProduct extends Product
      */
     public function search($params)
     {
-        $query = Product::find();
+        $query = Product::find()->where(['status' => 1]);
 
         // add conditions that should always apply here
 
@@ -70,8 +70,7 @@ class SearchProduct extends Product
             'updated_by' => $this->updated_by,
         ]);
 
-        $query->andFilterWhere(['like', 'product_name', $this->product_name])
-            ->andFilterWhere(['like', 'description', $this->description]);
+        $query->andFilterWhere(['like', 'product_name', $this->product_name]);
 
         return $dataProvider;
     }

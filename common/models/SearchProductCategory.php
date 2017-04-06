@@ -41,7 +41,7 @@ class SearchProductCategory extends ProductCategory
      */
     public function search($params)
     {
-        $query = ProductCategory::find();
+        $query = ProductCategory::find()->where(['status' => 1]);
 
         // add conditions that should always apply here
 

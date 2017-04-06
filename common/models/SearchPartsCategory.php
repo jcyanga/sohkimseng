@@ -41,7 +41,7 @@ class SearchPartsCategory extends PartsCategory
      */
     public function search($params)
     {
-        $query = PartsCategory::find();
+        $query = PartsCategory::find()->where(['status' => 1]);
 
         // add conditions that should always apply here
 

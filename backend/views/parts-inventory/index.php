@@ -6,10 +6,15 @@ use yii\widgets\ActiveForm;
 use  yii\helpers\ArrayHelper;
 
 use common\models\Parts;
+use common\models\PartsCategory;
 use common\models\Supplier;
 
-$dataParts = ArrayHelper::map(Parts::find()->all(),'id', 'parts_name');
-$dataSupplier = ArrayHelper::map(Supplier::find()->all(),'id', 'name');
+$dataParts = ArrayHelper::map(Parts::find()->where(['status' => 1])->all(),'id', 'parts_name');
+$dataPartsCategory = ArrayHelper::map(PartsCategory::find()->where(['status' => 1])->all(),'id', 'name');
+$dataSupplier = ArrayHelper::map(Supplier::find()->where(['status' => 1])->all(),'id', 'name');
+
+$supplierCode = 'SUPPLIERS' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
+$partsCode = 'PARTS' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 
 /* @var $this yii\web\View */
 /* @var $searchModel common\models\SearchPartsInventory */
@@ -45,51 +50,54 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
+
     ['class' => 'yii\grid\SerialColumn'],
         [
-            'attribute' => 'supplier_id',
-            'value' => 'supplier.name',
-            'label' => 'Supplier Name',
+            'label' => 'Type',
+            'value' => function($model)
+            {   
+                switch($model->type){
+                    case 1:
+                        return 'Stock-In';
+                    break;
+
+                    case 2:
+                        return 'Stock-Out';
+                    break;
+
+                    case 3:
+                        return 'Stock-Adjustment';
+                    break;
+
+                    default:
+                        return 'No Record Found';
+                }
+            },
         ],
+
         [
-            'attribute' => 'parts_id',
+            'attribute' => 'parts_name',
             'value' => 'parts.parts_name',
             'label' => 'Parts Name',
         ],
-        'quantity',
-        'price',
-    [
-        'class' => 'yii\grid\ActionColumn',
-        'template' => '{update}{delete}',
-        'buttons' => [
-            'update' => function ($url, $model) {
-                return Html::a(' <span class="glyphicon glyphicon-pencil"></span> ', $url, ['class' => '_showUpdatePIModal', 'id' => $model->id, 'title' => Yii::t('app', 'Update'),
-                ]);
-            },        
-            'delete' => function ($url, $model) {
-                return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, ['class' => 'piDeleteColumn', 'id' => $model->id, 'title' => Yii::t('app', 'Delete'),
-                ]);
-            },
-        ],
-        'urlCreator' => function ($action, $model, $key, $index) {
-            if ($action === 'update') {
-                $url ='#';
-                return $url;
-            }   
-            if ($action === 'delete') {
-                $url ='#';
-                return $url;
-            }
-        }
-    ],
+        'old_quantity',
+        'new_quantity',
 ]
 ?>
 
 <div class="col-md-12 col-sm-12 col-xs-12 btnsContainer">
 <div class="row">
 
-    <div class="col-md-3 pull-right">  
-        <?= Html::button('<li class=\'fa fa-plus-square\'></li> New Auto-Parts in Inventory',['class' => '_showCreatePIModal formBtn btn btn-block btn-success btn-xs']) ?>
+    <div class="col-md-2 pull-right">  
+        <?= Html::button('<li class=\'fa fa-cogs\'></li> New Auto-Parts -',['class' => '_showCreatePartsModal formBtn btn btn-block btn-success btn-sm']) ?>
+    </div>
+
+    <div class="col-md-2 pull-right">  
+        <?= Html::button('<li class=\'fa fa-cog\'></li> New Auto-Parts Category -',['class' => '_showCreatePCModal formBtn btn btn-block btn-info btn-sm']) ?>
+    </div>
+
+    <div class="col-md-2 pull-right">  
+        <?= Html::button('<li class=\'fa fa-truck\'></li> New Supplier -',['class' => '_showCreateSupplierModal formBtn btn btn-block btn-danger btn-sm']) ?>
     </div>
 
 </div>
@@ -131,105 +139,149 @@ $gridColumns = [
 
 </div>
 
-<!-- Create -->
-<div class="modal fade" id="modal-launcher-create-pi" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-    <div class="modal-dialog modalInventoryDesign" >
+<!-- Export to Excel -->
+<a id="divLink" style="display: none;"></a>
+
+</div>
+
+<!-- Create Supplier -->
+<div class="modal fade modalBackground" id="modal-launcher-create-supplier" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-user-plus"></i> New Auto-Parts in Inventory Information</h5>
+                <button type="button" class="close closeNewSupplier" >&times;</button>
+                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-laptop"></i> New Supplier </h5>
             </div>
 
         <div class="modal-body">
-            <?php $form = ActiveForm::begin(['method' => 'post', 'id' => 'piFormCreate']); ?>
+            <?php $form = ActiveForm::begin(['method' => 'post', 'id' => 'supplierFormCreate']); ?>
+    
+                <label class="labelStyle">Supplier Code</label>
+                <?= $form->field($supplierModel, 'supplier_code')->textInput(['class' => 'inputForm form-control', 'id' => 'supplierCode', 'value' => $supplierCode, 'readonly' => 'readonly'])->label(false) ?>
+
+                <label class="labelStyle">Supplier Name</label>
+                <?= $form->field($supplierModel, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'name', 'placeholder' => 'Enter Supplier name here.'])->label(false) ?>
+
+                <label class="labelStyle">Address</label>
+                <?= $form->field($supplierModel, 'address')->textarea(['rows' => '3', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'address', 'placeholder' => 'Enter Address here.'])->label(false) ?>
+
+                <label class="labelStyle">Contact Number</label>
+                <?= $form->field($supplierModel, 'contact_number')->textInput(['class' => 'inputForm form-control', 'id' => 'contactNumber', 'placeholder' => 'Enter Contact number here.'])->label(false) ?>
+
+            <?php ActiveForm::end(); ?>
+        </div>
+
+        <div class="modal-footer">
+            <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearSupplierForms', 'class' => 'formBtn btn btn-default']) ?>
+            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Submit Record', ['id' => 'submitSupplierFormCreate', 'class' => 'formBtn btn btn-primary']) ?>
+        </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Create Auto-Parts Category -->
+<div class="modal fade modalBackground" id="modal-launcher-create-pc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <button type="button" class="close closeNewPc" >&times;</button>
+                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-laptop"></i> New Auto-Parts Category</h5>
+            </div>
+
+        <div class="modal-body">
+            <?php $form = ActiveForm::begin(['method' => 'post', 'id' => 'pcFormCreate']); ?>
+    
+                <label class="labelStyle">Auto-Parts Category Name</label>
+                <?= $form->field($partscategoryModel, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'name', 'placeholder' => 'Enter Auto-Parts Category name here.'])->label(false) ?>
+
+                <label class="labelStyle">Description</label>
+                <?= $form->field($partscategoryModel, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'placeholder' => 'Enter Auto-Parts Category description here.'])->label(false) ?>
+
+            <?php ActiveForm::end(); ?>
+        </div>
+
+        <div class="modal-footer">
+            <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearPCForms', 'class' => 'formBtn btn btn-default']) ?>
+            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Submit Record', ['id' => 'submitPCFormCreate', 'class' => 'formBtn btn btn-primary']) ?>
+        </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Create Auto-Parts -->
+<div class="modal fade modalBackground" id="modal-launcher-create-parts" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog">
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <button type="button" class="close closeNewParts" >&times;</button>
+                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-user-plus"></i> New Auto-Parts </h5>
+            </div>
+
+        <div class="modal-body">
+            <?php $form = ActiveForm::begin(['method' => 'post', 'id' => 'partsFormCreate']); ?>
                 
                 <div class="row">
-                    
-                    <div class="col-md-4 modalInventoryDesignRside">
-                        
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <label class="labelStyle">Auto-Parts Code</label>
+                        <?= $form->field($partsModel, 'parts_code')->textInput(['class' => 'inputForm form-control', 'id' => 'partsCode', 'value' => $partsCode, 'readonly' => 'readonly'])->label(false) ?>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-xs-12 col-sm-12">
                         <label class="labelStyle">Supplier Name</label>
-                        <?= $form->field($model, 'supplier_id')->dropdownList($dataSupplier,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'supplier'])->label(false) ?>
+                        <?= $form->field($partsModel, 'supplier_id')->dropdownList(['0' => '- CHOOSE SUPPLIER HERE -'] + $dataSupplier,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'supplier', 'data-placeholder' => 'PLEASE SELECT SUPPLIER HERE' ])->label(false) ?>
+                    </div>
+                </div>
 
+                <div class="row">
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <label class="labelStyle">Auto-Parts Category</label>
+                        <?= $form->field($partsModel, 'parts_category_id')->dropdownList(['0' => '- CHOOSE AUTO-PARTS CATEGORY HERE -'] + $dataPartsCategory,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'partsCategory', 'data-placeholder' => 'PLEASE SELECT SUPPLIER HERE' ])->label(false) ?>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-xs-12 col-sm-12">
                         <label class="labelStyle">Auto-Parts Name</label>
-                        <?= $form->field($model, 'parts_id')->dropdownList($dataParts,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'parts'])->label(false) ?>
+                        <?= $form->field($partsModel, 'parts_name')->textInput(['class' => 'inputForm form-control', 'id' => 'partsName', 'placeholder' => 'Enter Auto-Parts name here.'])->label(false) ?>
+                    </div>
+                </div>
 
+                <div class="row">
+                    <div class="col-md-6 col-xs-6 col-sm-6">
                         <label class="labelStyle">Quantity</label>
-                        <?= $form->field($model, 'quantity')->textInput(['class' => 'inputForm form-control', 'id' => 'quantity', 'placeholder' => 'Enter Quantity here.'])->label(false) ?>
+                        <?= $form->field($partsModel, 'quantity')->textInput(['class' => 'inputForm form-control', 'id' => 'quantity', 'placeholder' => 'Enter Quantity here.'])->label(false) ?>
 
-                        <label class="labelStyle">Price</label>
-                        <?= $form->field($model, 'price')->textInput(['class' => 'inputForm form-control', 'id' => 'price', 'placeholder' => 'Enter Price here.'])->label(false) ?>
-
-                        <input type="hidden" id="ctr" value="0" />
+                        <label class="labelStyle">Unit of Measure</label>
+                        <?= $form->field($partsModel, 'unit_of_measure')->textInput(['class' => 'inputForm form-control', 'id' => 'uom', 'placeholder' => 'Enter Unit of Measure here.'])->label(false) ?>
                         
-                        <div class="pull-right">
-                            <button type="button" class=" formBtn btn btn-link add_item" ><i class="fa fa-cart-plus"></i> <b>Add Item</b> </button>
-                        </div>
-                        <br/>
-
+                        <label class="labelStyle">Cost Price</label>
+                        <?= $form->field($partsModel, 'cost_price')->textInput(['class' => 'inputForm form-control', 'id' => 'costPrice', 'placeholder' => 'Enter Cost Price here.'])->label(false) ?>
                     </div>
+                
+                    <div class="col-md-6 col-xs-6 col-sm-6">
+                        <label class="labelStyle">Re-Order Level</label>
+                        <?= $form->field($partsModel, 'reorder_level')->textInput(['class' => 'inputForm form-control', 'id' => 'reorderLevel', 'placeholder' => 'Enter Re-Order Level here.'])->label(false) ?>
 
-                    <div class="col-md-8 modalInventoryDesignLside">
-                        <div class="insert-in-list selectedItemContainer" id="insert-in-list">
-                        <div class="selectedItemContent">
-                           <i class="fa fa-list-alt"></i> Selected Item in List
-                        </div>  
-                        <hr/>
+                        <label class="labelStyle">Gst Price</label>
+                        <?= $form->field($partsModel, 'gst_price')->textInput(['class' => 'inputForm form-control', 'id' => 'gstPrice', 'placeholder' => 'Enter Gst Price here.'])->label(false) ?>
 
-                        </div>
+                        <label class="labelStyle">Selling Price</label>
+                        <?= $form->field($partsModel, 'selling_price')->textInput(['class' => 'inputForm form-control', 'id' => 'sellingPrice', 'placeholder' => 'Enter Selling Price here.'])->label(false) ?>
                     </div>
-
                 </div>
 
             <?php ActiveForm::end(); ?>
         </div>
 
         <div class="modal-footer">
-            <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearPIForms', 'class' => 'formBtn btn btn-default']) ?>
-            <?= Html::submitButton('<li class=\'fa fa-check\'></li> Submit', ['id' => 'submitPIFormCreate', 'class' => 'formBtn btn btn-primary']) ?>
+            <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearPartsForms', 'class' => 'formBtn btn btn-default']) ?>
+            <?= Html::submitButton('<li class=\'fa fa-check\'></li> Submit Record', ['id' => 'submitPartsFormCreate', 'class' => 'formBtn btn btn-primary']) ?>
         </div>
 
         </div>
     </div>
-</div>
-
-<!-- Update -->
-<div class="modal fade" id="modal-launcher-update-pi" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
-    <div class="modal-dialog">
-        <div class="modal-content"> 
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Update Auto-Parts in Inventory Information</h5>
-            </div>
-
-        <div class="modal-body">
-            <?php $form = ActiveForm::begin(['method' => 'post', 'id' => 'piFormUpdate']); ?>
-                <input type="hidden" name="id" id="id" />
-
-                <label class="labelStyle">Supplier Name</label>
-                <?= $form->field($model, 'supplier_id')->dropdownList($dataSupplier,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'updateSupplier'])->label(false) ?>
-
-                <label class="labelStyle">Auto-Parts Name</label>
-                <?= $form->field($model, 'parts_id')->dropdownList($dataParts,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'updateParts'])->label(false) ?>
-
-                <label class="labelStyle">Quantity</label>
-                <?= $form->field($model, 'quantity')->textInput(['class' => 'inputForm form-control', 'id' => 'updateQuantity', 'placeholder' => 'Enter Quantity here.'])->label(false) ?>
-
-                <label class="labelStyle">Price</label>
-                <?= $form->field($model, 'price')->textInput(['class' => 'inputForm form-control', 'id' => 'updatePrice', 'placeholder' => 'Enter Price here.'])->label(false) ?>
-
-            <?php ActiveForm::end(); ?>
-        </div>
-
-        <div class="modal-footer">
-            <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearPIForms', 'class' => 'formBtn btn btn-default']) ?>
-            <?= Html::submitButton('<li class=\'fa fa-check\'></li> Submit', ['id' => 'submitPIFormUpdate', 'class' => 'formBtn btn btn-primary']) ?>
-        </div>
-
-        </div>
-    </div>
-</div>
-
-<!-- Export to Excel -->
-<a id="divLink" style="display: none;"></a>
-
 </div>
