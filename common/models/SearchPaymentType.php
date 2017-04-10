@@ -5,12 +5,12 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\Race;
+use common\models\PaymentType;
 
 /**
- * SearchRace represents the model behind the search form about `common\models\Race`.
+ * SearchPaymentType represents the model behind the search form about `common\models\PaymentType`.
  */
-class SearchRace extends Race
+class SearchPaymentType extends PaymentType
 {
     /**
      * @inheritdoc
@@ -18,7 +18,7 @@ class SearchRace extends Race
     public function rules()
     {
         return [
-            [['id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['id', 'interest', 'status', 'created_by', 'updated_by'], 'integer'],
             [['name', 'description', 'created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -41,7 +41,7 @@ class SearchRace extends Race
      */
     public function search($params)
     {
-        $query = Race::find()->where(['status' => 1]);
+        $query = PaymentType::find()->where(['status' => 1]);
 
         // add conditions that should always apply here
 
@@ -60,6 +60,7 @@ class SearchRace extends Race
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'interest' => $this->interest,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,

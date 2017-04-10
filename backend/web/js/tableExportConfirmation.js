@@ -208,3 +208,15 @@ function excelExportRace()
 									escape:'false'});
 	}
 }
+
+function excelExportPt()
+{
+	var yes = confirm ("Are you sure you want to export in excel?");
+       
+	if(yes) {
+		$('#tableID').tableExport({ type:'excel',
+									excelFontSize: 11,
+									tableName: 'PaymentTypeList',
+									escape:'false'});
+	}
+}

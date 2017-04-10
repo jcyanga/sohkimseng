@@ -42,8 +42,10 @@ class SearchQuotation extends Quotation
      */
     public function search($params)
     {
-        $query = Quotation::find();
-
+        $query = Quotation::find()->where(['quotation.status' => 1]);
+        $query->joinWith(['user']);    
+        $query->joinWith(['customer']);   
+        // $query->joinWith(['payment_type']);    
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([

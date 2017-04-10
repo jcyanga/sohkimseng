@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\SearchRace */
+/* @var $model common\models\SearchPaymentType */
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="race-search">
+<div class="payment-type-search">
 
 <?php $form = ActiveForm::begin(['action' => ['index'], 'method' => 'get']); ?>
 
@@ -22,7 +22,7 @@ use yii\widgets\ActiveForm;
     <br/>
 
     <div class="col-md-4">
-        <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Race name here.'])->label(false) ?>
+        <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Payment-type name here.'])->label(false) ?>
     </div>
 
 </div>

@@ -32,6 +32,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property Customer $customer
  * @property User $user
+ * @property PaymentType $paymentType
  * @property QuotationDetail[] $quotationDetails
  */
 class Quotation extends \yii\db\ActiveRecord
@@ -60,6 +61,7 @@ class Quotation extends \yii\db\ActiveRecord
             [['quotation_code'], 'string', 'max' => 100],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::className(), 'targetAttribute' => ['customer_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
+            [['payment_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => PaymentType::className(), 'targetAttribute' => ['payment_type_id' => 'id']],
         ];
     }
 
@@ -102,6 +104,14 @@ class Quotation extends \yii\db\ActiveRecord
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    // public function getPaymentType()
+    // {
+    //     return $this->hasOne(PaymentType::className(), ['id' => 'payment_type_id']);
+    // }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -167,6 +177,7 @@ class Quotation extends \yii\db\ActiveRecord
         $result = $query->select(['service.*', 'service_category.name'])
                             ->from('service')
                             ->leftJoin('service_category', 'service.service_category_id = service_category.id')
+                            ->where(['service.status' => 1])
                             ->all();
                
         return $result;
@@ -180,6 +191,7 @@ class Quotation extends \yii\db\ActiveRecord
                             ->from('service')
                             ->leftJoin('service_category', 'service.service_category_id = service_category.id')
                             ->where(['service.id' => $id])
+                            ->andWhere(['service.status' => 1])
                             ->one();
                
         return $result;
@@ -190,10 +202,11 @@ class Quotation extends \yii\db\ActiveRecord
     {
         $query = new Query();
 
-        $result = $query->select([ 'quotation.id', 'quotation.quotation_code', 'quotation.customer_id', 'customer.fullname as customerName', 'quotation.user_id', 'user.fullname as salesPerson', 'quotation.date_issue', 'quotation.grand_total', 'quotation.gst', 'quotation.net', 'quotation.remarks', 'quotation.status', 'quotation.created_at', 'quotation.created_by', 'quotation.invoice_created' ])
+        $result = $query->select([ 'quotation.id', 'quotation.quotation_code', 'quotation.customer_id', 'customer.fullname as customerName', 'quotation.user_id', 'user.fullname as salesPerson', 'quotation.date_issue', 'quotation.grand_total', 'quotation.gst', 'quotation.net', 'quotation.remarks', 'quotation.status', 'quotation.created_at', 'quotation.created_by', 'quotation.invoice_created', 'payment_type.name as paymenttypeName', 'customer.type', 'customer.nric', 'customer.company_name', 'customer.uen_no', 'customer.address', 'customer.shipping_address', 'customer.email', 'customer.phone_number', 'customer.mobile_number', 'customer.fax_number', 'quotation.discount_amount', 'quotation.discount_remarks', 'quotation.condition', 'quotation.payment_type_id', 'quotation.gst_value' ])
                     ->from('quotation')
                     ->leftJoin('customer', 'quotation.customer_id = customer.id')
                     ->leftJoin('user', 'quotation.user_id = user.id')
+                    ->leftJoin('payment_type', 'quotation.payment_type_id = payment_type.id')
                     ->where(['quotation.id' => $id, 'quotation.status' => 1])
                     ->one();
 
@@ -208,7 +221,9 @@ class Quotation extends \yii\db\ActiveRecord
         $result = $query->select([ 'quotation_detail.id', 'quotation_detail.description', 'service.service_name as name', 'quotation_detail.quantity', 'quotation_detail.unit_price', 'quotation_detail.sub_total', 'quotation_detail.type', 'quotation_detail.status' ])
                     ->from('quotation_detail')
                     ->leftJoin('service', 'quotation_detail.description = service.id')
-                    ->where(['quotation_detail.quotation_id' => $id, 'quotation_detail.type' => 0, 'quotation_detail.status' => 1])
+                    ->where(['quotation_detail.quotation_id' => $id])
+                    ->andWhere(['quotation_detail.type' => 0])
+                    ->andWhere(['quotation_detail.status' => 1])
                     ->all();
 
         return $result;
@@ -223,7 +238,9 @@ class Quotation extends \yii\db\ActiveRecord
                     ->from('quotation_detail')
                     ->leftJoin('parts_inventory', 'quotation_detail.description = parts_inventory.id')
                     ->leftJoin('parts', 'parts_inventory.parts_id = parts.id')
-                    ->where(['quotation_detail.quotation_id' => $id, 'quotation_detail.type' => 1, 'quotation_detail.status' => 1])
+                    ->where(['quotation_detail.quotation_id' => 1])
+                    ->andWhere(['quotation_detail.type' => 1])
+                    ->andWhere(['quotation_detail.status' => 1])
                     ->all();
 
         return $result;

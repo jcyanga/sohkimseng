@@ -59,7 +59,7 @@ use yii\grid\GridView;
 		<div class="col-md-3">
 			<input type="text" id="parts-services-update-name-in-list-<?= $ctr ?>" value="<?= strtoupper($services_name) ?>" class="inputForm inputboxTotalAlignment form-control" readonly="readonly" />
 
-			<input type="hidden" id="parts-services-update-id-in-list-<?= $ctr ?>" value="0-<?= $services_id ?>" name="QuotationDetail[description][]" class="inputForm form-control update_partsservicesName" />		
+			<input type="hidden" id="parts-services-update-id-in-list-<?= $ctr ?>" value="0-<?= $services_id ?>" name="QuotationDetail[description][]" class="inputForm form-control update_selected_partsservicesName" />		
 		</div>
 
 	<?php else: ?>
@@ -67,21 +67,21 @@ use yii\grid\GridView;
 		<div class="col-md-3">
 			<input type="text" id="parts-services-update-name-in-list-<?= $ctr ?>" value="<?= strtoupper($parts_name) ?>" class="inputForm inputboxTotalAlignment form-control" readonly="readonly" />
 
-			<input type="hidden" id="parts-services-update-id-in-list-<?= $ctr ?>" value="1-<?= $parts_id ?>" name="QuotationDetail[description][]" class="inputForm form-control update_partsservicesName" />		
+			<input type="hidden" id="parts-services-update-id-in-list-<?= $ctr ?>" value="1-<?= $parts_id ?>" name="QuotationDetail[description][]" class="inputForm form-control update_selected_partsservicesName" />		
 		</div>
 	
 	<?php endif; ?>
 
 	<div class="col-md-3">
-		<input type="text" id="parts-services-update-qty-in-list-<?= $ctr ?>" value="<?= $quantity ?>" name="QuotationDetail[quantity][]" onchange="editSelectedSubtotal(<?= $ctr ?>)" class="inputForm inputboxTotalAlignment form-control update_partsservicesQty" />	
+		<input type="text" id="parts-services-update-qty-in-list-<?= $ctr ?>" value="<?= $quantity ?>" name="QuotationDetail[quantity][]" onchange="editSelectedSubtotal(<?= $ctr ?>)" class="inputForm inputboxTotalAlignment form-control update_selected_partsservicesQty" />	
 	</div>
 
 	<div class="col-md-3">
-		<input type="text" id="parts-services-update-price-in-list-<?= $ctr ?>" value="<?= $unit_price ?>" name="QuotationDetail[unit_price][]" onchange="editSelectedSubtotal(<?= $ctr ?>)" class="inputForm inputboxTotalAlignment form-control update_partsservicesPrice" />	
+		<input type="text" id="parts-services-update-price-in-list-<?= $ctr ?>" value="<?= $unit_price ?>" name="QuotationDetail[unit_price][]" onchange="editSelectedSubtotal(<?= $ctr ?>)" class="inputForm inputboxTotalAlignment form-control update_selected_partsservicesPrice" />	
 	</div>
 
 	<div class="col-md-3">
-		<input type="text" id="parts-services-update-subtotal-in-list-<?= $ctr ?>" value="<?= $sub_total ?>" name="QuotationDetail[sub_total][]" class="inputForm inputboxTotalAlignment form-control update_partsservicesSubtotal" readonly="readonly" />	
+		<input type="text" id="parts-services-update-subtotal-in-list-<?= $ctr ?>" value="<?= $sub_total ?>" name="QuotationDetail[sub_total][]" class="inputForm inputboxTotalAlignment form-control update_selected_partsservicesSubtotal" readonly="readonly" />	
 	</div>
 
 <br/><hr/>

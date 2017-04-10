@@ -12,14 +12,14 @@ $this->title = 'Race';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="parts-index divContainer">
+<div class="race-index divContainer">
 
 <div class="row containerHeadWrapper">
     
     <div class="col-md-12 col-sm-12 col-xs-12">
         
         <div>
-            <h4 class="divHeaderLabel"><i class="fa fa-windows"></i> <?= Html::encode($this->title) ?></h4>
+            <h4 class="divHeaderLabel"><i class="fa fa-globe"></i> <?= Html::encode($this->title) ?></h4>
         </div>
         <hr/>
 
@@ -76,7 +76,7 @@ $gridColumns = [
 <div class="row">
 
     <div class="col-md-2 pull-right">  
-        <?= Html::button('<li class=\'fa fa-plus-square\'></li> New Race',['class' => '_showCreateRaceModal formBtn btn btn-block btn-success btn-xs']) ?>
+        <?= Html::button('<li class=\'fa fa-user-plus\'></li> New Race -',['class' => '_showCreateRaceModal formBtn btn btn-block btn-success btn-sm']) ?>
     </div>
 
 </div>
@@ -119,12 +119,12 @@ $gridColumns = [
 </div>
 
 <!-- Create -->
-<div class="modal fade" id="modal-launcher-create-race" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade modalBackground" id="modal-launcher-create-race" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-user-plus"></i> New Race</h5>
+                <button type="button" class="close closeNewRace" >&times;</button>
+                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-user-plus"></i> New Race </h5>
             </div>
 
         <div class="modal-body">
@@ -141,7 +141,7 @@ $gridColumns = [
 
         <div class="modal-footer">
             <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearRaceForms', 'class' => 'formBtn btn btn-default']) ?>
-            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Submit Race Information', ['id' => 'submitRaceFormCreate', 'class' => 'formBtn btn btn-primary']) ?>
+            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Submit Record', ['id' => 'submitRaceFormCreate', 'class' => 'formBtn btn btn-primary']) ?>
         </div>
 
         </div>
@@ -149,11 +149,11 @@ $gridColumns = [
 </div>
 
 <!-- Update -->
-<div class="modal fade" id="modal-launcher-update-race" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade modalBackground" id="modal-launcher-update-race" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close closeUpdateRace" >&times;</button>
                 <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Update Race </h5>
             </div>
 
@@ -172,7 +172,7 @@ $gridColumns = [
 
         <div class="modal-footer">
             <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearRaceForms', 'class' => 'formBtn btn btn-default']) ?>
-            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Save Race Information', ['id' => 'submitRaceFormUpdate', 'class' => 'formBtn btn btn-primary']) ?>
+            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Save Record', ['id' => 'submitRaceFormUpdate', 'class' => 'formBtn btn btn-primary']) ?>
         </div>
 
         </div>
@@ -180,11 +180,11 @@ $gridColumns = [
 </div>
 
 <!-- View -->
-<div class="modal fade" id="modal-launcher-view-race" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+<div class="modal fade modalBackground" id="modal-launcher-view-race" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
     <div class="modal-dialog">
         <div class="modal-content"> 
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button type="button" class="close closeViewRace" >&times;</button>
                 <h5 class="modal-title" id="myModalLabel"><i class="fa fa-desktop"></i> View Race Information</h5>
             </div>
 

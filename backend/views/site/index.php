@@ -77,5 +77,3 @@ $this->params['breadcrumbs'][] = $this->title;
       <!-- Main row -->
       
           <!-- /.box -->
-
-    

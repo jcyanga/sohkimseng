@@ -227,7 +227,7 @@ $('.add_autoparts_invoice').click(function(){
 			$('#partsSubtotal').val('');
 
 			setTimeout(function() {
-                getQuoteGrandTotal();
+                getInvoiceTotal();
             }, 500);
 
 		});
@@ -372,7 +372,7 @@ $('.add_services_invoice').click(function(){
 			$('#servicesSubtotal').val('');
 
 			setTimeout(function() {
-                getQuoteGrandTotal();
+                getInvoiceTotal();
             }, 500);
 
 		});
@@ -412,7 +412,7 @@ function updateSelectedSubtotalInvoice(n)
 	$('#parts-services-subtotal-in-list-'+n).val(parseFloat(total).toFixed(2));
 
 	setTimeout(function(){
-            getQuoteGrandTotal();
+            getInvoiceTotal();
         }, 500);
 }
 
@@ -448,11 +448,11 @@ function removeSelectedInvoiceItem(n)
 	$('.inserted-item-in-list-'+n).detach();
 
 	setTimeout(function(){
-            getQuoteGrandTotal();
+            getInvoiceTotal();
         }, 500);
 }
 
-function getQuoteGrandTotal()
+function getInvoiceTotal()
 {
 	var total = 0;
 
@@ -462,11 +462,11 @@ function getQuoteGrandTotal()
 
     $('#grandTotal').val(total.toFixed(2));
     setTimeout(function(){
-            getNetTotal();
+            getInvoiceNetTotal();
         }, 500);
 }
 
-function getNetTotal()
+function getInvoiceNetTotal()
 {
 	var grandTotal = $('#grandTotal').val();
 	var gst = $('#gst').val();
@@ -485,7 +485,7 @@ function getNetTotal()
 
 }
 
-// ====================== Submit Quotation ====================== //
+// ====================== Submit Invoice ====================== //
 
 $('#submitInvoiceForm').click(function(){
 

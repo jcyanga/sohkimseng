@@ -77,7 +77,7 @@ $gridColumns = [
 <div class="row">
 
     <div class="col-md-2 pull-right">  
-        <?= Html::button('<li class=\'fa fa-plus-square\'></li> New Product Category',['class' => '_showCreatePRCModal formBtn btn btn-block btn-success btn-sm']) ?>
+        <?= Html::button('<li class=\'fa fa-user-plus\'></li> New Product Category -',['class' => '_showCreatePRCModal formBtn btn btn-block btn-success btn-sm']) ?>
     </div>
 
 </div>

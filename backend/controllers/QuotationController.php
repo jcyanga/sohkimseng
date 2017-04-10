@@ -128,17 +128,21 @@ class QuotationController extends Controller
 
         if ( Yii::$app->request->post() ) {
             
-            $model->quotation_code = Yii::$app->request->post('quotation_code');
-            $model->user_id = Yii::$app->request->post('sales_person');
-            $model->customer_id = Yii::$app->request->post('customer_name');
-            $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('date_issue')));
-            $model->grand_total = Yii::$app->request->post('grand_total');
+            $model->quotation_code = Yii::$app->request->post('quotationCode');
+            $model->user_id = Yii::$app->request->post('salesPerson');
+            $model->customer_id = Yii::$app->request->post('customerName');
+            $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('dateIssue')));
+            $model->grand_total = Yii::$app->request->post('grandTotal');
             $model->gst = Yii::$app->request->post('gst_amount');
-            $model->net = Yii::$app->request->post('net_total');
+            $model->gst_value = Yii::$app->request->post('gst_value');
+            $model->net = Yii::$app->request->post('netTotal');
             $model->remarks = Yii::$app->request->post('remarks');
+            $model->payment_type_id = Yii::$app->request->post('paymentType');
+            $model->discount_amount = Yii::$app->request->post('discountAmount');
+            $model->discount_remarks = Yii::$app->request->post('discountRemarks');
+            $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
-            $model->status = 1;
             $model->invoice_created = 0;
             $model->deleted = 0;
 
@@ -184,29 +188,64 @@ class QuotationController extends Controller
         }
     }
 
-    public function actionCreateCustomer()
+    public function actionCreateCompany()
     {
-        $customerModel = new Customer();
+        $model = new Customer();
 
         if ( Yii::$app->request->post() ) {
             
-            $customerModel->fullname = Yii::$app->request->post('fullname');
-            $customerModel->address = Yii::$app->request->post('address');
-            $customerModel->race_id = Yii::$app->request->post('race');
-            $customerModel->email = Yii::$app->request->post('email');
-            $customerModel->phone_number = Yii::$app->request->post('phoneNumber');
-            $customerModel->mobile_number = Yii::$app->request->post('mobileNumber');
-            $customerModel->status = 1;
-            $customerModel->created_at = date('Y-m-d H:i:s');
-            $customerModel->created_by = Yii::$app->user->identity->id;
+            $model->type = 1;
+            $model->company_name = strtolower(Yii::$app->request->post('companyName'));
+            $model->uen_no = strtolower(Yii::$app->request->post('companyUenNo'));
+            $model->fullname = strtolower(Yii::$app->request->post('companyContactPerson'));
+            $model->address = strtolower(Yii::$app->request->post('companyAddress'));
+            $model->shipping_address = strtolower(Yii::$app->request->post('companyShippingAddress'));
+            $model->email = strtolower(Yii::$app->request->post('companyEmail'));
+            $model->phone_number = Yii::$app->request->post('companyPhoneNumber');
+            $model->mobile_number = Yii::$app->request->post('companyOfficeNumber');
+            $model->fax_number = Yii::$app->request->post('companyFaxNumber');
+            $model->status = 1;
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
 
-            if($customerModel->validate()) {
-               $customerModel->save();
-
-               return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success', 'id' => $customerModel->id ]);
+            if($model->validate()) {
+               $model->save();
+               return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success', 'id' => $model->id ]);
 
             } else {
-               return json_encode(['message' => $customerModel->errors, 'status' => 'Error']);
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
+            
+            }
+
+        }
+    }
+
+    public function actionCreateCustomer()
+    {
+        $model = new Customer();
+
+        if ( Yii::$app->request->post() ) {
+            
+            $model->type = 2;
+            $model->fullname = strtolower(Yii::$app->request->post('fullname'));
+            $model->nric = strtolower(Yii::$app->request->post('customerNric'));
+            $model->address = strtolower(Yii::$app->request->post('customerAddress'));
+            $model->shipping_address = strtolower(Yii::$app->request->post('customerShippingAddress'));
+            $model->race_id = Yii::$app->request->post('customerRace');
+            $model->email = strtolower(Yii::$app->request->post('customerEmail'));
+            $model->phone_number = Yii::$app->request->post('customerPhoneNumber');
+            $model->mobile_number = Yii::$app->request->post('customerOficeNumber');
+            $model->fax_number = Yii::$app->request->post('customerFaxNumber');
+            $model->status = 1;
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
+
+            if($model->validate()) {
+               $model->save();
+               return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success', 'id' => $model->id ]);
+
+            } else {
+               return json_encode(['message' => $model->errors, 'status' => 'Error']);
             
             }
 
@@ -225,43 +264,43 @@ class QuotationController extends Controller
             
             $model = Quotation::findOne(Yii::$app->request->post('quotationId'));
 
-            $model->quotation_code = Yii::$app->request->post('quotation_code');
-            $model->user_id = Yii::$app->request->post('sales_person');
-            $model->customer_id = Yii::$app->request->post('customer_name');
-            $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('date_issue')));
-            $model->grand_total = Yii::$app->request->post('grand_total');
+            $model->quotation_code = Yii::$app->request->post('quotationCode');
+            $model->user_id = Yii::$app->request->post('salesPerson');
+            $model->customer_id = Yii::$app->request->post('customerName');
+            $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('dateIssue')));
+            $model->grand_total = Yii::$app->request->post('grandTotal');
             $model->gst = Yii::$app->request->post('gst_amount');
-            $model->net = Yii::$app->request->post('net_total');
+            $model->gst_value = Yii::$app->request->post('gst_value');
+            $model->net = Yii::$app->request->post('netTotal');
             $model->remarks = Yii::$app->request->post('remarks');
-            $model->updated_at = date('Y-m-d H:i:s');
-            $model->updated_by = Yii::$app->user->identity->id;
+            $model->payment_type_id = Yii::$app->request->post('paymentType');
+            $model->discount_amount = Yii::$app->request->post('discountAmount');
+            $model->discount_remarks = Yii::$app->request->post('discountRemarks');
             $model->status = 1;
+            $model->created_at = date('Y-m-d H:i:s');
+            $model->created_by = Yii::$app->user->identity->id;
             $model->invoice_created = 0;
             $model->deleted = 0;
 
             if($model->validate()) {
                 $model->save();
-                
+
                 $quotationId = Yii::$app->request->post('quotationId');
-                $parts_services = Yii::$app->request->post('parts_services');
-                $parts_services_qty = Yii::$app->request->post('parts_services_qty');
-                $parts_services_price = Yii::$app->request->post('parts_services_price');
-                $parts_services_subtotal = Yii::$app->request->post('parts_services_subtotal');
 
                 QuotationDetail::deleteAll(['quotation_id' => $quotationId]);
 
-                foreach($parts_services_qty as $key => $quoteRow){
+                foreach( Yii::$app->request->post('parts_services_qty') as $key => $quoteRow){
                     $quoteD = new QuotationDetail();
 
-                    $getServicePart = explode('-', $parts_services[$key]['value']);
+                    $getServicePart = explode('-', Yii::$app->request->post('parts_services')[$key]['value'] );
                     $type = $getServicePart[0];
                     $service_part_id = $getServicePart[1];
 
                     $quoteD->description = $service_part_id;
                     $quoteD->quotation_id = $quotationId;
-                    $quoteD->quantity = $parts_services_qty[$key]['value'];
-                    $quoteD->unit_price = $parts_services_price[$key]['value'];
-                    $quoteD->sub_total = $parts_services_subtotal[$key]['value'];
+                    $quoteD->quantity = Yii::$app->request->post('parts_services_qty')[$key]['value'];
+                    $quoteD->unit_price = Yii::$app->request->post('parts_services_price')[$key]['value'];
+                    $quoteD->sub_total = Yii::$app->request->post('parts_services_subtotal')[$key]['value'];
                     $quoteD->type = $type;
                     $quoteD->created_at = date('Y-m-d H:i:s');
                     $quoteD->created_by = Yii::$app->user->identity->id;
@@ -271,6 +310,32 @@ class QuotationController extends Controller
                     $quoteD->deleted = 0;
 
                     $quoteD->save();
+                }
+
+                if(count(Yii::$app->request->post('selected_parts_services_qty')) > 0)
+                {
+                    foreach( Yii::$app->request->post('selected_parts_services_qty') as $Skey => $quoteSRow){
+                        $quoteselectedSD = new QuotationDetail();
+
+                        $getSelectedServicePart = explode('-', Yii::$app->request->post('selected_parts_services')[$Skey]['value'] );
+                        $selected_type = $getSelectedServicePart[0];
+                        $selected_service_part_id = $getSelectedServicePart[1];
+
+                        $quoteselectedSD->description = $selected_service_part_id;
+                        $quoteselectedSD->quotation_id = $quotationId;
+                        $quoteselectedSD->quantity = Yii::$app->request->post('selected_parts_services_qty')[$Skey]['value'];
+                        $quoteselectedSD->unit_price = Yii::$app->request->post('selected_parts_services_price')[$Skey]['value'];
+                        $quoteselectedSD->sub_total = Yii::$app->request->post('selected_parts_services_subtotal')[$Skey]['value'];
+                        $quoteselectedSD->type = $selected_type;
+                        $quoteselectedSD->created_at = date('Y-m-d H:i:s');
+                        $quoteselectedSD->created_by = Yii::$app->user->identity->id;
+                        $quoteselectedSD->updated_at = date('Y-m-d H:i:s');
+                        $quoteselectedSD->updated_by = Yii::$app->user->identity->id;
+                        $quoteselectedSD->status = 1;
+                        $quoteselectedSD->deleted = 0;
+
+                        $quoteselectedSD->save();
+                    }
                 }
 
                 return json_encode(['message' => 'Quotation was successfully updated.', 'status' => 'Success', 'id' => $quotationId ]);
@@ -283,24 +348,42 @@ class QuotationController extends Controller
         }
     }
 
-    public function actionGetData($id)
+    public function actionGetData()
     {
         $model = new Quotation();
-        $getQuoteInfo = $model->getQuotationByIdForPreview($id);
-        $getQuoteServicesInfo = $model->getQuotationServiceForPreview($id);
-        $getQuotePartsInfo = $model->getQuotationPartsForPreview($id);   
+        $getQuoteInfo = $model->getQuotationByIdForPreview(Yii::$app->request->get('id'));
+        $getQuoteServicesInfo = $model->getQuotationServiceForPreview(Yii::$app->request->get('id'));
+        $getQuotePartsInfo = $model->getQuotationPartsForPreview(Yii::$app->request->get('id'));   
 
         $data = array();
         $data['quotation_code'] = $getQuoteInfo['quotation_code'];
-        $data['customer_id'] = $getQuoteInfo['customer_id']; 
         $data['user_id'] = $getQuoteInfo['user_id']; 
-        $data['date_issue'] = date('d-m-Y', strtotime($getQuoteInfo['date_issue']));      
+        $data['payment_type_id'] = $getQuoteInfo['payment_type_id']; 
         $data['remarks'] = $getQuoteInfo['remarks'];
+        $data['date_issue'] = date('d-m-Y', strtotime($getQuoteInfo['date_issue']));      
+        $data['customer_id'] = $getQuoteInfo['customer_id']; 
+        
         $data['grand_total'] = $getQuoteInfo['grand_total'];
         $data['gst'] = $getQuoteInfo['gst'];
-        $data['net'] = $getQuoteInfo['net']; 
+        $data['gst_value'] = $getQuoteInfo['gst_value']; 
+        $data['net'] = $getQuoteInfo['net'];
+
+        $data['discount_amount'] = $getQuoteInfo['discount_amount'];
+        $data['discount_remarks'] = $getQuoteInfo['discount_remarks']; 
+
+        $data['type'] = $getQuoteInfo['type'];
+        $data['fullname'] = $getQuoteInfo['customerName'];
+        $data['company_name'] = $getQuoteInfo['company_name'];
+        $data['uen_no'] = $getQuoteInfo['uen_no']; 
+        $data['nric'] = $getQuoteInfo['nric']; 
+        $data['address'] = $getQuoteInfo['address']; 
+        $data['shipping_address'] = $getQuoteInfo['shipping_address']; 
+        $data['email'] = $getQuoteInfo['email']; 
+        $data['phone_number'] = $getQuoteInfo['phone_number']; 
+        $data['mobile_number'] = $getQuoteInfo['mobile_number']; 
+        $data['fax_number'] = $getQuoteInfo['fax_number']; 
         
-        return json_encode([ 'result' => $data, 'services' => $getQuoteServicesInfo, 'parts' => $getQuotePartsInfo ]);
+        return json_encode([ 'result' => $data, 'parts' => $getQuotePartsInfo, 'services' => $getQuoteServicesInfo ]);
     }
 
     /**
@@ -318,7 +401,9 @@ class QuotationController extends Controller
 
     public function actionDeleteColumn()
     {
-        $this->findModel(Yii::$app->request->post('id'))->delete();
+        $model = $this->findModel(Yii::$app->request->post('id'));
+        $model->status = 0;
+        $model->save();
         
         return json_encode(['status' => 'Success', 'message' => 'Your record was successfully deleted in the database.']);
     }
@@ -326,7 +411,25 @@ class QuotationController extends Controller
     public function actionApproveColumn()
     {
         $model = Quotation::findOne(Yii::$app->request->post('id'));
-        $model->status = 2;
+        $model->condition = 1;
+        $model->save();
+        
+        return json_encode(['status' => 'Success', 'message' => 'Your quotation was successfully approved.']);
+    }
+
+    public function actionCancelColumn()
+    {
+        $model = Quotation::findOne(Yii::$app->request->post('id'));
+        $model->condition = 2;
+        $model->save();
+        
+        return json_encode(['status' => 'Success', 'message' => 'Your quotation was successfully approved.']);
+    }
+
+    public function actionCloseColumn()
+    {
+        $model = Quotation::findOne(Yii::$app->request->post('id'));
+        $model->condition = 3;
         $model->save();
         
         return json_encode(['status' => 'Success', 'message' => 'Your quotation was successfully approved.']);
@@ -502,12 +605,32 @@ class QuotationController extends Controller
 
     }
 
+    public function actionGetCustomerInformation()
+    {
+        $customerInfo = Customer::findOne(Yii::$app->request->get('customerId'));
+
+        $data = array();
+        $data['id'] = $customerInfo['id'];
+        $data['type'] = $customerInfo['type'];
+        $data['company_name'] = $customerInfo['company_name'];
+        $data['uen_no'] = $customerInfo['uen_no'];
+        $data['fullname'] = $customerInfo['fullname'];
+        $data['nric'] = $customerInfo['nric'];
+        $data['address'] = $customerInfo['address'];
+        $data['shipping_address'] = $customerInfo['shipping_address'];
+        $data['email'] = $customerInfo['email'];
+        $data['phone_number'] = $customerInfo['phone_number'];
+        $data['mobile_number'] = $customerInfo['mobile_number'];
+        $data['fax_number'] = $customerInfo['fax_number'];
+
+        return json_encode([ 'status' => 'Success', 'result' => $data ]);
+    }
+
     // ===== create quotation from customer created ===== //
 
     public function actionCreateQuotation($id)
     {
         $customerInfo = Customer::findOne($id);
-
         $model = new Quotation();
         $customerModel = new Customer();
 
@@ -518,6 +641,8 @@ class QuotationController extends Controller
         $quotationCode = 'QUO' . $yrNow . $monthNow . sprintf('%003d', $quotationId); 
         // for date issue //
         $dateNow = date('d-m-Y');
+        // get customer list //
+        $dataCustomer = ArrayHelper::map(Customer::find()->where(['status' => 1])->all(),'id', 'fullname');
         // get user list //
         $dataUser = ArrayHelper::map(User::find()->where('role_id <> 1', ['status' => 1])->all(),'id', 'fullname');
         // get parts //
@@ -534,6 +659,8 @@ class QuotationController extends Controller
                         'servicesResult' => $servicesResult,
                         'customerModel' => $customerModel,
                         'customerInfo' => $customerInfo,
+                        'dataCustomer' => $dataCustomer,
+                        
                     ]);
     }
 

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 06, 2017 at 01:27 PM
+-- Generation Time: Apr 10, 2017 at 01:39 PM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -127,7 +127,8 @@ CREATE TABLE `customer` (
 
 INSERT INTO `customer` (`id`, `type`, `company_name`, `uen_no`, `fullname`, `nric`, `address`, `shipping_address`, `race_id`, `email`, `phone_number`, `mobile_number`, `fax_number`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
 (2, 1, 'maxwell freight management pte ltd', '198305727m', 'kristine pan smith', '', '20 maxwell road 0612 maxwell house singapore 069113', '201 maxwell road 0612 maxwell house singapore 069113', 0, 'kristine@maxwellfreight.com.sg', 62216988, 62216988, '62213325', 1, '2017-04-04 18:39:20', 1, '0000-00-00 00:00:00', 0),
-(3, 2, '', '', 'johnny tang', '19880305ph', '25th floor bpi buendia center makati city', '25th floor bpi buendia center makati city', 1, 'johnsmith@bpi.com.ph', 2147483647, 9557545, '9551236', 1, '2017-04-04 18:39:58', 1, '0000-00-00 00:00:00', 0);
+(3, 2, '', '', 'johnny tang', '19880305ph', '25th floor bpi buendia center makati city', '25th floor bpi buendia center makati city', 1, 'johnsmith@bpi.com.ph', 2147483647, 9557545, '9551236', 1, '2017-04-04 18:39:58', 1, '0000-00-00 00:00:00', 0),
+(6, 1, 'blade asia', '20101201ph', 'jaimee miyuki', '', '3rd floor pacific star building makati avenue makati city', 'blk 5 belair makati avenue makati city', 0, 'jaimeemiyuki@bladeasia.com', 8728292, 9224312, '9221236-', 1, '2017-04-08 19:46:13', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -185,6 +186,7 @@ CREATE TABLE `invoice` (
   `date_issue` date NOT NULL,
   `grand_total` double NOT NULL,
   `gst` double(10,2) NOT NULL,
+  `gst_value` double NOT NULL,
   `net` double NOT NULL,
   `remarks` text NOT NULL,
   `status` int(5) NOT NULL,
@@ -197,7 +199,9 @@ CREATE TABLE `invoice` (
   `deleted` int(5) NOT NULL,
   `payment_type_id` int(5) NOT NULL,
   `discount_amount` double NOT NULL,
-  `discount_remarks` text NOT NULL
+  `discount_remarks` text NOT NULL,
+  `condition` int(5) NOT NULL,
+  `action_by` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -302,7 +306,9 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m170406_052952_create_storage_location_foreignkey', 1491456670),
 ('m170406_111715_add_columns_to_quotation_and_invoice_table', 1491477583),
 ('m170406_112007_create_payment_type_table', 1491477726),
-('m170406_112228_create_payment_type_foreignkey', 1491478026);
+('m170406_112228_create_payment_type_foreignkey', 1491478026),
+('m170407_082009_add_condition_and_action_by_columns_to_quotation_and_invoice_table', 1491553382),
+('m170410_050145_add_gst_value_column_to_quotation_and_invoice_table', 1491800613);
 
 -- --------------------------------------------------------
 
@@ -451,6 +457,15 @@ CREATE TABLE `payment_type` (
   `updated_by` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `payment_type`
+--
+
+INSERT INTO `payment_type` (`id`, `name`, `description`, `interest`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 'cash', 'customer need to pay thru cash payment', 0, 1, '2017-04-07 12:02:13', 1, '0000-00-00 00:00:00', 0),
+(2, 'nets ', 'customer need to pay thru nets payment ', 0, 1, '2017-04-07 12:07:04', 1, '0000-00-00 00:00:00', 0),
+(3, 'testing', 'testing', 5, 0, '2017-04-07 12:07:28', 1, '2017-04-07 12:08:09', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -576,19 +591,29 @@ CREATE TABLE `quotation` (
   `date_issue` date NOT NULL,
   `grand_total` double NOT NULL,
   `gst` double NOT NULL,
+  `gst_value` double NOT NULL,
   `net` double NOT NULL,
   `remarks` text NOT NULL,
+  `payment_type_id` int(5) NOT NULL,
+  `discount_amount` double NOT NULL,
+  `discount_remarks` text NOT NULL,
+  `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
   `updated_at` datetime NOT NULL,
   `updated_by` int(5) NOT NULL,
-  `status` int(5) NOT NULL,
   `invoice_created` int(5) NOT NULL,
   `deleted` int(5) NOT NULL,
-  `payment_type_id` int(5) NOT NULL,
-  `discount_amount` double NOT NULL,
-  `discount_remarks` text NOT NULL
+  `condition` int(5) NOT NULL,
+  `action_by` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `quotation`
+--
+
+INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `gst_value`, `net`, `remarks`, `payment_type_id`, `discount_amount`, `discount_remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `invoice_created`, `deleted`, `condition`, `action_by`) VALUES
+(1, 'QUO201704001', 3, 2, '2017-04-10', 850, 59.5, 7, 909.5, 'FOR TEST CASE', 1, 0, 'NO DISCOUNT REMARKS', 1, '2017-04-10 19:26:25', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -612,6 +637,18 @@ CREATE TABLE `quotation_detail` (
   `deleted` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Dumping data for table `quotation_detail`
+--
+
+INSERT INTO `quotation_detail` (`id`, `quotation_id`, `description`, `quantity`, `unit_price`, `sub_total`, `type`, `created_at`, `created_by`, `updated_at`, `updated_by`, `status`, `deleted`) VALUES
+(13, 1, 1, 1, 150, 150, 1, '2017-04-10 19:26:25', 1, '2017-04-10 19:26:25', 1, 1, 0),
+(14, 1, 2, 1, 150, 150, 1, '2017-04-10 19:26:25', 1, '2017-04-10 19:26:25', 1, 1, 0),
+(15, 1, 3, 1, 250, 250, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
+(16, 1, 4, 1, 300, 300, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
+(17, 1, 6, 1, 150, 150, 1, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
+(18, 1, 1, 1, 250, 250, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -634,7 +671,10 @@ CREATE TABLE `race` (
 --
 
 INSERT INTO `race` (`id`, `name`, `description`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'Filipino', 'all filipino citizen', 1, '2017-02-28 09:57:44', 2, '0000-00-00 00:00:00', 0);
+(1, 'Filipino', 'all filipino citizen', 1, '2017-02-28 09:57:44', 2, '0000-00-00 00:00:00', 0),
+(2, 'singaporean', 'all singapore citizen', 1, '2017-04-07 11:31:04', 1, '2017-04-07 11:31:20', 1),
+(3, 'malaysian', 'all malaysia citizen', 1, '2017-04-07 11:31:37', 1, '0000-00-00 00:00:00', 0),
+(4, 'test', 'testing', 0, '2017-04-07 11:31:54', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -688,12 +728,12 @@ CREATE TABLE `service` (
 --
 
 INSERT INTO `service` (`id`, `service_category_id`, `service_name`, `description`, `price`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 3, 'rental of forklift', 'renting of forklifts', 250, 1, '2017-02-03 14:30:00', 1, '2017-04-06 14:20:06', 1),
-(3, 5, 'forklift solid tyres', 'checking of all forklift tyres', 300, 1, '2017-02-03 17:59:46', 1, '2017-04-06 14:21:01', 1),
-(4, 5, 'forklift servicing', 'all service that needed a forklift', 500, 1, '2017-02-04 11:26:28', 1, '2017-04-06 14:21:32', 1),
+(1, 3, 'rentals of forklifter', 'renting of forklifts', 250, 1, '2017-02-03 14:30:00', 1, '2017-04-06 14:20:06', 1),
+(3, 5, 'forklift solid tyre', 'checking of all forklift tyres', 300, 1, '2017-02-03 17:59:46', 1, '2017-04-06 14:21:01', 1),
+(4, 5, 'forklift maintenance and servicing ', 'all service that needed a forklift', 500, 1, '2017-02-04 11:26:28', 1, '2017-04-06 14:21:32', 1),
 (5, 6, 'trade in or scrapped of used lorries', 'trading of non usable lorries', 750, 1, '2017-02-04 12:10:08', 1, '2017-04-06 14:23:45', 1),
 (6, 3, 'testing case', '123 testing case', 100, 0, '2017-04-04 19:43:50', 1, '2017-04-04 19:44:37', 1),
-(7, 6, 'trade in scrapped of used forklift', 'trading of non usable forklifts', 900, 1, '2017-04-06 14:23:19', 1, '0000-00-00 00:00:00', 0);
+(7, 6, 'trades in scrapped of used forklift', 'trading of non usable forklifts', 900, 1, '2017-04-06 14:23:19', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -1177,7 +1217,7 @@ ALTER TABLE `user_permission`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `designated_position`
 --
@@ -1222,7 +1262,7 @@ ALTER TABLE `parts_inventory`
 -- AUTO_INCREMENT for table `payment_type`
 --
 ALTER TABLE `payment_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `product`
 --
@@ -1242,17 +1282,17 @@ ALTER TABLE `product_inventory`
 -- AUTO_INCREMENT for table `quotation`
 --
 ALTER TABLE `quotation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `quotation_detail`
 --
 ALTER TABLE `quotation_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 --
 -- AUTO_INCREMENT for table `race`
 --
 ALTER TABLE `race`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `role`
 --

@@ -3,17 +3,17 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\Race;
-use common\models\SearchRace;
+use common\models\PaymentType;
+use common\models\SearchPaymentType;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Dompdf\Dompdf;
 
 /**
- * RaceController implements the CRUD actions for Race model.
+ * PaymentTypeController implements the CRUD actions for PaymentType model.
  */
-class RaceController extends Controller
+class PaymentTypeController extends Controller
 {
     public $enableCsrfValidation = false;
     /**
@@ -32,24 +32,25 @@ class RaceController extends Controller
     }
 
     /**
-     * Lists all Race models.
+     * Lists all PaymentType models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SearchRace();
+        $searchModel = new SearchPaymentType();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $model = new Race();
+        $model = new PaymentType();
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'model' => $model,
+
         ]);
     }
 
     /**
-     * Displays a single Race model.
+     * Displays a single PaymentType model.
      * @param integer $id
      * @return mixed
      */
@@ -61,18 +62,19 @@ class RaceController extends Controller
     }
 
     /**
-     * Creates a new Race model.
+     * Creates a new PaymentType model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Race();
+        $model = new PaymentType();
 
         if ( Yii::$app->request->post() ) {
             
             $model->name = strtolower(Yii::$app->request->post('name'));
             $model->description = strtolower(Yii::$app->request->post('description'));
+            $model->interest = Yii::$app->request->post('interest');
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
@@ -96,7 +98,7 @@ class RaceController extends Controller
     }
 
     /**
-     * Updates an existing Race model.
+     * Updates an existing PaymentType model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -108,6 +110,7 @@ class RaceController extends Controller
         if ( Yii::$app->request->post() ) {
             $model->name = strtolower(Yii::$app->request->post('name'));
             $model->description = strtolower(Yii::$app->request->post('description'));
+            $model->interest = Yii::$app->request->post('interest');
             $model->status = 1;
             $model->updated_at = date('Y-m-d H:i:s');
             $model->updated_by = Yii::$app->user->identity->id;
@@ -131,20 +134,21 @@ class RaceController extends Controller
 
     public function actionGetData()
     {  
-        $getRaces = Race::findOne(Yii::$app->request->get('id'));
+        $getPaymenttypes = PaymentType::findOne(Yii::$app->request->get('id'));
         
         $data = array();
-        $data['id'] = $getRaces->id;
-        $data['name'] = $getRaces->name;
-        $data['description'] = $getRaces->description;
-        $data['status'] = $getRaces->status;
-        $data['created_at'] = $getRaces->created_at;
+        $data['id'] = $getPaymenttypes->id;
+        $data['name'] = $getPaymenttypes->name;
+        $data['description'] = $getPaymenttypes->description;
+        $data['interest'] = $getPaymenttypes->interest;
+        $data['status'] = $getPaymenttypes->status;
+        $data['created_at'] = $getPaymenttypes->created_at;
 
         return json_encode(['status' => 'Success', 'result' => $data]);
     }
 
     /**
-     * Deletes an existing Race model.
+     * Deletes an existing PaymentType model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -166,15 +170,15 @@ class RaceController extends Controller
     }
 
     /**
-     * Finds the Race model based on its primary key value.
+     * Finds the PaymentType model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Race the loaded model
+     * @return PaymentType the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Race::findOne($id)) !== null) {
+        if (($model = PaymentType::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -183,7 +187,7 @@ class RaceController extends Controller
 
     public function actionExportPdf() 
     {
-        $result = Race::find()->status(['status' => 1])->all();
+        $result = PaymentType::find()->where(['status' => 1])->all();
         $content = $this->renderPartial('_pdf', ['result' => $result]);
 
         $dompdf = new Dompdf();
@@ -192,6 +196,7 @@ class RaceController extends Controller
         $dompdf->setPaper('A4', 'landscape');
         $dompdf->render();
 
-        $dompdf->stream('RaceList-' . date('m-d-Y'));
+        $dompdf->stream('PaymentTypeList-' . date('m-d-Y'));
     }
+
 }

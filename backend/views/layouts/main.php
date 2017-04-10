@@ -42,7 +42,11 @@ $isProductCategory = false;
 $isProduct = false;
 $isProductInventory = false;
 $isQuotation = false;
+$isInvoice = false;
 $isUserPermission = false;
+$isUtilities = false;
+$isRace = false;
+$isPaymentType = false;
 
  if ( isset ( $_GET['r'] ) ) {
       $getClass = $_GET['r'];
@@ -141,6 +145,20 @@ $isUserPermission = false;
 
       if ( $getClass == 'quotation' ) {
             $isQuotation = true; 
+      }
+
+      if ( $getClass == 'invoice' ) {
+            $isInvoice = true; 
+      }
+
+      if ( $getClass == 'race' ) {
+            $isUtilities = true;
+            $isRace = true; 
+      }
+
+      if ( $getClass == 'payment-type' ) {
+            $isUtilities = true;
+            $isPaymentType = true; 
       }
 
  }else{
@@ -412,21 +430,25 @@ $isUserPermission = false;
   </a>
 </li>
 
-<li class="<?php if( $isQuotation ) { echo 'activeMenu'; }?>" >
-  <a href="?r=invoice" id="quotationMenu">
+<li class="<?php if( $isInvoice ) { echo 'activeMenu'; }?>" >
+  <a href="?r=invoice" id="invoiceMenu">
     <i class="fa fa-file-text-o"></i> <span>Invoice</span>
   </a>
 </li>
 
-<li class="treeview <?php if( $isParts ) { echo 'active'; }?>" >
+<li class="treeview <?php if( $isUtilities   ) { echo 'active'; }?>" >
   <a href="#" id="partsMenus" >
-    <i class="fa fa-windows"></i> <span>Utilities</span>
+    <i class="fa fa-globe"></i> <span>Utilities</span>
     <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
   </a>
 
   <ul class="treeview-menu">
     <li>
-      <a href="?r=race/" id="<?php if( $isPartsCategory ) { echo 'partscategoryMenu'; }?>" ><span class="subMenu"><i class="fa fa-angle-double-right"></i> Set Race </span></a>
+      <a href="?r=race/" id="<?php if( $isRace ) { echo 'raceMenu'; }?>" ><span class="subMenu"><i class="fa fa-angle-double-right"></i> Set Race </span></a>
+    </li>
+
+    <li>
+      <a href="?r=payment-type/" id="<?php if( $isPaymentType ) { echo 'paymenttypeMenu'; }?>" ><span class="subMenu"><i class="fa fa-angle-double-right"></i> Set Payment Type </span></a>
     </li>
   </ul>
 

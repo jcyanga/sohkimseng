@@ -50,7 +50,7 @@ use yii\grid\GridView;
 	<div class="col-md-3 selectedPartsAndServicesFontSize" >
 		<span class="selectedPartsAndServices" id="inlabel-subtotal-<?= $ctr ?>" ><?= $sub_total ?></span>
 	</div>
-
+	
 <br/><hr/>
 </div>
 
@@ -84,6 +84,6 @@ use yii\grid\GridView;
 	<div class="col-md-3">
 		<input type="text" id="parts-services-subtotal-in-list-<?= $ctr ?>" value="<?= $sub_total ?>" name="sub_total[]" class="inputForm inputboxTotalAlignment form-control partsservicesSubtotal" readonly="readonly" />	
 	</div>
-
+	
 <br/><hr/>
 </div>

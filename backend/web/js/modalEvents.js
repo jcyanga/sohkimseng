@@ -6512,6 +6512,13 @@ $('#submitRaceFormCreate').click(function(){
 
 });
 
+$('.closeNewRace').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-create-race').modal('hide');
+    	e.preventDefault();
+    }
+});
+
 // Race Update //
 if( $('._showUpdateRaceModal').length ){
 
@@ -6605,6 +6612,13 @@ $('#submitRaceFormUpdate').click(function(){
 
 });
 
+$('.closeUpdateRace').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-update-race').modal('hide');
+    	e.preventDefault();
+    }
+});
+
 // Race Delete //
 $('.raceDeleteColumn').each(function(){
 
@@ -6687,6 +6701,13 @@ $('._showViewRaceModal').each(function(){
 
 }
 
+$('.closeViewRace').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-race').modal('hide');
+    	e.preventDefault();
+    }
+});
+
 // Race Forms Clear //
 $('#clearRaceForms').click(function(){
 
@@ -6700,12 +6721,322 @@ $('#clearRaceForms').click(function(){
 
 // Race View Close //
 $('#closeRaceForms').click(function(){
+	if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-race').modal('hide');
+    	e.preventDefault();
+    }
+});
 
-	$('#modal-launcher-view-race').toggle('fast');
-	window.location.reload();
+// Payment-Type Create //
+$('._showCreatePtModal').click(function(){
+
+	$('#modal-launcher-create-pt').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false,
+        })
+
+	$('form input, textarea').removeClass('inputTxtError');
+	$('label.error').remove();
+
+	$('#name').val('');
+	$('#description').val('');
+	$('#interest').val('');
 
 });
 
+$('#submitPtFormCreate').click(function(){
+	var name = $('#name').val();
+	var description = $('#description').val();
+	var interest = $('#interest').val();
+
+	if( !onlyLetter(name) ) {
+		alert('Invalid name format.');
+		name.focus();
+	}
+
+	if( !onlyLetterAndNumber(description) ) {
+		alert('Invalid description format.');
+		description.focus();
+	}
+
+	if( !onlyNumber(interest) ) {
+		alert('Invalid interest format.');
+		interest.focus();
+	}
+
+	$.post("?r=payment-type/create",{
+		name : name,
+		description : description,
+		interest : interest
+
+	}, 
+	function(data) {
+		var data = jQuery.parseJSON(data);
+		if( data.status == 'Success') {
+
+			$('form input').removeClass('inputTxtError');
+		    $('label.error').remove();
+		    
+		    $('#name').val('');	
+		    $('#description').val('');
+		    $('#interest').val('');	
+		    $('#modal-launcher-create-pt').toggle('fast');
+
+			alert(data.message);
+			window.location.reload();
+
+		} else {
+
+			$('form input').removeClass('inputTxtError');
+		    $('label.error').remove();
+
+			$.each(data.message, function(field, message) {
+	    		var errMsg = '<label class="error" for="'+ field + '">'+ message +'</label>';
+	            $('input[name="' + 'PaymentType[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+	            $('textarea[name="' + 'PaymentType[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+	        });
+	      
+	      	var keys = Object.keys(data.message);
+	      	$('input[name="'+ 'PaymentType[' + keys[0] + ']' +'"]').focus();	
+	      	$('textarea[name="'+ 'PaymentType[' + keys[0] + ']' +'"]').focus();	
+	      	return false;
+
+		} 
+
+	});
+
+});
+
+$('.closeNewPt').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-create-pt').modal('hide');
+    	e.preventDefault();
+    }
+});
+
+// Payment-Type Update //
+if( $('._showUpdatePtModal').length ){
+
+$('._showUpdatePtModal').each(function(){
+	$(this).click(function(){
+	
+	$('#modal-launcher-update-pt').modal({
+        show: true,
+        backdrop: 'static',
+        keyboard: false,
+
+    })
+
+	$('form input, textarea').removeClass('inputTxtError');
+	$('label.error').remove();
+
+		$.get("?r=payment-type/get-data", {
+			id : $(this).attr('id'),
+	
+		},
+		function(data){
+			var data = jQuery.parseJSON(data);
+			var result = data.result;
+			if( data.status == 'Success' ) {
+				$('#ptFormUpdate').find('input:hidden[name=id]').val(result.id);
+				$('#ptFormUpdate').find('input:text[id=updateName]').val(result.name.toUpperCase());
+				$('#ptFormUpdate').find('input:text[id=updateInterest]').val(parseInt(result.interest));
+				$('#ptFormUpdate').find('textarea[id=updateDescription]').val(result.description.toUpperCase());
+			}
+
+		});
+	});
+});
+
+}
+
+$('#submitPtFormUpdate').click(function(){
+	var id = $('#id').val();
+	var name = $('#updateName').val();
+	var description = $('#updateDescription').val();
+	var interest = $('#updateInterest').val();
+
+	if( !onlyLetter(name) ) {
+		alert('Invalid name format.');
+		name.focus();
+	}
+
+	if( !onlyLetterAndNumber(description) ) {
+		alert('Invalid description format.');
+		description.focus();
+	}
+
+	if( !onlyLetterAndNumber(interest) ) {
+		alert('Invalid interest format.');
+		interest.focus();
+	}
+
+	$.post("?r=payment-type/update",{
+		id : id,
+		name : name,
+		description : description,
+		interest : interest,
+
+	}, 
+	function(data) {
+		var data = jQuery.parseJSON(data);
+		if( data.status == 'Success') {
+
+			$('form input').removeClass('inputTxtError');
+		    $('label.error').remove();
+
+		    $('#id').val('');
+		    $('#updateName').val('');
+		    $('#updateDescription').val('');
+		    $('#updateInterest').val('');	
+		    $('#modal-launcher-update-pt').toggle('fast');
+
+			alert(data.message);
+			window.location.reload();
+
+		} else {
+
+			$('form input').removeClass('inputTxtError');
+		    $('label.error').remove();
+
+			$.each(data.message, function(field, message) {
+	    		var errMsg = '<label class="error" for="'+ field + '">'+ message +'</label>';
+	            $('#raceFormUpdate').find('input[name="' + 'PaymentType[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+	            $('#raceFormUpdate').find('textarea[name="' + 'PaymentType[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+	        });
+	      
+	      	var keys = Object.keys(data.message);
+	      	$('#raceFormUpdate').find('input[name="'+ 'PaymentType[' + keys[0] + ']' +'"]').focus();
+	      	$('#raceFormUpdate').find('textarea[name="'+ 'PaymentType[' + keys[0] + ']' +'"]').focus();	
+	      	return false;
+
+		} 
+
+	});
+
+});
+
+$('.closeUpdatePt').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-update-pt').modal('hide');
+    	e.preventDefault();
+    }
+});
+
+// Payment-Type Delete //
+$('.ptDeleteColumn').each(function(){
+
+$(this).click(function() {    
+	var yes = confirm ("Are you sure you want to delete this record?");
+       
+	if(yes) {
+		$.post("?r=payment-type/delete-column",{
+			id : $(this).attr('id'),
+
+		},
+		function(data){
+			var data = jQuery.parseJSON(data);
+			
+			if( data.status == 'Success' ) {
+				alert(data.message);
+				window.location.reload();	
+
+			}
+
+		});
+	}
+
+});
+
+});
+
+// Payment-Type View //
+if( $('._showViewPtModal').length ){
+
+$('._showViewPtModal').each(function(){
+	$(this).click(function(){
+	
+	$('#modal-launcher-view-pt').modal({
+        show: true,
+        backdrop: 'static',
+        keyboard: false,
+
+    })
+		$.get("?r=payment-type/get-data", {
+			id : $(this).attr('id'),
+	
+		},
+		function(data){
+			var data = jQuery.parseJSON(data);
+			var result = data.result;
+			
+			if( parseInt(result.status) === 1 ) {
+				var status = 'ACTIVE';
+			}else{
+				var status = 'INACTIVE';	
+			}
+
+			if( data.status == 'Success' ) {
+				var html = '<table class="table table-hover table-striped viewTableContent">'+
+						'<tr>'+
+							'<td><b>ID</b></td>' +
+							'<td>'+result.id+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>PAYMENT-TYPE NAME</b></td>' +
+							'<td>'+result.name.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>DESCRIPTION</b></td>' +
+							'<td>'+result.description.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>INTEREST</b></td>' +
+							'<td>'+parseInt(result.interest)+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>STATUS</b></td>' +
+							'<td>'+status+'</td>'
+						+'</tr>'
+				+'</table>';
+
+				$('#viewPt').html(html);
+			}
+
+		});
+	});
+});
+
+}
+
+$('.closeViewPt').click(function(e){
+    if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-pt').modal('hide');
+    	e.preventDefault();
+    }
+});
+
+// Payment-Type Forms Clear //
+$('#clearPtForms').click(function(){
+
+	$('#ptFormCreate').find('input:text[id=name]').val('');
+	$('#ptFormCreate').find('textarea[id=description]').val('');
+	$('#ptFormCreate').find('textarea[id=interest]').val('');
+
+	$('#ptFormUpdate').find('input:text[id=updateName]').val('');
+	$('#ptFormUpdate').find('textarea[id=updateDescription]').val('');
+	$('#ptFormUpdate').find('textarea[id=updateInterest]').val('');
+
+});
+
+// Payment-Type View Close //
+$('#closePtForms').click(function(){
+	if( confirm('You want to close this form?') ){	
+    	$('#modal-launcher-view-pt').modal('hide');
+    	e.preventDefault();
+    }
+});
 
 //======= Form Validations =======//
 
