@@ -7,39 +7,43 @@ use Yii;
 use yii\db\Query;
 
 /**
- * This is the model class for table "invoice".
+ * This is the model class for table "delivery_order".
  *
  * @property integer $id
- * @property string $quotation_code
+ * @property string $delivery_order_code
  * @property string $invoice_no
  * @property integer $user_id
  * @property integer $customer_id
  * @property string $date_issue
  * @property double $grand_total
  * @property double $gst
+ * @property double $gst_value
  * @property double $net
  * @property string $remarks
+ * @property integer $payment_type_id
+ * @property double $discount_amount
+ * @property string $discount_remarks
  * @property integer $status
  * @property string $created_at
  * @property integer $created_by
  * @property string $updated_at
  * @property integer $updated_by
- * @property integer $do
  * @property integer $paid
  * @property integer $deleted
+ * @property integer $condition
+ * @property integer $action_by
  *
  * @property Customer $customer
  * @property User $user
- * @property InvoiceDetail[] $invoiceDetails
  */
-class Invoice extends \yii\db\ActiveRecord
+class DeliveryOrder extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'invoice';
+        return 'delivery_order';
     }
 
     /**
@@ -48,16 +52,15 @@ class Invoice extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['invoice_no', 'user_id', 'customer_id', 'grand_total', 'gst', 'net', 'remarks'], 'required', 'message' => 'Fill up the required fields.'],
+            [['delivery_order_code', 'user_id', 'customer_id', 'grand_total', 'gst', 'net', 'remarks'], 'required', 'message' => 'Fill up the required fields.'],
             [['customer_id', 'user_id'], 'compare', 'compareValue' => 0, 'operator' => '>', 'type' => 'number', 'message' => 'Invalid option selected'],
             [['user_id', 'customer_id', 'status', 'created_by', 'updated_by', 'deleted'], 'integer'],
             [['date_issue', 'created_at', 'updated_at'], 'safe'],
-            [['grand_total', 'gst', 'net'], 'number'],
-            [['remarks'], 'string'],
-            [['invoice_no'], 'string', 'max' => 100],
+            [['grand_total', 'gst', 'gst_value', 'net', 'discount_amount'], 'number'],
+            [['remarks', 'discount_remarks'], 'string'],
+            [['delivery_order_code'], 'string', 'max' => 100],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::className(), 'targetAttribute' => ['customer_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
-            [['payment_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => PaymentType::className(), 'targetAttribute' => ['payment_type_id' => 'id']],
         ];
     }
 
@@ -68,23 +71,28 @@ class Invoice extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'quotation_code' => 'Quotation Code',
+            'delivery_order_code' => 'Delivery Order Code',
             'invoice_no' => 'Invoice No',
             'user_id' => 'User ID',
             'customer_id' => 'Customer ID',
             'date_issue' => 'Date Issue',
             'grand_total' => 'Grand Total',
-            'gst' => 'GST',
+            'gst' => 'Gst',
+            'gst_value' => 'Gst Value',
             'net' => 'Net',
             'remarks' => 'Remarks',
+            'payment_type_id' => 'Payment Type ID',
+            'discount_amount' => 'Discount Amount',
+            'discount_remarks' => 'Discount Remarks',
             'status' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'updated_at' => 'Updated At',
             'updated_by' => 'Updated By',
-            'do' => 'Do',
             'paid' => 'Paid',
             'deleted' => 'Deleted',
+            'condition' => 'Condition',
+            'action_by' => 'Action By',
         ];
     }
 
@@ -104,25 +112,17 @@ class Invoice extends \yii\db\ActiveRecord
         return $this->hasOne(User::className(), ['id' => 'user_id']);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getInvoiceDetails()
-    {
-        return $this->hasMany(InvoiceDetail::className(), ['invoice_id' => 'id']);
-    }
-
-    // get invoice Id
-    public function getInvoiceId()
+    // get delivery order Id
+    public function getDeliveryOrderId()
     {
         $query = new Query();
 
-        $result = $query->select(['Max(id) as invoice_id'])
-                        ->from('invoice')
+        $result = $query->select(['Max(id) as delivery_order_id'])
+                        ->from('delivery_order')
                         ->one();
                
         if( count($result) > 0 ) {
-            return $result['invoice_id'] + 1;
+            return $result['delivery_order_id'] + 1;
         }else {
             return 0;
         }      
@@ -186,51 +186,53 @@ class Invoice extends \yii\db\ActiveRecord
         return $result;
     }
 
-    // get invoice information for preview
-    public function getInvoiceByIdForPreview($id)
+    // get delivery order information for preview
+    public function getDeliveryOrderByIdForPreview($id)
     {
         $query = new Query();
 
-        $result = $query->select([ 'invoice.id', 'invoice.invoice_no', 'invoice.quotation_code', 'invoice.customer_id', 'customer.fullname as customerName', 'invoice.user_id', 'user.fullname as salesPerson', 'invoice.date_issue', 'invoice.grand_total', 'invoice.gst', 'invoice.net', 'invoice.remarks', 'invoice.status', 'invoice.created_at', 'invoice.created_by', 'payment_type.name as paymenttypeName', 'customer.type', 'customer.nric', 'customer.company_name', 'customer.uen_no', 'customer.address', 'customer.shipping_address', 'customer.email', 'customer.phone_number', 'customer.mobile_number', 'customer.fax_number', 'invoice.discount_amount', 'invoice.discount_remarks', 'invoice.condition', 'invoice.payment_type_id', 'invoice.gst_value', 'invoice.paid' ])
-                    ->from('invoice')
-                    ->leftJoin('customer', 'invoice.customer_id = customer.id')
-                    ->leftJoin('user', 'invoice.user_id = user.id')
-                    ->leftJoin('payment_type', 'invoice.payment_type_id = payment_type.id')
-                    ->where(['invoice.id' => $id, 'invoice.status' => 1])
+        $result = $query->select([ 'delivery_order.id', 'delivery_order.invoice_no', 'delivery_order.delivery_order_code', 'delivery_order.customer_id', 'customer.fullname as customerName', 'delivery_order.user_id', 'user.fullname as salesPerson', 'delivery_order.date_issue', 'delivery_order.grand_total', 'delivery_order.gst', 'delivery_order.net', 'delivery_order.remarks', 'delivery_order.status', 'delivery_order.created_at', 'delivery_order.created_by', 'payment_type.name as paymenttypeName', 'customer.type', 'customer.nric', 'customer.company_name', 'customer.uen_no', 'customer.address', 'customer.shipping_address', 'customer.email', 'customer.phone_number', 'customer.mobile_number', 'customer.fax_number', 'delivery_order.discount_amount', 'delivery_order.discount_remarks', 'delivery_order.condition', 'delivery_order.payment_type_id', 'delivery_order.gst_value', 'delivery_order.paid' ])
+                    ->from('delivery_order')
+                    ->leftJoin('customer', 'delivery_order.customer_id = customer.id')
+                    ->leftJoin('user', 'delivery_order.user_id = user.id')
+                    ->leftJoin('payment_type', 'delivery_order.payment_type_id = payment_type.id')
+                    ->where(['delivery_order.id' => $id, 'delivery_order.status' => 1])
                     ->one();
 
         return $result;
 
     }
 
-    public function getInvoiceServiceForPreview($id)
+    public function getDeliveryOrderServiceForPreview($id)
     {
         $query = new Query();
 
-        $result = $query->select([ 'invoice_detail.id', 'invoice_detail.description', 'service.service_name as name', 'invoice_detail.quantity', 'invoice_detail.unit_price', 'invoice_detail.sub_total', 'invoice_detail.type', 'invoice_detail.status' ])
-                    ->from('invoice_detail')
-                    ->leftJoin('service', 'invoice_detail.description = service.id')
-                    ->where(['invoice_detail.invoice_id' => $id])
-                    ->andWhere(['invoice_detail.type' => 0])
-                    ->andWhere(['invoice_detail.status' => 1])
+        $result = $query->select([ 'delivery_order_detail.id', 'delivery_order_detail.description', 'service.service_name as name', 'delivery_order_detail.quantity', 'delivery_order_detail.unit_price', 'delivery_order_detail.sub_total', 'delivery_order_detail.type', 'delivery_order_detail.status' ])
+                    ->from('delivery_order_detail')
+                    ->leftJoin('service', 'delivery_order_detail.description = service.id')
+                    ->where(['delivery_order_detail.delivery_order_id' => $id])
+                    ->andWhere(['delivery_order_detail.type' => 0])
+                    ->andWhere(['delivery_order_detail.status' => 1])
                     ->all();
 
         return $result;
 
     }
 
-    public function getInvoicePartsForPreview($id)
+    public function getDeliveryOrderPartsForPreview($id)
     {
         $query = new Query();
 
-        $result = $query->select([ 'invoice_detail.id', 'invoice_detail.description', 'parts.parts_name as name', 'parts.unit_of_measure', 'parts.parts_code', 'invoice_detail.quantity', 'invoice_detail.unit_price', 'invoice_detail.sub_total', 'invoice_detail.type', 'invoice_detail.status' ])
-                    ->from('invoice_detail')
-                    ->leftJoin('parts', 'invoice_detail.description = parts.id')
-                    ->where(['invoice_detail.invoice_id' => $id])
-                    ->andWhere(['invoice_detail.type' => 1])
-                    ->andWhere(['invoice_detail.status' => 1])
+        $result = $query->select([ 'delivery_order_detail.id', 'delivery_order_detail.description', 'parts.parts_name as name', 'parts.unit_of_measure', 'parts.parts_code', 'delivery_order_detail.quantity', 'delivery_order_detail.unit_price', 'delivery_order_detail.sub_total', 'delivery_order_detail.type', 'delivery_order_detail.status' ])
+                    ->from('delivery_order_detail')
+                    ->leftJoin('parts', 'delivery_order_detail.description = parts.id')
+                    ->where(['delivery_order_detail.delivery_order_id' => $id])
+                    ->andWhere(['delivery_order_detail.type' => 1])
+                    ->andWhere(['delivery_order_detail.status' => 1])
                     ->all();
 
         return $result;
     }
+
+
 }

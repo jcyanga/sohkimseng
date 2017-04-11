@@ -1,10 +1,10 @@
 var domain ="http://"+document.domain;
 
-//============== Create Customer by Invoice ================//
+//============== Create Customer by Delivery ================//
 
-$('._showCreateCustomerByInvoiceModal').click(function(){
+$('._showCreateCustomerByDeliveryOrderModal').click(function(){
 
-	$('#modal-launcher-create-customerbyinvoice').modal({
+	$('#modal-launcher-create-customerbydeliverorder').modal({
             show: true,
             backdrop: 'static',
             keyboard: false,
@@ -35,7 +35,7 @@ $('._showCreateCustomerByInvoiceModal').click(function(){
 
 });
 
-$('#submitCustomerFormCreateByInvoice').click(function(){
+$('#submitCustomerFormCreateByDeliveryOrder').click(function(){
 	var type = $('#customerType').val();
 	
 	if(type == 0){
@@ -91,7 +91,7 @@ $('#submitCustomerFormCreateByInvoice').click(function(){
 			companyOfficeNumber.focus();
 		}
 
-		$.post("?r=invoice/create-company",{
+		$.post("?r=delivery-order/create-company",{
 			companyName : companyName,
 			companyAddress : companyAddress,
 			companyShippingAddress : companyShippingAddress,
@@ -122,7 +122,7 @@ $('#submitCustomerFormCreateByInvoice').click(function(){
 			    $('#modal-launcher-create-customer').toggle('fast');
 
 				alert(data.message);
-				window.location = domain + '?r=invoice/create-invoice&id='+ data.id;
+				window.location = domain + '?r=delivery-order/create-delivery-order&id='+ data.id;
 
 			} else {
 
@@ -190,7 +190,7 @@ $('#submitCustomerFormCreateByInvoice').click(function(){
 			customerOficeNumber.focus();
 		}
 
-		$.post("?r=invoice/create-customer",{
+		$.post("?r=delivery-order/create-customer",{
 			fullname : fullname,
 			customerAddress : customerAddress,
 			customerShippingAddress : customerShippingAddress,
@@ -221,7 +221,7 @@ $('#submitCustomerFormCreateByInvoice').click(function(){
 			    $('#modal-launcher-create-customer').toggle('fast');
 
 				alert(data.message);
-				window.location = domain + '?r=invoice/create-invoice&id='+ data.id;
+				window.location = domain + '?r=delivery-order/create-delivery-order&id='+ data.id;
 
 			} else {
 
@@ -246,11 +246,11 @@ $('#submitCustomerFormCreateByInvoice').click(function(){
 
 });
 
-//============== Invoice Create ================//
+//============== Delivery Order Create ================//
 
-$('._showCreateInvoiceModal').click(function(){
+$('._showCreateDeliveryOrderModal').click(function(){
 
-	$('#modal-launcher-create-invoice').modal({
+	$('#modal-launcher-create-deliveryorder').modal({
             show: true,
             backdrop: 'static',
             keyboard: false,
@@ -259,37 +259,37 @@ $('._showCreateInvoiceModal').click(function(){
 	$('form input, textarea').removeClass('inputTxtError');
 	$('label.error').remove();
 
-	$('#invoiceFormCreate').find('select[id=invoiceCustomerName]').val('0').change();
-	$('#invoiceFormCreate').find('select[id=sales_person]').val('0').change();
-	$('#invoiceFormCreate').find('textarea[id=remarks]').val('');
-	$('#invoiceFormCreate').find('input:text[id=grandTotal]').val('');
-	$('#invoiceFormCreate').find('input:hidden[id=gst_amount]').val('');
-	$('#invoiceFormCreate').find('input:text[id=gst]').val('');
-	$('#invoiceFormCreate').find('input:text[id=netTotal]').val('');
-	$('#invoiceFormCreate').find('select[id=parts]').val('0').change();
-	$('#invoiceFormCreate').find('input:text[id=partsQty]').val('');
-	$('#invoiceFormCreate').find('input:text[id=partsPrice]').val('');
-	$('#invoiceFormCreate').find('input:text[id=partsSubtotal]').val('');
-	$('#invoiceFormCreate').find('select[id=services]').val('0').change();
-	$('#invoiceFormCreate').find('input:text[id=servicesQty]').val('');
-	$('#invoiceFormCreate').find('input:text[id=servicesPrice]').val('');
-	$('#invoiceFormCreate').find('input:text[id=servicesSubtotal]').val('');
+	$('#deliveryorderFormCreate').find('select[id=deliveryorderCustomerName]').val('0').change();
+	$('#deliveryorderFormCreate').find('select[id=sales_person]').val('0').change();
+	$('#deliveryorderFormCreate').find('textarea[id=remarks]').val('');
+	$('#deliveryorderFormCreate').find('input:text[id=grandTotal]').val('');
+	$('#deliveryorderFormCreate').find('input:hidden[id=gst_amount]').val('');
+	$('#deliveryorderFormCreate').find('input:text[id=gst]').val('');
+	$('#deliveryorderFormCreate').find('input:text[id=netTotal]').val('');
+	$('#deliveryorderFormCreate').find('select[id=parts]').val('0').change();
+	$('#deliveryorderFormCreate').find('input:text[id=partsQty]').val('');
+	$('#deliveryorderFormCreate').find('input:text[id=partsPrice]').val('');
+	$('#deliveryorderFormCreate').find('input:text[id=partsSubtotal]').val('');
+	$('#deliveryorderFormCreate').find('select[id=services]').val('0').change();
+	$('#deliveryorderFormCreate').find('input:text[id=servicesQty]').val('');
+	$('#deliveryorderFormCreate').find('input:text[id=servicesPrice]').val('');
+	$('#deliveryorderFormCreate').find('input:text[id=servicesSubtotal]').val('');
 
 });
 
-$('.closeInvoice').click(function(e){
-    if( confirm('Are you want to close this Invoice Form?') ){	
-    	$('#modal-launcher-create-invoice').modal('hide');
+$('.closeDeliveryOrder').click(function(e){
+    if( confirm('Are you want to close this Delivery Order Form?') ){	
+    	$('#modal-launcher-create-deliveryorder').modal('hide');
     	e.preventDefault();
     }
 });
 
 //========== Get Customer Information ==========//
 
-$('#invoiceCustomerName').change(function(){
+$('#deliveryorderCustomerName').change(function(){
 	var customerId = $(this).val();
 
-	$.get('?r=invoice/get-customer-information',{
+	$.get('?r=delivery-order/get-customer-information',{
 		customerId : customerId,
 
 	}, function(data){
@@ -376,7 +376,7 @@ $('#invoiceCustomerName').change(function(){
 
         }
 
-        $('#invoice-customer-information').html(html);
+        $('#delivery-order-customer-information').html(html);
 
 	}); 
 
@@ -384,7 +384,7 @@ $('#invoiceCustomerName').change(function(){
 
 //=========== Auto-Parts ===========//
 
-function getPartsPriceAndQtyInvoice()
+function getPartsPriceAndQtyDeliveryOrder()
 {
 	var partsId = $('#parts').val();
 
@@ -399,7 +399,7 @@ function getPartsPriceAndQtyInvoice()
 
 	}else{
 
-		$.get("?r=invoice/get-parts-price-and-qty",{
+		$.get("?r=delivery-order/get-parts-price-and-qty",{
 			parts_id : partsId,
 
 		},function(data){
@@ -422,7 +422,7 @@ function getPartsPriceAndQtyInvoice()
 	}
 }
 
-function updatePartsSubtotalInvoice()
+function updatePartsSubtotalDeliveryOrder()
 {
 	var partsQty = $('#partsQty').val();
 	var currentPartsQty = $('#currentQtyValue').val();
@@ -439,7 +439,7 @@ function updatePartsSubtotalInvoice()
 	$('#partsSubtotal').val(parseFloat(total).toFixed(2));
 }
 
-$('.add_autoparts_invoice').click(function(){
+$('.add_autoparts_deliveryorder').click(function(){
 	var partsId = $('#parts').val();
 	var partsQty = $('#partsQty').val();
 	var partsPrice = $('#partsPrice').val();
@@ -459,7 +459,7 @@ $('.add_autoparts_invoice').click(function(){
 		var ctr = $('#ctr').val();
 		ctr++;
 
-		$.post("?r=invoice/insert-auto-parts-in-list",{
+		$.post("?r=delivery-order/insert-auto-parts-in-list",{
 		parts_id : partsId,
 		parts_qty : partsQty,
 		parts_price : partsPrice,
@@ -478,7 +478,7 @@ $('.add_autoparts_invoice').click(function(){
 			$('#partsSubtotal').val('');
 
 			setTimeout(function() {
-                getInvoiceTotal();
+                getDeliveryOrderTotal();
             }, 500);
 
 		});
@@ -489,11 +489,11 @@ $('.add_autoparts_invoice').click(function(){
 
 //=========== Services ===========//
 
-function getServicesPriceAndQtyInvoice()
+function getServicesPriceAndQtyDeliveryOrder()
 {
 	var servicesId = $('#services').val();
 
-	$.get("?r=invoice/get-services-price-and-qty",{
+	$.get("?r=delivery-order/get-services-price-and-qty",{
 		services_id : servicesId,
 
 	},function(data){
@@ -519,7 +519,7 @@ function getServicesPriceAndQtyInvoice()
 	});
 }
 
-function updateServiceDetailsInvoice()
+function updateServiceDetailsDeliveryOrder()
 {
 	var servicesId = $('#services').val();
 
@@ -535,7 +535,7 @@ function updateServiceDetailsInvoice()
 	}
 }
 
-function saveServiceDetailsInvoice()
+function saveServiceDetailsDeliveryOrder()
 {
 	var servicesId = $('#services').val();
 	var serviceCategory = $('#serviceCategory').val();
@@ -546,7 +546,7 @@ function saveServiceDetailsInvoice()
 
 	}else{
 		
-		$.post("?r=invoice/save-service-details",{
+		$.post("?r=delivery-order/save-service-details",{
 			service_id : servicesId,
 			service_details : servicesDetails,
 
@@ -565,7 +565,7 @@ function saveServiceDetailsInvoice()
 	}
 }
 
-function updateServicesSubtotalInvoice()
+function updateServicesSubtotalDeliveryOrder()
 {
 	var servicesQty = $('#servicesQty').val();
 	var servicesPrice = $('#servicesPrice').val();
@@ -584,7 +584,7 @@ function updateServicesSubtotalInvoice()
 	$('#servicesSubtotal').val(parseFloat(total).toFixed(2));
 }
 
-$('.add_services_invoice').click(function(){
+$('.add_services_deliveryorder').click(function(){
 	var servicesId = $('#services').val();
 	var servicesQty = $('#servicesQty').val();
 	var servicesPrice = $('#servicesPrice').val();
@@ -609,7 +609,7 @@ $('.add_services_invoice').click(function(){
 		var ctr = $('#ctr').val();
 		ctr++;
 
-		$.post("?r=invoice/insert-services-in-list",{
+		$.post("?r=delivery-order/insert-services-in-list",{
 		services_id : servicesId,
 		services_qty : servicesQty,
 		services_price : servicesPrice,
@@ -637,7 +637,7 @@ $('.add_services_invoice').click(function(){
 
 //=========== Selected Insert Parts & Services ===========//
 
-function editSelectedInvoiceItem(n)
+function editSelectedDeliveryOrderItem(n)
 {
 	$('.selectedItemInLabel-'+n).addClass('hidden');
 	$('.selectedItemInInputbox-'+n).removeClass('hidden');
@@ -646,7 +646,7 @@ function editSelectedInvoiceItem(n)
 	$('.edit-button-'+n).addClass('hidden');
 }
 
-function updateSelectedSubtotalInvoice(n)
+function updateSelectedSubtotalDeliveryOrder(n)
 {
 	var qty = $('#parts-services-qty-in-list-'+n).val();
 	var price = $('#parts-services-price-in-list-'+n).val();
@@ -666,11 +666,11 @@ function updateSelectedSubtotalInvoice(n)
 	$('#parts-services-subtotal-in-list-'+n).val(parseFloat(total).toFixed(2));
 
 	setTimeout(function(){
-            getInvoiceTotal();
+            getDeliveryOrderTotal();
         }, 500);
 }
 
-function saveSelectedInvoiceItem(n)
+function saveSelectedDeliveryOrderItem(n)
 {
 	var inputboxQty = $('#parts-services-qty-in-list-'+n).val();
 	var inputboxPrice = $('#parts-services-price-in-list-'+n).val();
@@ -697,16 +697,16 @@ function saveSelectedInvoiceItem(n)
 	$('.save-button-'+n).addClass('hidden');
 }
 
-function removeSelectedInvoiceItem(n)
+function removeSelectedDeliveryOrderItem(n)
 {
 	$('.inserted-item-in-list-'+n).detach();
 
 	setTimeout(function(){
-            getInvoiceTotal();
+            getDeliveryOrderTotal();
         }, 500);
 }
 
-function getInvoiceTotal()
+function getDeliveryOrderTotal()
 {
 	var total = 0;
 
@@ -716,11 +716,11 @@ function getInvoiceTotal()
 
     $('#grandTotal').val(total.toFixed(2));
     setTimeout(function(){
-            getInvoiceNetTotal();
+            getDeliveryOrderNetTotal();
         }, 500);
 }
 
-function getInvoiceNetTotal()
+function getDeliveryOrderNetTotal()
 {
 	var grandTotal = $('#grandTotal').val();
 	var gst = $('#gst').val();
@@ -749,7 +749,7 @@ function getInvoiceNetTotal()
 
 }
 
-// ==================== Invoice Discount ==================== //
+// ==================== Delivery Order Discount ==================== //
 
 $('#btnDiscount').click(function(){
 
@@ -849,22 +849,22 @@ $('#clearDiscount').click(function(){
         
 });
 
-// ====================== Submit Invoice ====================== //
+// ====================== Submit Delivery Order ====================== //
 
-$('#submitInvoiceForm').click(function(){
+$('#submitDeliveryOrderForm').click(function(){
 
-	var invoiceno = $('#invoiceFormCreate').find('input:text[id=invoice_no]').val();
-	var salesPerson = $('#invoiceFormCreate').find('select[id=sales_person]').val();
-	var paymentType = $('#invoiceFormCreate').find('select[id=paymentType]').val();
-	var remarks = $('#invoiceFormCreate').find('textarea[id=remarks]').val();
+	var deliveryorderCode = $('#deliveryorderFormCreate').find('input:text[id=delivery_order_code]').val();
+	var salesPerson = $('#deliveryorderFormCreate').find('select[id=sales_person]').val();
+	var paymentType = $('#deliveryorderFormCreate').find('select[id=paymentType]').val();
+	var remarks = $('#deliveryorderFormCreate').find('textarea[id=remarks]').val();
 	var dateIssue = $('input:text.date_issue').val();
-	var customerName = $('#invoiceFormCreate').find('select[id=invoiceCustomerName]').val();
-	var grandTotal = $('#invoiceFormCreate').find('input:text[id=grandTotal]').val();
-	var gst_amount = $('#invoiceFormCreate').find('input:hidden[id=gst_amount]').val();
-	var gst_value = $('#invoiceFormCreate').find('input:text[id=gst]').val();
-	var netTotal = $('#invoiceFormCreate').find('input:text[id=netTotal]').val();
-	var discountAmount = $('#invoiceFormCreate').find('input:text[id=discountAmount]').val();
-	var discountRemarks = $('#invoiceFormCreate').find('textarea[id=discountRemarks]').val();
+	var customerName = $('#deliveryorderFormCreate').find('select[id=deliveryorderCustomerName]').val();
+	var grandTotal = $('#deliveryorderFormCreate').find('input:text[id=grandTotal]').val();
+	var gst_amount = $('#deliveryorderFormCreate').find('input:hidden[id=gst_amount]').val();
+	var gst_value = $('#deliveryorderFormCreate').find('input:text[id=gst]').val();
+	var netTotal = $('#deliveryorderFormCreate').find('input:text[id=netTotal]').val();
+	var discountAmount = $('#deliveryorderFormCreate').find('input:text[id=discountAmount]').val();
+	var discountRemarks = $('#deliveryorderFormCreate').find('textarea[id=discountRemarks]').val();
 
 	var parts_services = $('input:hidden.partsservicesName').serializeArray();
 	var parts_services_qty = $('input:text.partsservicesQty').serializeArray();
@@ -893,8 +893,8 @@ $('#submitInvoiceForm').click(function(){
 
 		}
 
-		$.post("?r=invoice/create",{
-			invoice_no : invoiceno,
+		$.post("?r=delivery-order/create",{
+			deliveryorderCode : deliveryorderCode,
 			salesPerson: salesPerson,
 			paymentType : paymentType,
 			remarks : remarks,
@@ -922,7 +922,7 @@ $('#submitInvoiceForm').click(function(){
 			    $('.insert-item-in-list').remove();
 
 				alert(data.message);
-				window.location = domain + '?r=invoice/view&id=' + data.id;
+				window.location = domain + '?r=delivery-order/view&id=' + data.id;
 
 			} else {
 
@@ -932,15 +932,15 @@ $('#submitInvoiceForm').click(function(){
 				$.each(data.message, function(field, message) {
 		    		var errMsg = '<label class="error" for="'+ field + '">'+ message +'</label>';
 
-		            $('select[name="' + 'Invoice[' + field + ']' + '"]').addClass('inputTxtError');
-		            $('textarea[name="' + 'Invoice[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
-		            $('input[name="' + 'Invoice[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+		            $('select[name="' + 'DeliveryOrder[' + field + ']' + '"]').addClass('inputTxtError');
+		            $('textarea[name="' + 'DeliveryOrder[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+		            $('input[name="' + 'DeliveryOrder[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
 		        });
 		      
 		      	var keys = Object.keys(data.message);
-		      	$('select[name="'+ 'Invoice[' + keys[0] + ']' +'"]').focus();
-		      	$('textarea[name="'+ 'Invoice[' + keys[0] + ']' +'"]').focus();
-		      	$('input[name="'+ 'Invoice[' + keys[0] + ']' +'"]').focus();	
+		      	$('select[name="'+ 'DeliveryOrder[' + keys[0] + ']' +'"]').focus();
+		      	$('textarea[name="'+ 'DeliveryOrder[' + keys[0] + ']' +'"]').focus();
+		      	$('input[name="'+ 'DeliveryOrder[' + keys[0] + ']' +'"]').focus();	
 		      	return false;
 
 			} 
@@ -951,22 +951,22 @@ $('#submitInvoiceForm').click(function(){
 
 });
 
-// ====================== Submit Invoice For Customer Created ====================== //
+// ====================== Submit Delivery Order For Customer Created ====================== //
 
-$('#submitInvoiceFormFromCustomer').click(function(){
+$('#submitDeliveryOrderFormFromCustomer').click(function(){
 
-	var invoiceno = $('#invoiceFormCreate').find('input:text[id=invoice_no]').val();
-	var salesPerson = $('#invoiceFormCreate').find('select[id=sales_person]').val();
-	var paymentType = $('#invoiceFormCreate').find('select[id=paymentType]').val();
-	var remarks = $('#invoiceFormCreate').find('textarea[id=remarks]').val();
+	var deliveryorderCode = $('#deliveryorderFormCreate').find('input:text[id=delivery_order_code]').val();
+	var salesPerson = $('#deliveryorderFormCreate').find('select[id=sales_person]').val();
+	var paymentType = $('#deliveryorderFormCreate').find('select[id=paymentType]').val();
+	var remarks = $('#deliveryorderFormCreate').find('textarea[id=remarks]').val();
 	var dateIssue = $('input:text.date_issue').val();
-	var customerName = $('#invoiceFormCreate').find('input:hidden[id=customer]').val();
-	var grandTotal = $('#invoiceFormCreate').find('input:text[id=grandTotal]').val();
-	var gst_amount = $('#invoiceFormCreate').find('input:hidden[id=gst_amount]').val();
-	var gst_value = $('#invoiceFormCreate').find('input:text[id=gst]').val();
-	var netTotal = $('#invoiceFormCreate').find('input:text[id=netTotal]').val();
-	var discountAmount = $('#invoiceFormCreate').find('input:text[id=discountAmount]').val();
-	var discountRemarks = $('#invoiceFormCreate').find('textarea[id=discountRemarks]').val();
+	var customerName = $('#deliveryorderFormCreate').find('input:hidden[id=customer]').val();
+	var grandTotal = $('#deliveryorderFormCreate').find('input:text[id=grandTotal]').val();
+	var gst_amount = $('#deliveryorderFormCreate').find('input:hidden[id=gst_amount]').val();
+	var gst_value = $('#deliveryorderFormCreate').find('input:text[id=gst]').val();
+	var netTotal = $('#deliveryorderFormCreate').find('input:text[id=netTotal]').val();
+	var discountAmount = $('#deliveryorderFormCreate').find('input:text[id=discountAmount]').val();
+	var discountRemarks = $('#deliveryorderFormCreate').find('textarea[id=discountRemarks]').val();
 
 	var parts_services = $('input:hidden.partsservicesName').serializeArray();
 	var parts_services_qty = $('input:text.partsservicesQty').serializeArray();
@@ -995,8 +995,8 @@ $('#submitInvoiceFormFromCustomer').click(function(){
 
 		}
 
-		$.post("?r=invoice/create",{
-			invoice_no : invoiceno,
+		$.post("?r=delivery-order/create",{
+			deliveryorderCode : deliveryorderCode,
 			salesPerson: salesPerson,
 			paymentType : paymentType,
 			remarks : remarks,
@@ -1024,7 +1024,7 @@ $('#submitInvoiceFormFromCustomer').click(function(){
 			    $('.insert-item-in-list').remove();
 
 				alert(data.message);
-				window.location = domain + '?r=invoice/view&id=' + data.id;
+				window.location = domain + '?r=delivery-order/view&id=' + data.id;
 
 			} else {
 
@@ -1034,15 +1034,15 @@ $('#submitInvoiceFormFromCustomer').click(function(){
 				$.each(data.message, function(field, message) {
 		    		var errMsg = '<label class="error" for="'+ field + '">'+ message +'</label>';
 
-		            $('select[name="' + 'Invoice[' + field + ']' + '"]').addClass('inputTxtError');
-		            $('textarea[name="' + 'Invoice[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
-		            $('input[name="' + 'Invoice[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+		            $('select[name="' + 'DeliveryOrder[' + field + ']' + '"]').addClass('inputTxtError');
+		            $('textarea[name="' + 'DeliveryOrder[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+		            $('input[name="' + 'DeliveryOrder[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
 		        });
 		      
 		      	var keys = Object.keys(data.message);
-		      	$('select[name="'+ 'Invoice[' + keys[0] + ']' +'"]').focus();
-		      	$('textarea[name="'+ 'Invoice[' + keys[0] + ']' +'"]').focus();
-		      	$('input[name="'+ 'Invoice[' + keys[0] + ']' +'"]').focus();	
+		      	$('select[name="'+ 'DeliveryOrder[' + keys[0] + ']' +'"]').focus();
+		      	$('textarea[name="'+ 'DeliveryOrder[' + keys[0] + ']' +'"]').focus();
+		      	$('input[name="'+ 'DeliveryOrder[' + keys[0] + ']' +'"]').focus();	
 		      	return false;
 
 			} 
@@ -1053,11 +1053,11 @@ $('#submitInvoiceFormFromCustomer').click(function(){
 
 });
 
-//============== Invoice Update ================//
+//============== Delivery Order Update ================//
 
-$('._showUpdateInvoiceModal').click(function(){
+$('._showUpdateDeliveryOrderModal').click(function(){
 
-	$('#modal-launcher-update-invoice').modal({
+	$('#modal-launcher-update-delivery-order').modal({
             show: true,
             backdrop: 'static',
             keyboard: false,
@@ -1068,25 +1068,25 @@ $('._showUpdateInvoiceModal').click(function(){
 
 	var id = $(this).attr('id');
 
-	$.get("?r=invoice/get-data",{
+	$.get("?r=delivery-order/get-data",{
 		id : id,
 
 	},function(data){
 		var data = jQuery.parseJSON(data);
 		var result = data.result;
 
-		$('#invoiceFormUpdate').find('input:hidden[id=invoice_id]').val(id);
-		$('#invoiceFormUpdate').find('input:text[id=update_invoice_no]').val(result.invoice_no);
-		$('#invoiceFormUpdate').find('select[id=update_sales_person]').val(result.user_id).change();
-		$('#invoiceFormUpdate').find('select[id=update_paymentType]').val(result.payment_type_id).change();
-		$('#invoiceFormUpdate').find('textarea[id=update_remarks]').val(result.remarks.toUpperCase());
-		$('#invoiceFormUpdate').find('input:text.update_date_issue').val(result.date_issue);
-		$('#invoiceFormUpdate').find('select[id=update_customer]').val(result.customer_id).change();
+		$('#deliveryorderFormUpdate').find('input:hidden[id=delivery_order_id]').val(id);
+		$('#deliveryorderFormUpdate').find('input:text[id=update_delivery_order_code]').val(result.delivery_order_code);
+		$('#deliveryorderFormUpdate').find('select[id=update_sales_person]').val(result.user_id).change();
+		$('#deliveryorderFormUpdate').find('select[id=update_paymentType]').val(result.payment_type_id).change();
+		$('#deliveryorderFormUpdate').find('textarea[id=update_remarks]').val(result.remarks.toUpperCase());
+		$('#deliveryorderFormUpdate').find('input:text.update_date_issue').val(result.date_issue);
+		$('#deliveryorderFormUpdate').find('select[id=update_customer]').val(result.customer_id).change();
 
-		$('#invoiceFormUpdate').find('input:text[id=update_grandTotal]').val(parseFloat(result.grand_total).toFixed(2));
-		$('#invoiceFormUpdate').find('input:text[id=update_gst]').val(parseInt(result.gst_value));
-		$('#invoiceFormUpdate').find('input:hidden[id=update_gst_amount]').val(parseFloat(result.gst).toFixed(2));
-		$('#invoiceFormUpdate').find('input:text[id=update_netTotal]').val(parseFloat(result.net).toFixed(2));
+		$('#deliveryorderFormUpdate').find('input:text[id=update_grandTotal]').val(parseFloat(result.grand_total).toFixed(2));
+		$('#deliveryorderFormUpdate').find('input:text[id=update_gst]').val(parseInt(result.gst_value));
+		$('#deliveryorderFormUpdate').find('input:hidden[id=update_gst_amount]').val(parseFloat(result.gst).toFixed(2));
+		$('#deliveryorderFormUpdate').find('input:text[id=update_netTotal]').val(parseFloat(result.net).toFixed(2));
 
 		if(result.discount_amount == 0 || result.discount_amount == null || result.discount_amount == ''){
 			var discountAmount = '';
@@ -1104,8 +1104,8 @@ $('._showUpdateInvoiceModal').click(function(){
 
 		}
 
-		$('#invoiceFormUpdate').find('input:text[id=update_discountAmount]').val(discountAmount);
-		$('#invoiceFormUpdate').find('textarea[id=update_discountRemarks]').val(discountRemarks);
+		$('#deliveryorderFormUpdate').find('input:text[id=update_discountAmount]').val(discountAmount);
+		$('#deliveryorderFormUpdate').find('textarea[id=update_discountRemarks]').val(discountRemarks);
 
 		if( result.type == 1 ){
             
@@ -1186,7 +1186,7 @@ $('._showUpdateInvoiceModal').click(function(){
                         '</table>';
         }
 
-        $('#update-invoice-customer-information').html(html);
+        $('#update-delivery-order-customer-information').html(html);
 
 		var parts = data.parts;
 		var partslen = parts.length;
@@ -1205,15 +1205,15 @@ $('._showUpdateInvoiceModal').click(function(){
 									'<div class="col-md-6">'+
 										'<div style="text-align: right;">'+
 											'<span class="edit-button update-button-'+ parts_id +' ">'+
-								                '<a href="javascript:updateSelectedInvoiceItem('+ parts_id +')" class="selectedBtns" ><i class="fa fa-edit"></i> Edit</a>'+
+								                '<a href="javascript:updateSelectedDeliveryOrderItem('+ parts_id +')" class="selectedBtns" ><i class="fa fa-edit"></i> Edit</a>'+
 								            '</span>'+
 								            '&nbsp;'+
 								            '<span class="save-button hidden save-update-button-'+ parts_id +' ">'+
-								                '<a href="javascript:saveUpdateSelectedInvoiceItem('+ parts_id +')" class="selectedBtns" ><i class="fa fa-save"></i> Save</a>'+
+								                '<a href="javascript:saveUpdateSelectedDeliveryOrderItem('+ parts_id +')" class="selectedBtns" ><i class="fa fa-save"></i> Save</a>'+
 								            '</span>'+
 								            '&nbsp;'+
 								            '<span class="remove-button remove-update-button-'+ parts_id +' ">'+
-								                '<a href="javascript:removeUpdateSelectedInvoiceItem('+ parts_id +')" class="selectedBtns" ><i class="fa fa-trash"></i> Remove</a>'+
+								                '<a href="javascript:removeUpdateSelectedDeliveryOrderItem('+ parts_id +')" class="selectedBtns" ><i class="fa fa-trash"></i> Remove</a>'+
 								            '</span>'+	
 										'</div>'+
 									'</div>'+
@@ -1237,21 +1237,21 @@ $('._showUpdateInvoiceModal').click(function(){
 									'<div class="col-md-3">'+
 											'<input type="text" id="parts-services-update-name-in-list-'+ parts_id +'" value="'+ parts_name.toUpperCase() +'" class="inputForm inputboxTotalAlignment form-control" readonly="readonly" />'+
 
-											'<input type="hidden" id="parts-services-update-id-in-list-'+ parts_id +'" value="1-'+ description +'" name="InvoiceDetail[description][]" class="inputForm form-control update_partsservicesName" />'+		
+											'<input type="hidden" id="parts-services-update-id-in-list-'+ parts_id +'" value="1-'+ description +'" name="DeliveryOrderDetail[description][]" class="inputForm form-control update_partsservicesName" />'+		
 										'</div>'+
 									'<div class="col-md-3">'+
-										'<input type="text" id="parts-services-update-qty-in-list-'+ parts_id +'" value="'+ parts_quantity +'" name="InvoiceDetail[quantity][]" onchange="editSelectedSubtotal('+ parts_id +')" class="inputForm inputboxTotalAlignment form-control update_partsservicesQty" />'+	
+										'<input type="text" id="parts-services-update-qty-in-list-'+ parts_id +'" value="'+ parts_quantity +'" name="DeliveryOrderDetail[quantity][]" onchange="editSelectedSubtotal('+ parts_id +')" class="inputForm inputboxTotalAlignment form-control update_partsservicesQty" />'+	
 									'</div>'+
 									'<div class="col-md-3">'+
-										'<input type="text" id="parts-services-update-price-in-list-'+ parts_id +'" value="'+ parts_unit_price +'" name="InvoiceDetail[unit_price][]" onchange="editSelectedSubtotal('+ parts_id +')" class="inputForm inputboxTotalAlignment form-control update_partsservicesPrice" />'+	
+										'<input type="text" id="parts-services-update-price-in-list-'+ parts_id +'" value="'+ parts_unit_price +'" name="DeliveryOrderDetail[unit_price][]" onchange="editSelectedSubtotal('+ parts_id +')" class="inputForm inputboxTotalAlignment form-control update_partsservicesPrice" />'+	
 									'</div>'+
 									'<div class="col-md-3">'+
-										'<input type="text" id="parts-services-update-subtotal-in-list-'+ parts_id +'" value="'+ parts_sub_total +'" name="InvoiceDetail[sub_total][]" class="inputForm inputboxTotalAlignment form-control update_partsservicesSubtotal" readonly="readonly" />'+	
+										'<input type="text" id="parts-services-update-subtotal-in-list-'+ parts_id +'" value="'+ parts_sub_total +'" name="DeliveryOrderDetail[sub_total][]" class="inputForm inputboxTotalAlignment form-control update_partsservicesSubtotal" readonly="readonly" />'+	
 									'</div>'+
 								'<br/><hr/>'+
 							'</div>'
 			
-			$('.update-item-in-list-invoice').append(parts_html);
+			$('.update-item-in-list-delivery-order').append(parts_html);
 		});
 
 		var services = data.services;
@@ -1271,15 +1271,15 @@ $('._showUpdateInvoiceModal').click(function(){
 									'<div class="col-md-6">'+
 										'<div style="text-align: right;">'+
 											'<span class="edit-button update-button-'+ service_id +' ">'+
-								                '<a href="javascript:updateSelectedInvoiceItem('+ service_id +')" class="selectedBtns" ><i class="fa fa-edit"></i> Edit</a>'+
+								                '<a href="javascript:updateSelectedDeliveryOrderItem('+ service_id +')" class="selectedBtns" ><i class="fa fa-edit"></i> Edit</a>'+
 								            '</span>'+
 								            '&nbsp;'+
 								            '<span class="save-button hidden save-update-button-'+ service_id +' ">'+
-								                '<a href="javascript:saveUpdateSelectedInvoiceItem('+ service_id +')" class="selectedBtns" ><i class="fa fa-save"></i> Save</a>'+
+								                '<a href="javascript:saveUpdateSelectedDeliveryOrderItem('+ service_id +')" class="selectedBtns" ><i class="fa fa-save"></i> Save</a>'+
 								            '</span>'+
 								            '&nbsp;'+
 								            '<span class="remove-button remove-update-button-'+ service_id +' ">'+
-								                '<a href="javascript:removeUpdateSelectedInvoiceItem('+ service_id +')" class="selectedBtns" ><i class="fa fa-trash"></i> Remove</a>'+
+								                '<a href="javascript:removeUpdateSelectedDeliveryOrderItem('+ service_id +')" class="selectedBtns" ><i class="fa fa-trash"></i> Remove</a>'+
 								            '</span>'+	
 										'</div>'+
 									'</div>'+
@@ -1303,30 +1303,30 @@ $('._showUpdateInvoiceModal').click(function(){
 									'<div class="col-md-3">'+
 											'<input type="text" id="parts-services-update-name-in-list-'+ service_id +'" value="'+ service_name.toUpperCase() +'" class="inputForm inputboxTotalAlignment form-control" readonly="readonly" />'+
 
-											'<input type="hidden" id="parts-services-update-id-in-list-'+ service_id +'" value="0-'+ description +'" name="InvoiceDetail[description][]" class="inputForm form-control update_partsservicesName" />'+		
+											'<input type="hidden" id="parts-services-update-id-in-list-'+ service_id +'" value="0-'+ description +'" name="DeliveryOrderDetail[description][]" class="inputForm form-control update_partsservicesName" />'+		
 										'</div>'+
 									'<div class="col-md-3">'+
-										'<input type="text" id="parts-services-update-qty-in-list-'+ service_id +'" value="'+ service_quantity +'" name="InvoiceDetail[quantity][]" onchange="editSelectedSubtotal('+ service_id +')" class="inputForm inputboxTotalAlignment form-control update_partsservicesQty" />'+	
+										'<input type="text" id="parts-services-update-qty-in-list-'+ service_id +'" value="'+ service_quantity +'" name="DeliveryOrderDetail[quantity][]" onchange="editSelectedSubtotal('+ service_id +')" class="inputForm inputboxTotalAlignment form-control update_partsservicesQty" />'+	
 									'</div>'+
 									'<div class="col-md-3">'+
-										'<input type="text" id="parts-services-update-price-in-list-'+ service_id +'" value="'+ service_unit_price +'" name="InvoiceDetail[unit_price][]" onchange="editSelectedSubtotal('+ service_id +')" class="inputForm inputboxTotalAlignment form-control update_partsservicesPrice" />'+	
+										'<input type="text" id="parts-services-update-price-in-list-'+ service_id +'" value="'+ service_unit_price +'" name="DeliveryOrderDetail[unit_price][]" onchange="editSelectedSubtotal('+ service_id +')" class="inputForm inputboxTotalAlignment form-control update_partsservicesPrice" />'+	
 									'</div>'+
 									'<div class="col-md-3">'+
-										'<input type="text" id="parts-services-update-subtotal-in-list-'+ service_id +'" value="'+ service_sub_total +'" name="InvoiceDetail[sub_total][]" class="inputForm inputboxTotalAlignment form-control update_partsservicesSubtotal" readonly="readonly" />'+	
+										'<input type="text" id="parts-services-update-subtotal-in-list-'+ service_id +'" value="'+ service_sub_total +'" name="DeliveryOrderDetail[sub_total][]" class="inputForm inputboxTotalAlignment form-control update_partsservicesSubtotal" readonly="readonly" />'+	
 									'</div>'+
 								'<br/><hr/>'+
 							'</div>'
 			
-			$('.update-item-in-list-invoice').append(services_html);
+			$('.update-item-in-list-delivery-order').append(services_html);
 		});
 	
 	});
 
 });
 
-$('.closeUpdateInvoice').click(function(e){
+$('.closeUpdateDeliveryOrder').click(function(e){
     if( confirm('Are you want to close this Quotation Form?') ){	
-    	$('#modal-launcher-update-invoice').modal('hide');
+    	$('#modal-launcher-update-delivery-order').modal('hide');
     	e.preventDefault();
     }
 });
@@ -1336,7 +1336,7 @@ $('.closeUpdateInvoice').click(function(e){
 $('#update_customer').change(function(){
 	var customerId = $(this).val();
 
-	$.get('?r=invoice/get-customer-information',{
+	$.get('?r=delivery-order/get-customer-information',{
 		customerId : customerId,
 
 	}, function(data){
@@ -1423,7 +1423,7 @@ $('#update_customer').change(function(){
 
         }
 
-        $('#update-invoice-customer-information').html(html);
+        $('#update-delivery-order-customer-information').html(html);
 
 	}); 
 
@@ -1431,7 +1431,7 @@ $('#update_customer').change(function(){
 
 //=========== Update Auto-Parts ===========//
 
-function getUpdatePartsPriceAndQtyInvoice()
+function getUpdatePartsPriceAndQtyDeliveryOrder()
 {
 	var partsId = $('#update_parts').val();
 
@@ -1446,7 +1446,7 @@ function getUpdatePartsPriceAndQtyInvoice()
 
 	}else{
 
-		$.get("?r=invoice/get-parts-price-and-qty",{
+		$.get("?r=delivery-order/get-parts-price-and-qty",{
 			parts_id : partsId,
 
 		},function(data){
@@ -1469,7 +1469,7 @@ function getUpdatePartsPriceAndQtyInvoice()
 	}
 }
 
-function editPartsSubtotalInvoice()
+function editPartsSubtotalDeliveryOrder()
 {
 	var partsQty = $('#update_partsQty').val();
 	var currentPartsQty = $('#currentUpdateQtyValue').val();
@@ -1486,7 +1486,7 @@ function editPartsSubtotalInvoice()
 	$('#update_partsSubtotal').val(parseFloat(total).toFixed(2));
 }
 
-$('.autoparts_update_invoice').click(function(){
+$('.autoparts_update_delivery_order').click(function(){
 	var partsId = $('#update_parts').val();
 	var partsQty = $('#update_partsQty').val();
 	var partsPrice = $('#update_partsPrice').val();
@@ -1506,7 +1506,7 @@ $('.autoparts_update_invoice').click(function(){
 		var ctr = $('#n').val();
 		ctr++;
 
-		$.post("?r=invoice/update-auto-parts-in-list",{
+		$.post("?r=delivery-order/update-auto-parts-in-list",{
 		parts_id : partsId,
 		parts_qty : partsQty,
 		parts_price : partsPrice,
@@ -1514,7 +1514,7 @@ $('.autoparts_update_invoice').click(function(){
 		ctr : ctr,
 
 		},function(data){
-			$('#update-item-in-list-invoice').append(data);
+			$('#update-item-in-list-delivery-order').append(data);
 
 			$('#n').val(ctr);
 			$('#update_parts').val(0).change();
@@ -1525,7 +1525,7 @@ $('.autoparts_update_invoice').click(function(){
 			$('#update_partsSubtotal').val('');
 
 			setTimeout(function() {
-                getUpdateInvoiceGrandTotal();
+                getUpdateDeliveryOrderGrandTotal();
             }, 500);
 
 		});
@@ -1536,11 +1536,11 @@ $('.autoparts_update_invoice').click(function(){
 
 //=========== Update Services ===========//
 
-function getUpdateServicesPriceAndQtyInvoice()
+function getUpdateServicesPriceAndQtyDeliveryOrder()
 {
 	var servicesId = $('#update_services').val();
 
-	$.get("?r=invoice/get-services-price-and-qty",{
+	$.get("?r=delivery-order/get-services-price-and-qty",{
 		services_id : servicesId,
 
 	},function(data){
@@ -1566,7 +1566,7 @@ function getUpdateServicesPriceAndQtyInvoice()
 	});
 }
 
-function editServiceDetailsInvoice()
+function editServiceDetailsDeliveryOrder()
 {
 	var servicesId = $('#update_services').val();
 
@@ -1582,7 +1582,7 @@ function editServiceDetailsInvoice()
 	}
 }
 
-function saveUpdateServiceDetailsInvoice()
+function saveUpdateServiceDetailsDeliveryOrder()
 {
 	var servicesId = $('#update_services').val();
 	var serviceCategory = $('#serviceCategoryUpdate').val();
@@ -1593,7 +1593,7 @@ function saveUpdateServiceDetailsInvoice()
 
 	}else{
 		
-		$.post("?r=invoice/save-service-details",{
+		$.post("?r=delivery-order/save-service-details",{
 			service_id : servicesId,
 			service_details : servicesDetails,
 
@@ -1612,7 +1612,7 @@ function saveUpdateServiceDetailsInvoice()
 	}
 }
 
-function editServicesSubtotalInvoice()
+function editServicesSubtotalDeliveryOrder()
 {
 	var servicesQty = $('#update_servicesQty').val();
 	var servicesPrice = $('#update_servicesPrice').val();
@@ -1631,7 +1631,7 @@ function editServicesSubtotalInvoice()
 	$('#update_servicesSubtotal').val(parseFloat(total).toFixed(2));
 }
 
-$('.services_update_invoice').click(function()
+$('.services_update_delivery_order').click(function()
 {
 	var servicesId = $('#update_services').val();
 	var servicesQty = $('#update_servicesQty').val();
@@ -1657,7 +1657,7 @@ $('.services_update_invoice').click(function()
 		var ctr = $('#n').val();
 		ctr++;
 
-		$.post("?r=invoice/update-services-in-list",{
+		$.post("?r=delivery-order/update-services-in-list",{
 		services_id : servicesId,
 		services_qty : servicesQty,
 		services_price : servicesPrice,
@@ -1665,7 +1665,7 @@ $('.services_update_invoice').click(function()
 		ctr : ctr,
 
 		},function(data){
-			$('#update-item-in-list-invoice').append(data);
+			$('#update-item-in-list-delivery-order').append(data);
 
 			$('#n').val(ctr);
 			$('#update_services').val(0).change();
@@ -1674,7 +1674,7 @@ $('.services_update_invoice').click(function()
 			$('#update_servicesSubtotal').val('');
 
 			setTimeout(function() {
-                getUpdateInvoiceGrandTotal();
+                getUpdateDeliveryOrderGrandTotal();
             }, 500);
 
 		});
@@ -1685,7 +1685,7 @@ $('.services_update_invoice').click(function()
 
 //=========== Update Selected Insert Parts & Services ===========//
 
-function updateSelectedInvoiceItem(n)
+function updateSelectedDeliveryOrderItem(n)
 {
 	$('.selectedUpdateItemInLabel-'+n).addClass('hidden');
 	$('.selectedUpdateItemInInputbox-'+n).removeClass('hidden');
@@ -1694,7 +1694,7 @@ function updateSelectedInvoiceItem(n)
 	$('.update-button-'+n).addClass('hidden');
 }
 
-function editSelectedSubtotalInvoice(n)
+function editSelectedSubtotalDeliveryOrder(n)
 {
 	var qty = $('#parts-services-update-qty-in-list-'+n).val();
 	var price = $('#parts-services-update-price-in-list-'+n).val();
@@ -1714,11 +1714,11 @@ function editSelectedSubtotalInvoice(n)
 	$('#parts-services-update-subtotal-in-list-'+n).val(parseFloat(total).toFixed(2));
 
 	setTimeout(function(){
-            getUpdateInvoiceGrandTotalae();
+            getUpdateDeliveryOrderGrandTotal();
         }, 500);
 }
 
-function saveUpdateSelectedInvoiceItem(n)
+function saveUpdateSelectedDeliveryOrderItem(n)
 {
 	var inputboxQty = $('#parts-services-update-qty-in-list-'+n).val();
 	var inputboxPrice = $('#parts-services-update-price-in-list-'+n).val();
@@ -1745,7 +1745,7 @@ function saveUpdateSelectedInvoiceItem(n)
 	$('.save-update-button-'+n).addClass('hidden');
 }
 
-function removeUpdateSelectedInvoiceItem(n)
+function removeUpdateSelectedDeliveryOrderItem(n)
 {
 	$('.update-item-in-list-'+n).detach();
 
@@ -1754,7 +1754,7 @@ function removeUpdateSelectedInvoiceItem(n)
         }, 500);
 }
 
-function getUpdateInvoiceGrandTotal()
+function getUpdateDeliveryOrderGrandTotal()
 {
 	var total = 0;
 
@@ -1764,11 +1764,11 @@ function getUpdateInvoiceGrandTotal()
 
     $('#update_grandTotal').val(total.toFixed(2));
     setTimeout(function(){
-            getUpdateInvoiceNetTotal();
+            getUpdateDeliveryOrderNetTotal();
         }, 500);
 }
 
-function getUpdateInvoiceNetTotal()
+function getUpdateDeliveryOrderNetTotal()
 {
 	var grandTotal = $('#update_grandTotal').val();
 	var gst = $('#update_gst').val();
@@ -1899,21 +1899,21 @@ $('#clearUpdateDiscount').click(function(){
 
 // ====================== Save Update Invoice ====================== //
 
-$('#saveUpdateInvoiceForm').click(function(){
+$('#saveUpdateDeliveryOrderForm').click(function(){
 
-	var invoiceId = $('#invoiceFormUpdate').find('input:hidden[id=invoice_id]').val();
-	var invoiceNo = $('#invoiceFormUpdate').find('input:text[id=update_invoice_no]').val();
-	var salesPerson = $('#invoiceFormUpdate').find('select[id=update_sales_person]').val();
-	var paymentType = $('#invoiceFormUpdate').find('select[id=update_paymentType]').val();
-	var remarks = $('#invoiceFormUpdate').find('textarea[id=update_remarks]').val();
+	var deliveryorderId = $('#deliveryorderFormUpdate').find('input:hidden[id=delivery_order_id]').val();
+	var deliveryorderCode = $('#deliveryorderFormUpdate').find('input:text[id=update_delivery_order_code]').val();
+	var salesPerson = $('#deliveryorderFormUpdate').find('select[id=update_sales_person]').val();
+	var paymentType = $('#deliveryorderFormUpdate').find('select[id=update_paymentType]').val();
+	var remarks = $('#deliveryorderFormUpdate').find('textarea[id=update_remarks]').val();
 	var dateIssue = $('input:text.update_date_issue').val();
-	var customerName = $('#invoiceFormUpdate').find('select[id=update_customer]').val();
-	var grandTotal = $('#invoiceFormUpdate').find('input:text[id=update_grandTotal]').val();
-	var gst_amount = $('#invoiceFormUpdate').find('input:hidden[id=update_gst_amount]').val();
-	var gst_value = $('#invoiceFormUpdate').find('input:text[id=update_gst]').val();
-	var netTotal = $('#invoiceFormUpdate').find('input:text[id=update_netTotal]').val();
-	var discountAmount = $('#invoiceFormUpdate').find('input:text[id=update_discountAmount]').val();
-	var discountRemarks = $('#invoiceFormUpdate').find('textarea[id=update_discountRemarks]').val();
+	var customerName = $('#deliveryorderFormUpdate').find('select[id=update_customer]').val();
+	var grandTotal = $('#deliveryorderFormUpdate').find('input:text[id=update_grandTotal]').val();
+	var gst_amount = $('#deliveryorderFormUpdate').find('input:hidden[id=update_gst_amount]').val();
+	var gst_value = $('#deliveryorderFormUpdate').find('input:text[id=update_gst]').val();
+	var netTotal = $('#deliveryorderFormUpdate').find('input:text[id=update_netTotal]').val();
+	var discountAmount = $('#deliveryorderFormUpdate').find('input:text[id=update_discountAmount]').val();
+	var discountRemarks = $('#deliveryorderFormUpdate').find('textarea[id=update_discountRemarks]').val();
 
 	var parts_services = $('input:hidden.update_partsservicesName').serializeArray();
 	var parts_services_qty = $('input:text.update_partsservicesQty').serializeArray();
@@ -1947,9 +1947,9 @@ $('#saveUpdateInvoiceForm').click(function(){
 
 		}
 
-		$.post("?r=invoice/update",{
-			invoiceId : invoiceId,
-			invoice_no : invoiceNo,
+		$.post("?r=delivery-order/update",{
+			deliveryorderId : deliveryorderId,
+			deliveryorderCode : deliveryorderCode,
 			salesPerson: salesPerson,
 			paymentType : paymentType,
 			remarks : remarks,
@@ -1981,25 +1981,25 @@ $('#saveUpdateInvoiceForm').click(function(){
 			    $('.insert-item-in-list').remove();
 
 				alert(data.message);
-				window.location = domain + '?r=invoice/view&id=' + data.id;
+				window.location = domain + '?r=delivery-order/view&id=' + data.id;
 
 			} else {
 
-				$('form input').removeClass('inputTxtError');
+				$('form input, textarea').removeClass('inputTxtError');
 			    $('label.error').remove();
 
 				$.each(data.message, function(field, message) {
 		    		var errMsg = '<label class="error" for="'+ field + '">'+ message +'</label>';
 
-		            $('select[name="' + 'Invoice[' + field + ']' + '"]').addClass('inputTxtError');
-		            $('textarea[name="' + 'Invoice[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
-		            $('input[name="' + 'Invoice[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+		            $('select[name="' + 'DeliveryOrder[' + field + ']' + '"]').addClass('inputTxtError');
+		            $('textarea[name="' + 'DeliveryOrder[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
+		            $('input[name="' + 'DeliveryOrder[' + field + ']' + '"]').addClass('inputTxtError').after(errMsg);
 		        });
 		      
 		      	var keys = Object.keys(data.message);
-		      	$('select[name="'+ 'Invoice[' + keys[0] + ']' +'"]').focus();
-		      	$('textarea[name="'+ 'Invoice[' + keys[0] + ']' +'"]').focus();
-		      	$('input[name="'+ 'Invoice[' + keys[0] + ']' +'"]').focus();	
+		      	$('select[name="'+ 'DeliveryOrder[' + keys[0] + ']' +'"]').focus();
+		      	$('textarea[name="'+ 'DeliveryOrder[' + keys[0] + ']' +'"]').focus();
+		      	$('input[name="'+ 'DeliveryOrder[' + keys[0] + ']' +'"]').focus();	
 		      	return false;
 
 			} 
@@ -2010,15 +2010,15 @@ $('#saveUpdateInvoiceForm').click(function(){
 
 });
 
-//============ Delete Invoice =============//
+//============ Delete Delivery Order =============//
 
-$('.invoiceDeleteColumn').each(function(){
+$('.deliveryorderDeleteColumn').each(function(){
 
 $(this).click(function() {    
 	var yes = confirm ("Are you sure you want to delete this record?");
        
 	if(yes) {
-		$.post("?r=invoice/delete-column",{
+		$.post("?r=delivery-order/delete-column",{
 			id : $(this).attr('id'),
 
 		},
@@ -2027,7 +2027,7 @@ $(this).click(function() {
 			
 			if( data.status == 'Success' ) {
 				alert(data.message);
-				window.location = domain + '?r=invoice/';	
+				window.location = domain + '?r=delivery-order/';	
 
 			}
 
@@ -2038,15 +2038,15 @@ $(this).click(function() {
 
 });
 
-//============ Approve Invoice =============//
+//============ Approve Delivery Order =============//
 
-$('.invoiceApproveColumn').each(function(){
+$('.deliveryorderApproveColumn').each(function(){
 
 $(this).click(function() {    
-	var yes = confirm ("Are you sure you want to approve this invoice?");
+	var yes = confirm ("Are you sure you want to approve this delivery order?");
        
 	if(yes) {
-		$.post("?r=invoice/approve-column",{
+		$.post("?r=delivery-order/approve-column",{
 			id : $(this).attr('id'),
 
 		},
@@ -2055,7 +2055,7 @@ $(this).click(function() {
 			
 			if( data.status == 'Success' ) {
 				alert(data.message);
-				window.location = domain + '?r=invoice/';	
+				window.location = domain + '?r=delivery-order/';	
 
 			}
 
@@ -2066,15 +2066,15 @@ $(this).click(function() {
 
 });
 
-//============ Cancel Invoice =============//
+//============ Cancel Delivery Order =============//
 
-$('.invoiceCancelColumn').each(function(){
+$('.deliveryorderCancelColumn').each(function(){
 
 $(this).click(function() {    
-	var yes = confirm ("Are you sure you want to cancel this invoice?");
+	var yes = confirm ("Are you sure you want to cancel this delivery order?");
        
 	if(yes) {
-		$.post("?r=invoice/cancel-column",{
+		$.post("?r=delivery-order/cancel-column",{
 			id : $(this).attr('id'),
 
 		},
@@ -2083,7 +2083,7 @@ $(this).click(function() {
 			
 			if( data.status == 'Success' ) {
 				alert(data.message);
-				window.location = domain + '?r=invoice/';	
+				window.location = domain + '?r=delivery-order/';	
 
 			}
 
@@ -2094,15 +2094,15 @@ $(this).click(function() {
 
 });
 
-//============ Close Invoice =============//
+//============ Close Delivery Order =============//
 
-$('.invoiceCloseColumn').each(function(){
+$('.deliveryorderCloseColumn').each(function(){
 
 $(this).click(function() {    
-	var yes = confirm ("Are you sure you want to close this invoice?");
+	var yes = confirm ("Are you sure you want to close this delivery order?");
        
 	if(yes) {
-		$.post("?r=invoice/close-column",{
+		$.post("?r=delivery-order/close-column",{
 			id : $(this).attr('id'),
 
 		},
@@ -2111,7 +2111,7 @@ $(this).click(function() {
 			
 			if( data.status == 'Success' ) {
 				alert(data.message);
-				window.location = domain + '?r=invoice/';	
+				window.location = domain + '?r=delivery-order/';	
 
 			}
 
@@ -2119,25 +2119,6 @@ $(this).click(function() {
 	}
 
 });
-
-});
-
-// =============== Create Delivery Order =============== //
-
-$('._quotationInsertIntoInvoice').click(function(){
-	var id = $(this).attr('id');
-
-	$.post("?r=quotation/insert-into-invoice",{
-		id : id,
-
-	},function(data){
-		var data = jQuery.parseJSON(data);
-			
-		if( data.status == 'Success' ) {
-			alert(data.message);
-			window.location = domain + '?r=invoice/invoice-payment&id=' + data.id;	
-		}
-	});
 
 });
 

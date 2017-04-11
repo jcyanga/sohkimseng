@@ -274,6 +274,7 @@ $('._showCreateQuotationModal').click(function(){
 	$('#quoteFormCreate').find('textarea[id=remarks]').val('');
 	$('#quoteFormCreate').find('input:text[id=grandTotal]').val('');
 	$('#quoteFormCreate').find('input:hidden[id=gst_amount]').val('');
+	$('#quoteFormCreate').find('input:text[id=gst]').val('');
 	$('#quoteFormCreate').find('input:text[id=netTotal]').val('');
 	$('#quoteFormCreate').find('select[id=parts]').val('0').change();
 	$('#quoteFormCreate').find('input:text[id=partsQty]').val('');
@@ -972,6 +973,7 @@ $('#submitQuotationFormFromCustomer').click(function(){
 	var customerName = $('#quoteFormCreate').find('input:hidden[id=customer]').val();
 	var grandTotal = $('#quoteFormCreate').find('input:text[id=grandTotal]').val();
 	var gst_amount = $('#quoteFormCreate').find('input:hidden[id=gst_amount]').val();
+	var gst_value = $('#quoteFormCreate').find('input:text[id=gst]').val();
 	var netTotal = $('#quoteFormCreate').find('input:text[id=netTotal]').val();
 	var discountAmount = $('#quoteFormCreate').find('input:text[id=discountAmount]').val();
 	var discountRemarks = $('#quoteFormCreate').find('textarea[id=discountRemarks]').val();
@@ -980,12 +982,27 @@ $('#submitQuotationFormFromCustomer').click(function(){
 	var parts_services_qty = $('input:text.partsservicesQty').serializeArray();
 	var parts_services_price = $('input:text.partsservicesPrice').serializeArray();
 	var parts_services_subtotal = $('input:text.partsservicesSubtotal').serializeArray();
-
 	if(customerName == '0' || salesPerson == '0' ){
 		alert('Invalid Customer Name or Sales Person Selected.');
 		return false;
 
 	}else{
+
+		if(discountAmount == null || discountAmount == ''){
+			var discount_amount = 0;
+		
+		}else{
+			var discount_amount = discountAmount;
+
+		}
+
+		if(discountRemarks == null || discountRemarks == ''){
+			var discount_remarks = 'No discount remarks';
+		
+		}else{
+			var discount_remarks = discountRemarks;
+
+		}
 
 		$.post("?r=quotation/create",{
 			quotationCode : quotationCode,
@@ -996,9 +1013,10 @@ $('#submitQuotationFormFromCustomer').click(function(){
 			customerName : customerName,
 			grandTotal : grandTotal,
 			gst_amount : gst_amount,
+			gst_value : gst_value,
 			netTotal : netTotal,
-			discountAmount : discountAmount,
-			discountRemarks : discountRemarks,
+			discountAmount : discount_amount,
+			discountRemarks : discount_remarks,
 			parts_services : parts_services,
 			parts_services_qty : parts_services_qty,
 			parts_services_price : parts_services_price,

@@ -17,6 +17,8 @@ use common\models\User;
 use common\models\Service;
 use common\models\Invoice;
 use common\models\InvoiceDetail;
+use common\models\Parts;
+use common\models\PartsInventory;
 
 /**
  * QuotationController implements the CRUD actions for Quotation model.
@@ -136,7 +138,7 @@ class QuotationController extends Controller
             $model->gst = Yii::$app->request->post('gst_amount');
             $model->gst_value = Yii::$app->request->post('gst_value');
             $model->net = Yii::$app->request->post('netTotal');
-            $model->remarks = Yii::$app->request->post('remarks');
+            $model->remarks = strtolower(Yii::$app->request->post('remarks'));
             $model->payment_type_id = Yii::$app->request->post('paymentType');
             $model->discount_amount = Yii::$app->request->post('discountAmount');
             $model->discount_remarks = Yii::$app->request->post('discountRemarks');
@@ -272,13 +274,13 @@ class QuotationController extends Controller
             $model->gst = Yii::$app->request->post('gst_amount');
             $model->gst_value = Yii::$app->request->post('gst_value');
             $model->net = Yii::$app->request->post('netTotal');
-            $model->remarks = Yii::$app->request->post('remarks');
+            $model->remarks = strtolower(Yii::$app->request->post('remarks'));
             $model->payment_type_id = Yii::$app->request->post('paymentType');
             $model->discount_amount = Yii::$app->request->post('discountAmount');
             $model->discount_remarks = Yii::$app->request->post('discountRemarks');
             $model->status = 1;
-            $model->created_at = date('Y-m-d H:i:s');
-            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
             $model->invoice_created = 0;
             $model->deleted = 0;
 
@@ -412,6 +414,7 @@ class QuotationController extends Controller
     {
         $model = Quotation::findOne(Yii::$app->request->post('id'));
         $model->condition = 1;
+        $model->action_by = Yii::$app->user->identity->id;
         $model->save();
         
         return json_encode(['status' => 'Success', 'message' => 'Your quotation was successfully approved.']);
@@ -421,6 +424,7 @@ class QuotationController extends Controller
     {
         $model = Quotation::findOne(Yii::$app->request->post('id'));
         $model->condition = 2;
+        $model->action_by = Yii::$app->user->identity->id;
         $model->save();
         
         return json_encode(['status' => 'Success', 'message' => 'Your quotation was successfully approved.']);
@@ -430,6 +434,7 @@ class QuotationController extends Controller
     {
         $model = Quotation::findOne(Yii::$app->request->post('id'));
         $model->condition = 3;
+        $model->action_by = Yii::$app->user->identity->id;
         $model->save();
         
         return json_encode(['status' => 'Success', 'message' => 'Your quotation was successfully approved.']);
@@ -670,11 +675,9 @@ class QuotationController extends Controller
     {
         $model = new Quotation();
 
-        $id = Yii::$app->request->post('id');
-
-        $getQuoteInfo = $model->getQuotationByIdForPreview($id);
-        $getQuoteServicesInfo = $model->getQuotationServiceForPreview($id);
-        $getQuotePartsInfo = $model->getQuotationPartsForPreview($id); 
+        $getQuoteInfo = $model->getQuotationByIdForPreview(2);
+        $getQuoteServicesInfo = $model->getQuotationServiceForPreview(2);
+        $getQuotePartsInfo = $model->getQuotationPartsForPreview(2); 
         
         // Last ID and code for invoice no // 
         $invoiceId = $model->getInvoiceId();
@@ -683,7 +686,7 @@ class QuotationController extends Controller
         $invoiceNo = 'INV' . $yrNow . $monthNow . sprintf('%003d', $invoiceId); 
 
         $getInvoice = Invoice::find()->where(['quotation_code' => $getQuoteInfo['quotation_code'] ])->one();
-     
+
         if( empty($getInvoice) ) {
 
             $invoiceModel = new Invoice();
@@ -692,18 +695,26 @@ class QuotationController extends Controller
             $invoiceModel->invoice_no = $invoiceNo;
             $invoiceModel->user_id = $getQuoteInfo['user_id'];
             $invoiceModel->customer_id = $getQuoteInfo['customer_id'];
-            $invoiceModel->date_issue = date('Y-m-d', strtotime($getQuoteInfo['user_id']));
+            $invoiceModel->date_issue = date('Y-m-d', strtotime($getQuoteInfo['date_issue']));
             $invoiceModel->grand_total = $getQuoteInfo['grand_total'];
             $invoiceModel->gst = $getQuoteInfo['gst'];
+            $invoiceModel->gst_value = $getQuoteInfo['gst_value'];
             $invoiceModel->net = $getQuoteInfo['net'];
-            $invoiceModel->remarks = $getQuoteInfo['remarks'];
+            $invoiceModel->remarks = strtolower($getQuoteInfo['remarks']);
+            $invoiceModel->payment_type_id = $getQuoteInfo['payment_type_id'];
+            $invoiceModel->discount_amount = $getQuoteInfo['discount_amount'];
+            $invoiceModel->discount_remarks = $getQuoteInfo['discount_remarks'];
             $invoiceModel->status = $getQuoteInfo['status'];
             $invoiceModel->created_at = date('Y-m-d H:i:s');
             $invoiceModel->created_by = Yii::$app->user->identity->id;
             $invoiceModel->do = 0;
             $invoiceModel->paid = 0;
             $invoiceModel->deleted = 0;
+            $invoiceModel->condition = 0;
+            $invoiceModel->action_by = 0;
             
+            $invoiceModel->save();
+
             $invoiceId = $invoiceModel->id;
 
             foreach($getQuoteServicesInfo as $serviceRow){
@@ -719,6 +730,8 @@ class QuotationController extends Controller
                 $invSD->created_at = date('Y-m-d H:i:s');
                 $invSD->created_by = Yii::$app->user->identity->id;
                 $invSD->deleted = 0;
+
+                $invSD->save();
             }
 
             foreach($getQuotePartsInfo as $partsRow){
@@ -734,6 +747,32 @@ class QuotationController extends Controller
                 $invPD->created_at = date('Y-m-d H:i:s');
                 $invPD->created_by = Yii::$app->user->identity->id;
                 $invPD->deleted = 0;
+
+                $invPD->save();
+
+                $getPart = Parts::find()->where(['id' => $partsRow['description'] ])->one();
+                $old_qty = $getPart->quantity;
+                $new_qty = $getPart->quantity - $partsRow['quantity'];
+
+                $partsinventoryModel = new PartsInventory();
+                            
+                $partsinventoryModel->parts_id = $partsRow['description'];
+                $partsinventoryModel->old_quantity = $old_qty;
+                $partsinventoryModel->new_quantity = $new_qty;
+                $partsinventoryModel->qty_purchased = $partsRow['quantity'];
+                $partsinventoryModel->type = 3;
+                $partsinventoryModel->invoice_no = $invoiceNo;
+                $partsinventoryModel->datetime_purchased = date('Y-m-d H:i:s', strtotime($getQuoteInfo['date_issue']));
+                $partsinventoryModel->created_at = date('Y-m-d H:i:s');
+                $partsinventoryModel->created_by = Yii::$app->user->identity->id;
+                $partsinventoryModel->status = 1;
+                
+                $partsinventoryModel->save();
+
+                $getPart = Parts::find()->where(['id' => $partsRow['description'] ])->one();
+                $getPart->quantity -= $partsRow['quantity'];
+                $getPart->save();
+
             }
 
             return json_encode(['status' => 'Success', 'message' => 'Invoice was successfully created.', 'id' => $invoiceId ]);

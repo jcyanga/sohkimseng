@@ -236,8 +236,7 @@ class Quotation extends \yii\db\ActiveRecord
 
         $result = $query->select([ 'quotation_detail.id', 'quotation_detail.description', 'parts.parts_name as name', 'parts.unit_of_measure', 'parts.parts_code', 'quotation_detail.quantity', 'quotation_detail.unit_price', 'quotation_detail.sub_total', 'quotation_detail.type', 'quotation_detail.status' ])
                     ->from('quotation_detail')
-                    ->leftJoin('parts_inventory', 'quotation_detail.description = parts_inventory.id')
-                    ->leftJoin('parts', 'parts_inventory.parts_id = parts.id')
+                    ->leftJoin('parts', 'quotation_detail.description = parts.id')
                     ->where(['quotation_detail.quotation_id' => 1])
                     ->andWhere(['quotation_detail.type' => 1])
                     ->andWhere(['quotation_detail.status' => 1])

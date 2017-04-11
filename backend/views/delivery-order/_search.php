@@ -4,11 +4,12 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\SearchInvoice */
+/* @var $model common\models\SearchDeliveryOrder */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
 
-<div class="invoice-search">
+<div class="delivery-order-search">
 
 <?php $form = ActiveForm::begin(['action' => ['index'], 'method' => 'get']); ?>
 

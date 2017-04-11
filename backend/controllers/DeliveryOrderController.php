@@ -3,24 +3,25 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\Invoice;
-use common\models\SearchInvoice;
+use common\models\DeliveryOrder;
+use common\models\SearchDeliveryOrder;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 use yii\helpers\ArrayHelper;
 
-use common\models\InvoiceDetail;
+use common\models\DeliveryOrderDetail;
 use common\models\Customer;
 use common\models\User;
 use  common\models\Service;
 use common\models\Parts;
 use common\models\PartsInventory;
+
 /**
- * InvoiceController implements the CRUD actions for Invoice model.
+ * DeliveyOrderController implements the CRUD actions for DeliveryOrder model.
  */
-class InvoiceController extends Controller
+class DeliveryOrderController extends Controller
 {
     public $enableCsrfValidation = false;
     /**
@@ -39,21 +40,21 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Lists all Invoice models.
+     * Lists all DeliveryOrder models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new SearchInvoice();
+        $searchModel = new SearchDeliveryOrder();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $model = new Invoice();
+        $model = new DeliveryOrder();
         $customerModel = new Customer();
 
-        // Last ID and code for invoice no // 
-        $invoiceId = $model->getInvoiceId();
+        // Last ID and code for delivery order // 
+        $deliveryorderId = $model->getDeliveryOrderId();
         $yrNow = date('Y');
         $monthNow = date('m');
-        $invoiceNo = 'INV' . $yrNow . $monthNow . sprintf('%003d', $invoiceId); 
+        $deliveryorderCode = 'DO' . $yrNow . $monthNow . sprintf('%003d', $deliveryorderId); 
         // for date issue //
         $dateNow = date('d-m-Y');
         // get customer list //
@@ -69,7 +70,7 @@ class InvoiceController extends Controller
                         'searchModel' => $searchModel,
                         'dataProvider' => $dataProvider,
                         'model' => $model,
-                        'invoiceNo' => $invoiceNo,
+                        'deliveryorderCode' => $deliveryorderCode,
                         'dateNow' => $dateNow,
                         'dataCustomer' => $dataCustomer,
                         'dataUser' => $dataUser,
@@ -77,19 +78,20 @@ class InvoiceController extends Controller
                         'servicesResult' => $servicesResult,
                         'customerModel' => $customerModel,
                     ]);
+
     }
 
     /**
-     * Displays a single Invoice model.
+     * Displays a single DeliveryOrder model.
      * @param integer $id
      * @return mixed
      */
     public function actionView($id)
     {
-        $model = new Invoice();
-        $getInvoiceInfo = $model->getInvoiceByIdForPreview($id);
-        $getInvoiceServicesInfo = $model->getInvoiceServiceForPreview($id);
-        $getInvoicePartsInfo = $model->getInvoicePartsForPreview($id);    
+        $model = new DeliveryOrder();
+        $getDeliveryOrderInfo = $model->getDeliveryOrderByIdForPreview($id);
+        $getDeliveryOrderServicesInfo = $model->getDeliveryOrderServiceForPreview($id);
+        $getDeliveryOrderPartsInfo = $model->getDeliveryOrderPartsForPreview($id);    
 
         // for date issue //
         $dateNow = date('d-m-Y');
@@ -104,9 +106,9 @@ class InvoiceController extends Controller
 
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'getInvoiceInfo' => $getInvoiceInfo,
-            'getInvoiceServicesInfo' => $getInvoiceServicesInfo,
-            'getInvoicePartsInfo' => $getInvoicePartsInfo,
+            'getDeliveryOrderInfo' => $getDeliveryOrderInfo,
+            'getDeliveryOrderServicesInfo' => $getDeliveryOrderServicesInfo,
+            'getDeliveryOrderPartsInfo' => $getDeliveryOrderPartsInfo,
             'dateNow' => $dateNow,
             'dataCustomer' => $dataCustomer,
             'dataUser' => $dataUser,
@@ -117,18 +119,18 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Creates a new Invoice model.
+     * Creates a new DeliveryOrder model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Invoice();
+        $model = new DeliveryOrder();
 
         if ( Yii::$app->request->post() ) {
             
-            $model->quotation_code = 0;
-            $model->invoice_no = Yii::$app->request->post('invoice_no');
+            $model->delivery_order_code = Yii::$app->request->post('deliveryorderCode');
+            $model->invoice_no = 0;
             $model->user_id = Yii::$app->request->post('salesPerson');
             $model->customer_id = Yii::$app->request->post('customerName');
             $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('dateIssue')));
@@ -143,13 +145,12 @@ class InvoiceController extends Controller
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
-            $model->do = 0;
             $model->paid = 0;
             $model->deleted = 0;
 
             if($model->validate()) {
                 $model->save();
-                $invoiceId = $model->id;
+                $deliveryorderId = $model->id;
 
                 $parts_services = Yii::$app->request->post('parts_services');
                 $parts_services_qty = Yii::$app->request->post('parts_services_qty');
@@ -157,26 +158,26 @@ class InvoiceController extends Controller
                 $parts_services_subtotal = Yii::$app->request->post('parts_services_subtotal');
                 
                 foreach($parts_services_qty as $key => $quoteRow){
-                    $invD = new InvoiceDetail();
+                    $deliveryorderD = new DeliveryOrderDetail();
 
                     $getServicePart = explode('-', $parts_services[$key]['value']);
                     $type = $getServicePart[0];
                     $service_part_id = $getServicePart[1];
 
-                    $invD->description = $service_part_id;
-                    $invD->invoice_id = $invoiceId;
-                    $invD->quantity = $parts_services_qty[$key]['value'];
-                    $invD->unit_price = $parts_services_price[$key]['value'];
-                    $invD->sub_total = $parts_services_subtotal[$key]['value'];
-                    $invD->type = $type;
-                    $invD->created_at = date('Y-m-d H:i:s');
-                    $invD->created_by = Yii::$app->user->identity->id;
-                    $invD->updated_at = date('Y-m-d H:i:s');
-                    $invD->updated_by = Yii::$app->user->identity->id;
-                    $invD->status = 1;
-                    $invD->deleted = 0;
+                    $deliveryorderD->description = $service_part_id;
+                    $deliveryorderD->delivery_order_id = $deliveryorderId;
+                    $deliveryorderD->quantity = $parts_services_qty[$key]['value'];
+                    $deliveryorderD->unit_price = $parts_services_price[$key]['value'];
+                    $deliveryorderD->sub_total = $parts_services_subtotal[$key]['value'];
+                    $deliveryorderD->type = $type;
+                    $deliveryorderD->created_at = date('Y-m-d H:i:s');
+                    $deliveryorderD->created_by = Yii::$app->user->identity->id;
+                    $deliveryorderD->updated_at = date('Y-m-d H:i:s');
+                    $deliveryorderD->updated_by = Yii::$app->user->identity->id;
+                    $deliveryorderD->status = 1;
+                    $deliveryorderD->deleted = 0;
 
-                    $invD->save();
+                    $deliveryorderD->save();
 
                     if( $type == 1 ){
                         $getPart = Parts::find()->where(['id' => $service_part_id ])->one();
@@ -190,7 +191,7 @@ class InvoiceController extends Controller
                         $partsinventoryModel->new_quantity = $new_qty;
                         $partsinventoryModel->qty_purchased = $parts_services_qty[$key]['value'];
                         $partsinventoryModel->type = 3;
-                        $partsinventoryModel->invoice_no = Yii::$app->request->post('invoice_no');
+                        $partsinventoryModel->invoice_no = Yii::$app->request->post('deliveryorderCode');
                         $partsinventoryModel->datetime_purchased = date('Y-m-d', strtotime(Yii::$app->request->post('dateIssue')));
                         $partsinventoryModel->created_at = date('Y-m-d H:i:s');
                         $partsinventoryModel->created_by = Yii::$app->user->identity->id;
@@ -205,7 +206,7 @@ class InvoiceController extends Controller
 
                 }
 
-                return json_encode(['message' => 'Invoice was successfully saved.', 'status' => 'Success', 'id' => $invoiceId ]);
+                return json_encode(['message' => 'Delivery Order was successfully saved.', 'status' => 'Success', 'id' => $deliveryorderId ]);
 
             }else{
                 return json_encode(['message' => $model->errors, 'status' => 'Error']);
@@ -280,7 +281,7 @@ class InvoiceController extends Controller
     }
 
     /**
-     * Updates an existing Invoice model.
+     * Updates an existing DeliveryOrder model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -289,10 +290,10 @@ class InvoiceController extends Controller
     {
         if ( Yii::$app->request->post() ) {
             
-            $model = Invoice::findOne(Yii::$app->request->post('invoiceId'));
+            $model = DeliveryOrder::findOne(Yii::$app->request->post('deliveryorderId'));
 
-            $model->quotation_code = 0;
-            $model->invoice_no = Yii::$app->request->post('invoice_no');
+            $model->delivery_order_code = Yii::$app->request->post('deliveryorderCode');
+            $model->invoice_no = 0;
             $model->user_id = Yii::$app->request->post('salesPerson');
             $model->customer_id = Yii::$app->request->post('customerName');
             $model->date_issue = date('Y-m-d', strtotime(Yii::$app->request->post('dateIssue')));
@@ -307,16 +308,15 @@ class InvoiceController extends Controller
             $model->status = 1;
             $model->updated_at = date('Y-m-d H:i:s');
             $model->updated_by = Yii::$app->user->identity->id;
-            $model->do = 0;
             $model->paid = 0;
             $model->deleted = 0;
 
             if($model->validate()) {
                 $model->save();
                 
-                $invoiceId = Yii::$app->request->post('invoiceId');
+                $deliveryorderId = Yii::$app->request->post('deliveryorderId');
                 
-                $getQty = InvoiceDetail::find()->where(['invoice_id' => $invoiceId])->andWhere('type = 1')->all();
+                $getQty = DeliveryOrderDetail::find()->where(['delivery_order_id' => $deliveryorderId])->andWhere('type = 1')->all();
                         
                 foreach( $getQty as $partsInfo ) {
                     $partsid = $partsInfo['description'];
@@ -326,29 +326,29 @@ class InvoiceController extends Controller
                     $findPartModel->save();
                 }
 
-                InvoiceDetail::deleteAll(['invoice_id' => $invoiceId]);
+                DeliveryOrderDetail::deleteAll(['delivery_order_id' => $deliveryorderId]);
 
                 foreach( Yii::$app->request->post('parts_services_qty') as $key => $invRow){
-                    $invD = new InvoiceDetail();
+                    $deliveryorderD = new DeliveryOrderDetail();
 
                     $getServicePart = explode('-', Yii::$app->request->post('parts_services')[$key]['value'] );
                     $type = $getServicePart[0];
                     $service_part_id = $getServicePart[1];
 
-                    $invD->description = $service_part_id;
-                    $invD->invoice_id = $invoiceId;
-                    $invD->quantity = Yii::$app->request->post('parts_services_qty')[$key]['value'];
-                    $invD->unit_price = Yii::$app->request->post('parts_services_price')[$key]['value'];
-                    $invD->sub_total = Yii::$app->request->post('parts_services_subtotal')[$key]['value'];
-                    $invD->type = $type;
-                    $invD->created_at = date('Y-m-d H:i:s');
-                    $invD->created_by = Yii::$app->user->identity->id;
-                    $invD->updated_at = date('Y-m-d H:i:s');
-                    $invD->updated_by = Yii::$app->user->identity->id;
-                    $invD->status = 1;
-                    $invD->deleted = 0;
+                    $deliveryorderD->description = $service_part_id;
+                    $deliveryorderD->delivery_order_id = $deliveryorderId;
+                    $deliveryorderD->quantity = Yii::$app->request->post('parts_services_qty')[$key]['value'];
+                    $deliveryorderD->unit_price = Yii::$app->request->post('parts_services_price')[$key]['value'];
+                    $deliveryorderD->sub_total = Yii::$app->request->post('parts_services_subtotal')[$key]['value'];
+                    $deliveryorderD->type = $type;
+                    $deliveryorderD->created_at = date('Y-m-d H:i:s');
+                    $deliveryorderD->created_by = Yii::$app->user->identity->id;
+                    $deliveryorderD->updated_at = date('Y-m-d H:i:s');
+                    $deliveryorderD->updated_by = Yii::$app->user->identity->id;
+                    $deliveryorderD->status = 1;
+                    $deliveryorderD->deleted = 0;
 
-                    $invD->save();
+                    $deliveryorderD->save();
 
                     if( $type == 1 ){
                         $getPart = Parts::find()->where(['id' => $service_part_id ])->one();
@@ -362,7 +362,7 @@ class InvoiceController extends Controller
                         $partsinventoryModel->new_quantity = $new_qty;
                         $partsinventoryModel->qty_purchased = Yii::$app->request->post('parts_services_qty')[$key]['value'];
                         $partsinventoryModel->type = 3;
-                        $partsinventoryModel->invoice_no = Yii::$app->request->post('invoice_no');
+                        $partsinventoryModel->invoice_no = Yii::$app->request->post('deliveryorderCode');
                         $partsinventoryModel->datetime_purchased = date('Y-m-d', strtotime(Yii::$app->request->post('dateIssue')));
                         $partsinventoryModel->created_at = date('Y-m-d H:i:s');
                         $partsinventoryModel->created_by = Yii::$app->user->identity->id;
@@ -380,26 +380,26 @@ class InvoiceController extends Controller
                 if(count(Yii::$app->request->post('selected_parts_services_qty')) > 0)
                 {
                     foreach( Yii::$app->request->post('selected_parts_services_qty') as $Skey => $invSRow){
-                        $invselectedSD = new InvoiceDetail();
+                        $doselectedSD = new DeliveryOrderDetail();
 
                         $getSelectedServicePart = explode('-', Yii::$app->request->post('selected_parts_services')[$Skey]['value'] );
                         $selected_type = $getSelectedServicePart[0];
                         $selected_service_part_id = $getSelectedServicePart[1];
 
-                        $invselectedSD->description = $selected_service_part_id;
-                        $invselectedSD->invoice_id = $invoiceId;
-                        $invselectedSD->quantity = Yii::$app->request->post('selected_parts_services_qty')[$Skey]['value'];
-                        $invselectedSD->unit_price = Yii::$app->request->post('selected_parts_services_price')[$Skey]['value'];
-                        $invselectedSD->sub_total = Yii::$app->request->post('selected_parts_services_subtotal')[$Skey]['value'];
-                        $invselectedSD->type = $selected_type;
-                        $invselectedSD->created_at = date('Y-m-d H:i:s');
-                        $invselectedSD->created_by = Yii::$app->user->identity->id;
-                        $invselectedSD->updated_at = date('Y-m-d H:i:s');
-                        $invselectedSD->updated_by = Yii::$app->user->identity->id;
-                        $invselectedSD->status = 1;
-                        $invselectedSD->deleted = 0;
+                        $doselectedSD->description = $selected_service_part_id;
+                        $doselectedSD->delivery_order_id = $deliveryorderId;
+                        $doselectedSD->quantity = Yii::$app->request->post('selected_parts_services_qty')[$Skey]['value'];
+                        $doselectedSD->unit_price = Yii::$app->request->post('selected_parts_services_price')[$Skey]['value'];
+                        $doselectedSD->sub_total = Yii::$app->request->post('selected_parts_services_subtotal')[$Skey]['value'];
+                        $doselectedSD->type = $selected_type;
+                        $doselectedSD->created_at = date('Y-m-d H:i:s');
+                        $doselectedSD->created_by = Yii::$app->user->identity->id;
+                        $doselectedSD->updated_at = date('Y-m-d H:i:s');
+                        $doselectedSD->updated_by = Yii::$app->user->identity->id;
+                        $doselectedSD->status = 1;
+                        $doselectedSD->deleted = 0;
 
-                        $invselectedSD->save();
+                        $doselectedSD->save();
 
                         if( $selected_type == 1 ){
                             $getSelectedPart = Parts::find()->where(['id' => $selected_service_part_id ])->one();
@@ -413,7 +413,7 @@ class InvoiceController extends Controller
                             $partsinventoryModel->new_quantity = $selectedpart_new_qty;
                             $partsinventoryModel->qty_purchased = Yii::$app->request->post('selected_parts_services_qty')[$Skey]['value'];
                             $partsinventoryModel->type = 3;
-                            $partsinventoryModel->invoice_no = Yii::$app->request->post('invoice_no');
+                            $partsinventoryModel->invoice_no = Yii::$app->request->post('deliveryorderCode');
                             $partsinventoryModel->datetime_purchased = date('Y-m-d', strtotime(Yii::$app->request->post('dateIssue')));
                             $partsinventoryModel->created_at = date('Y-m-d H:i:s');
                             $partsinventoryModel->created_by = Yii::$app->user->identity->id;
@@ -428,7 +428,7 @@ class InvoiceController extends Controller
                     }
                 }
 
-                return json_encode(['message' => 'Invoice was successfully updated.', 'status' => 'Success', 'id' => $invoiceId ]);
+                return json_encode(['message' => 'Delivery Order was successfully updated.', 'status' => 'Success', 'id' => $deliveryorderId ]);
 
             }else{
                 return json_encode(['message' => $model->errors, 'status' => 'Error']);
@@ -440,45 +440,45 @@ class InvoiceController extends Controller
 
     public function actionGetData($id)
     {
-        $model = new Invoice();
-        $getInvoiceInfo = $model->getInvoiceByIdForPreview(Yii::$app->request->get('id'));
-        $getInvoiceServicesInfo = $model->getInvoiceServiceForPreview(Yii::$app->request->get('id'));
-        $getInvoicePartsInfo = $model->getInvoicePartsForPreview(Yii::$app->request->get('id'));   
+        $model = new DeliveryOrder();
+        $getDeliveryOrderInfo = $model->getDeliveryOrderByIdForPreview(Yii::$app->request->get('id'));
+        $getDeliveryOrderServicesInfo = $model->getDeliveryOrderServiceForPreview(Yii::$app->request->get('id'));
+        $getDeliveryOrderPartsInfo = $model->getDeliveryOrderPartsForPreview(Yii::$app->request->get('id'));   
 
         $data = array();
-        $data['quotation_code'] = $getInvoiceInfo['quotation_code'];
-        $data['invoice_no'] = $getInvoiceInfo['invoice_no'];
-        $data['user_id'] = $getInvoiceInfo['user_id']; 
-        $data['payment_type_id'] = $getInvoiceInfo['payment_type_id']; 
-        $data['remarks'] = $getInvoiceInfo['remarks'];
-        $data['date_issue'] = date('d-m-Y', strtotime($getInvoiceInfo['date_issue']));      
-        $data['customer_id'] = $getInvoiceInfo['customer_id']; 
+        $data['delivery_order_code'] = $getDeliveryOrderInfo['delivery_order_code'];
+        $data['invoice_no'] = $getDeliveryOrderInfo['invoice_no'];
+        $data['user_id'] = $getDeliveryOrderInfo['user_id']; 
+        $data['payment_type_id'] = $getDeliveryOrderInfo['payment_type_id']; 
+        $data['remarks'] = $getDeliveryOrderInfo['remarks'];
+        $data['date_issue'] = date('d-m-Y', strtotime($getDeliveryOrderInfo['date_issue']));      
+        $data['customer_id'] = $getDeliveryOrderInfo['customer_id']; 
         
-        $data['grand_total'] = $getInvoiceInfo['grand_total'];
-        $data['gst'] = $getInvoiceInfo['gst'];
-        $data['gst_value'] = $getInvoiceInfo['gst_value']; 
-        $data['net'] = $getInvoiceInfo['net'];
+        $data['grand_total'] = $getDeliveryOrderInfo['grand_total'];
+        $data['gst'] = $getDeliveryOrderInfo['gst'];
+        $data['gst_value'] = $getDeliveryOrderInfo['gst_value']; 
+        $data['net'] = $getDeliveryOrderInfo['net'];
 
-        $data['discount_amount'] = $getInvoiceInfo['discount_amount'];
-        $data['discount_remarks'] = $getInvoiceInfo['discount_remarks']; 
+        $data['discount_amount'] = $getDeliveryOrderInfo['discount_amount'];
+        $data['discount_remarks'] = $getDeliveryOrderInfo['discount_remarks']; 
 
-        $data['type'] = $getInvoiceInfo['type'];
-        $data['fullname'] = $getInvoiceInfo['customerName'];
-        $data['company_name'] = $getInvoiceInfo['company_name'];
-        $data['uen_no'] = $getInvoiceInfo['uen_no']; 
-        $data['nric'] = $getInvoiceInfo['nric']; 
-        $data['address'] = $getInvoiceInfo['address']; 
-        $data['shipping_address'] = $getInvoiceInfo['shipping_address']; 
-        $data['email'] = $getInvoiceInfo['email']; 
-        $data['phone_number'] = $getInvoiceInfo['phone_number']; 
-        $data['mobile_number'] = $getInvoiceInfo['mobile_number']; 
-        $data['fax_number'] = $getInvoiceInfo['fax_number']; 
+        $data['type'] = $getDeliveryOrderInfo['type'];
+        $data['fullname'] = $getDeliveryOrderInfo['customerName'];
+        $data['company_name'] = $getDeliveryOrderInfo['company_name'];
+        $data['uen_no'] = $getDeliveryOrderInfo['uen_no']; 
+        $data['nric'] = $getDeliveryOrderInfo['nric']; 
+        $data['address'] = $getDeliveryOrderInfo['address']; 
+        $data['shipping_address'] = $getDeliveryOrderInfo['shipping_address']; 
+        $data['email'] = $getDeliveryOrderInfo['email']; 
+        $data['phone_number'] = $getDeliveryOrderInfo['phone_number']; 
+        $data['mobile_number'] = $getDeliveryOrderInfo['mobile_number']; 
+        $data['fax_number'] = $getDeliveryOrderInfo['fax_number']; 
         
-        return json_encode([ 'result' => $data, 'services' => $getInvoiceServicesInfo, 'parts' => $getInvoicePartsInfo ]);
+        return json_encode([ 'result' => $data, 'services' => $getDeliveryOrderServicesInfo, 'parts' => $getDeliveryOrderPartsInfo ]);
     }
 
     /**
-     * Deletes an existing Invoice model.
+     * Deletes an existing DeliveryOrder model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -501,44 +501,44 @@ class InvoiceController extends Controller
 
     public function actionApproveColumn()
     {
-        $model = Invoice::findOne(Yii::$app->request->post('id'));
+        $model = DeliveryOrder::findOne(Yii::$app->request->post('id'));
         $model->condition = 1;
         $model->action_by = Yii::$app->user->identity->id;
         $model->save();
         
-        return json_encode(['status' => 'Success', 'message' => 'Your invoice was successfully approved.']);
+        return json_encode(['status' => 'Success', 'message' => 'Your delivery order was successfully approved.']);
     }
 
     public function actionCancelColumn()
     {
-        $model = Invoice::findOne(Yii::$app->request->post('id'));
+        $model = DeliveryOrder::findOne(Yii::$app->request->post('id'));
         $model->condition = 2;
         $model->action_by = Yii::$app->user->identity->id;
         $model->save();
         
-        return json_encode(['status' => 'Success', 'message' => 'Your invoice was successfully approved.']);
+        return json_encode(['status' => 'Success', 'message' => 'Your delivery order was successfully approved.']);
     }
 
     public function actionCloseColumn()
     {
-        $model = Invoice::findOne(Yii::$app->request->post('id'));
+        $model = DeliveryOrder::findOne(Yii::$app->request->post('id'));
         $model->condition = 3;
         $model->action_by = Yii::$app->user->identity->id;
         $model->save();
         
-        return json_encode(['status' => 'Success', 'message' => 'Your invoice was successfully approved.']);
+        return json_encode(['status' => 'Success', 'message' => 'Your delivery order was successfully approved.']);
     }
 
     /**
-     * Finds the Invoice model based on its primary key value.
+     * Finds the DeliveryOrder model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Invoice the loaded model
+     * @return DeliveryOrder the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Invoice::findOne($id)) !== null) {
+        if (($model = DeliveryOrder::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
@@ -549,7 +549,7 @@ class InvoiceController extends Controller
 
     public function actionGetPartsPriceAndQty()
     {
-        $model = new Invoice();
+        $model = new DeliveryOrder();
         $partsInfo = $model->getPartsById(Yii::$app->request->get('parts_id'));
         
         if(Yii::$app->request->get('parts_id') > 0) {
@@ -561,7 +561,7 @@ class InvoiceController extends Controller
 
     public function actionInsertAutoPartsInList()
     {
-        $model = new Invoice();
+        $model = new DeliveryOrder();
     
         $partsId = Yii::$app->request->post('parts_id');
         $partsQty = Yii::$app->request->post('parts_qty');
@@ -590,7 +590,7 @@ class InvoiceController extends Controller
 
     public function actionGetServicesPriceAndQty()
     {
-        $model = new Invoice();
+        $model = new DeliveryOrder();
         $servicesInfo = $model->getServicesById(Yii::$app->request->get('services_id'));
         
         if(Yii::$app->request->get('services_id') > 0) {
@@ -602,7 +602,7 @@ class InvoiceController extends Controller
 
     public function actionInsertServicesInList()
     {
-        $model = new Invoice();
+        $model = new DeliveryOrder();
     
         $servicesId = Yii::$app->request->post('services_id');
         $servicesQty = Yii::$app->request->post('services_qty');
@@ -643,7 +643,7 @@ class InvoiceController extends Controller
 
     public function actionUpdateAutoPartsInList()
     {
-        $model = new Invoice();
+        $model = new DeliveryOrder();
     
         $partsId = Yii::$app->request->post('parts_id');
         $partsQty = Yii::$app->request->post('parts_qty');
@@ -672,7 +672,7 @@ class InvoiceController extends Controller
 
     public function actionUpdateServicesInList()
     {
-        $model = new Invoice();
+        $model = new DeliveryOrder();
     
         $servicesId = Yii::$app->request->post('services_id');
         $servicesQty = Yii::$app->request->post('services_qty');
@@ -720,19 +720,19 @@ class InvoiceController extends Controller
         return json_encode([ 'status' => 'Success', 'result' => $data ]);
     }
 
-    // ===== create invoice from customer created ===== //
+    // ===== create delivery order from customer created ===== //
 
-    public function actionCreateInvoice($id)
+    public function actionCreateDeliveryOrder($id)
     {
         $customerInfo = Customer::findOne($id);
-        $model = new Invoice();
+        $model = new DeliveryOrder();
         $customerModel = new Customer();
 
-        // Last ID and code for invoice number // 
-        $invoiceId = $model->getInvoiceId();
+        // Last ID and code for delivery order code // 
+        $deliveryorderId = $model->getDeliveryOrderId();
         $yrNow = date('Y');
         $monthNow = date('m');
-        $invoiceNo = 'QUO' . $yrNow . $monthNow . sprintf('%003d', $invoiceId); 
+        $deliveryorderCode = 'QUO' . $yrNow . $monthNow . sprintf('%003d', $deliveryorderId); 
         // for date issue //
         $dateNow = date('d-m-Y');
         // get customer list //
@@ -744,9 +744,9 @@ class InvoiceController extends Controller
         // get services //
         $servicesResult = $model->getServicesList();
 
-        return $this->render('_invoice-form', [
+        return $this->render('_delivery-order-form', [
                         'model' => $model,
-                        'invoiceNo' => $invoiceNo,
+                        'deliveryorderCode' => $deliveryorderCode,
                         'dateNow' => $dateNow,
                         'dataUser' => $dataUser,
                         'partsResult' => $partsResult,
@@ -757,12 +757,5 @@ class InvoiceController extends Controller
                         
                     ]);
     }
-
-    // =============== payment =============== //
-
-    public function actionInvoicePayment($id)
-    {
-        return $id;
-    }
-
+    
 }

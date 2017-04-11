@@ -43,6 +43,7 @@ $isProduct = false;
 $isProductInventory = false;
 $isQuotation = false;
 $isInvoice = false;
+$isDeliveryOrder = false;
 $isUserPermission = false;
 $isUtilities = false;
 $isRace = false;
@@ -149,6 +150,10 @@ $isPaymentType = false;
 
       if ( $getClass == 'invoice' ) {
             $isInvoice = true; 
+      }
+
+      if ( $getClass == 'delivery-order' ) {
+            $isDeliveryOrder = true; 
       }
 
       if ( $getClass == 'race' ) {
@@ -433,6 +438,12 @@ $isPaymentType = false;
 <li class="<?php if( $isInvoice ) { echo 'activeMenu'; }?>" >
   <a href="?r=invoice" id="invoiceMenu">
     <i class="fa fa-file-text-o"></i> <span>Invoice</span>
+  </a>
+</li>
+
+<li class="<?php if( $isDeliveryOrder ) { echo 'activeMenu'; }?>" >
+  <a href="?r=delivery-order" id="deliveryorderMenu">
+    <i class="fa fa-ambulance"></i> <span>Delivery Order</span>
   </a>
 </li>
 
@@ -734,6 +745,7 @@ $isPaymentType = false;
     <script src="js/modalEvents.js"></script>
     <script src="js/quotation.js"></script>
     <script src="js/invoice.js"></script>
+    <script src="js/delivery_order.js"></script>
 
     <!-- Table Export -->
     <script src="js/tableExport.js"></script>

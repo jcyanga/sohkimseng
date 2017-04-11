@@ -11,13 +11,13 @@ use yii\grid\GridView;
 	<div class="col-md-6">
 		<div style="text-align: right;">
 			<span class="update-button-<?= $ctr ?> edit-button">
-                <a href="javascript:updateSelectedInvoiceItem(<?= $ctr ?>)" class="selectedBtns" ><i class="fa fa-edit"></i> Edit</a>
+                <a href="javascript:updateSelectedDeliveryOrderItem(<?= $ctr ?>)" class="selectedBtns" ><i class="fa fa-edit"></i> Edit</a>
             </span>
             <span class="save-update-button-<?= $ctr ?> save-button hidden">
-                <a href="javascript:saveUpdateSelectedInvoiceItem(<?= $ctr ?>)" class="selectedBtns" ><i class="fa fa-save"></i> Save</a>
+                <a href="javascript:saveUpdateSelectedDeliveryOrderItem(<?= $ctr ?>)" class="selectedBtns" ><i class="fa fa-save"></i> Save</a>
             </span>
             <span class="remove-update-button-<?= $ctr ?> remove-button">
-                <a href="javascript:removeUpdateSelectedInvoiceItem(<?= $ctr ?>)" class="selectedBtns" ><i class="fa fa-trash"></i> Remove</a>
+                <a href="javascript:removeUpdateSelectedDeliveryOrderItem(<?= $ctr ?>)" class="selectedBtns" ><i class="fa fa-trash"></i> Remove</a>
             </span>	
 		</div>
 	</div>
@@ -73,11 +73,11 @@ use yii\grid\GridView;
 	<?php endif; ?>
 
 	<div class="col-md-3">
-		<input type="text" id="parts-services-update-qty-in-list-<?= $ctr ?>" value="<?= $quantity ?>" name="InvoiceDetail[quantity][]" onchange="editSelectedSubtotalInvoice(<?= $ctr ?>)" class="inputForm inputboxTotalAlignment form-control update_selected_partsservicesQty" />	
+		<input type="text" id="parts-services-update-qty-in-list-<?= $ctr ?>" value="<?= $quantity ?>" name="InvoiceDetail[quantity][]" onchange="editSelectedSubtotalDeliveryOrder(<?= $ctr ?>)" class="inputForm inputboxTotalAlignment form-control update_selected_partsservicesQty" />	
 	</div>
 
 	<div class="col-md-3">
-		<input type="text" id="parts-services-update-price-in-list-<?= $ctr ?>" value="<?= $unit_price ?>" name="InvoiceDetail[unit_price][]" onchange="editSelectedSubtotalInvoice(<?= $ctr ?>)" class="inputForm inputboxTotalAlignment form-control update_selected_partsservicesPrice" />	
+		<input type="text" id="parts-services-update-price-in-list-<?= $ctr ?>" value="<?= $unit_price ?>" name="InvoiceDetail[unit_price][]" onchange="editSelectedSubtotalDeliveryOrder(<?= $ctr ?>)" class="inputForm inputboxTotalAlignment form-control update_selected_partsservicesPrice" />	
 	</div>
 
 	<div class="col-md-3">

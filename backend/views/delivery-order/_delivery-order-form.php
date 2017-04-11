@@ -15,17 +15,17 @@ $dataPaymentType = ArrayHelper::map(PaymentType::find()->where(['status' => 1])-
 $salesPerson = Yii::$app->user->identity->id;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Quotation */
+/* @var $model common\models\DeliveryOrder */
 
-$this->title = 'Create Quotation for Customer';
-$this->params['breadcrumbs'][] = ['label' => 'Quotations', 'url' => ['index']];
+$this->title = 'Create Delivery Order for Customer';
+$this->params['breadcrumbs'][] = ['label' => 'Delivery Orders', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $n = 0;
 
 ?>
 
-<div class="quotation-create divContainer">
+<div class="delivery-order-create divContainer">
 
 <div class="row containerContentWrapper">
 
@@ -42,7 +42,7 @@ $n = 0;
         </h4>
     </div> -->
 
-<?php $form = ActiveForm::begin(['method' => 'post', 'id' => 'quoteFormCreate']); ?>
+<?php $form = ActiveForm::begin(['method' => 'post', 'id' => 'deliveryorderFormCreate']); ?>
     
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="row informationsContainer">
@@ -55,11 +55,11 @@ $n = 0;
                     <div class="col-md-6">
                         <input type="hidden" id="customer" class="customer" value="<?= $customerInfo->id ?>" />
 
-                        <label class="labelStyle"><i class="fa fa-barcode"></i> Quotation Code</label>
-                        <?= $form->field($model, 'quotation_code')->textInput(['class' => 'transactionForm form-control', 'id' => 'quotationCode', 'value' => $quotationCode, 'readonly' => 'readonly'])->label(false) ?>
+                        <label class="labelStyle"><i class="fa fa-barcode"></i> Invoice No.</label>
+                        <?= $form->field($model, 'delivery_order_code')->textInput(['class' => 'transactionForm form-control', 'id' => 'delivery_order_code', 'value' => $deliveryorderCode, 'readonly' => 'readonly'])->label(false) ?>
 
                         <label class="labelStyle"><i class="fa fa-user-circle-o"></i> Sales Person </label>
-                        <?= $form->field($model, 'user_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataUser, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'value' => $salesPerson, 'id' => 'salesPerson', 'data-placeholder' => 'CHOOSE SALES PERSON HERE'])->label(false) ?>
+                        <?= $form->field($model, 'user_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataUser, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'value' => $salesPerson, 'id' => 'sales_person', 'data-placeholder' => 'CHOOSE SALES PERSON HERE'])->label(false) ?>
                         
                         <label class="labelStyle"><i class="fa fa-user-money"></i> Payment Type </label>
                         <?= $form->field($model, 'payment_type_id')->dropdownList(['0' => ' - PLEASE SELECT PAYMENT TYPE HERE - '] + $dataPaymentType, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'paymentType', 'data-placeholder' => 'CHOOSE PAYMENT TYPE HERE'])->label(false) ?>
@@ -86,7 +86,7 @@ $n = 0;
                             </h4>
                         <?php endif; ?>
 
-                        <div id="customer-information" class="customer-information" >
+                        <div id="deliver-order-customer-information" class="deliver-order-customer-information" >
                             
                             <?php if( $customerInfo->type == 1 ): ?>
 
@@ -184,7 +184,7 @@ $n = 0;
 
                         <label class="labelStyle labelAlignment"><i class="fa fa-wrench"></i> Auto-Parts</label>
                         <br/>
-                        <select name="parts" class="inputForm select2" id="parts" style="width: 95%;" onchange="getPartsPriceAndQty()" data-placeholder="CHOOSE AUTO-PARTS HERE" >
+                        <select name="parts" class="inputForm select2" id="parts" style="width: 95%;" onchange="getPartsPriceAndQtyDeliveryOrder()" data-placeholder="CHOOSE AUTO-PARTS HERE" >
                                 <option value="0"> - PLEASE SELECT AUTO-PARTS HERE - </option>
                             <?php foreach($partsResult as $partsRow): ?>
                                 <option value="<?= $partsRow['id']; ?>" >[ <?= $partsRow['name']; ?> ] <?= $partsRow['parts_name']; ?> </option>
@@ -192,7 +192,7 @@ $n = 0;
                         </select>
 
                         <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-database"></i> Quantity</label>
-                        <input type="text" name="partsQty" id="partsQty" class="transactionForm inputboxWidth form-control" onchange="updatePartsSubtotal()" placeholder="0" />
+                        <input type="text" name="partsQty" id="partsQty" class="transactionForm inputboxWidth form-control" onchange="updatePartsSubtotalDeliveryOrder()" placeholder="0" />
                         <input type="hidden" id="currentQtyValue" class="currentQtyValue" />
                         <label class="labelStyle inputboxAlignment labelAlignment" id="currentQtyStyle" >*Current Stock : </label> <span class="currentQtyContent" id="currentQty" >0</span>
                         <br/>
@@ -204,7 +204,7 @@ $n = 0;
                         <input type="text" name="partsSubtotal" id="partsSubtotal" class="transactionForm inputboxWidth form-control" placeholder="$ 0.00" readonly/>
 
                         <div class="btnAlignment pull-right" > 
-                            <button type="button" class=" formBtn btn btn-success btn-sm btn-flat add_autoparts" >
+                            <button type="button" class=" formBtn btn btn-success btn-sm btn-flat add_autoparts_deliveryorder" >
                                 <i class="fa fa-cart-plus"></i> <b> - Insert Item in List - </b> 
                             </button>
                         </div>
@@ -218,7 +218,7 @@ $n = 0;
                         
                         <label class="labelStyle labelAlignment"><i class="fa fa-wheelchair-alt"></i> Services</label>
                         <br/>
-                        <select name="services" class="inputForm selectboxWidth select2" id="services" style="width: 95%;" onchange="getServicesPriceAndQty()" data-placeholder="CHOOSE SERVICES HERE" >
+                        <select name="services" class="inputForm selectboxWidth select2" id="services" style="width: 95%;" onchange="getServicesPriceAndQtyDeliveryOrder()" data-placeholder="CHOOSE SERVICES HERE" >
                                 <option value="0"> - PLEASE SELECT SERVICES HERE - </option>
                             <?php foreach($servicesResult as $servicesRow): ?>
                                 <option value="<?= $servicesRow['id']; ?>">[ <?= $servicesRow['name']; ?> ] <?= $servicesRow['service_name']; ?> </option>
@@ -226,13 +226,13 @@ $n = 0;
                         </select>
 
                         <span class="pull-right btn btn-link" id="editServiceDetailsBtn" style="font-size: 11px;">
-                            <a href="javascript:updateServiceDetails()" class="selectedBtns" >
+                            <a href="javascript:updateServiceDetailsDeliveryOrder()" class="selectedBtns" >
                                 <b><i class="fa fa-pencil"></i> Update Service Details</b>
                             </a>
                         </span>
 
                         <span class="pull-right btn btn-link hidden" id="saveServiceDetailsBtn" style="font-size: 11px;">
-                            <a href="javascript:saveServiceDetails()" class="selectedBtns" >
+                            <a href="javascript:saveServiceDetailsDeliveryOrder()" class="selectedBtns" >
                                 <b><i class="fa fa-save"></i> Save Service Details</b>
                             </a>
                         </span>
@@ -242,16 +242,16 @@ $n = 0;
                         <textarea class="transactionTxtAreaForm form-control editFormServiceDetails hidden" id="editFormServiceDetails" placeholder="Write service details"></textarea>
 
                         <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-database"></i> Quantity</label>
-                        <input type="text" name="servicesQty" id="servicesQty" class="transactionForm inputboxWidth form-control" onchange="updateServicesSubtotal()" placeholder="0" />
+                        <input type="text" name="servicesQty" id="servicesQty" class="transactionForm inputboxWidth form-control" onchange="updateServicesSubtotalDeliveryOrder()" placeholder="0" />
 
                         <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-gg-circle"></i> Unit-Price</label>
-                        <input type="text" name="servicesPrice" id="servicesPrice" class="transactionForm inputboxWidth form-control" onchange="updateServicesSubtotal()" placeholder="$ 0.00" />
+                        <input type="text" name="servicesPrice" id="servicesPrice" class="transactionForm inputboxWidth form-control" onchange="updateServicesSubtotalDeliveryOrder()" placeholder="$ 0.00" />
 
                         <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-dollar"></i> Sub-Total</label>
                         <input type="text" name="servicesSubtotal" id="servicesSubtotal" class="transactionForm inputboxWidth form-control" placeholder="$ 0.00" readonly/>
                         
                         <div class="btnAlignment pull-right" > 
-                            <button type="button" class=" formBtn btn btn-danger btn-sm btn-flat add_services" >
+                            <button type="button" class=" formBtn btn btn-danger btn-sm btn-flat add_services_deliveryorder" >
                                 <i class="fa fa-cart-plus"></i> <b> - Insert Item in List - </b> 
                             </button>
                         <br/><br/>    
@@ -327,7 +327,7 @@ $n = 0;
 <div class="col-md-12 col-sm-12 col-xs-12">
     <div class="pull-right">
         <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearPIForms', 'class' => 'formBtn btn btn-default']) ?>
-        <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Submit Quotation', ['id' => 'submitQuotationFormFromCustomer', 'class' => 'formBtn btn btn-primary']) ?>
+        <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Submit Delivery Order', ['id' => 'submitDeliveryOrderFormFromCustomer', 'class' => 'formBtn btn btn-primary']) ?>
     </div>
     <br/><br/><br/>
 </div>

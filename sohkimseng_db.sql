@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 10, 2017 at 01:39 PM
+-- Generation Time: Apr 11, 2017 at 02:04 PM
 -- Server version: 10.1.19-MariaDB
 -- PHP Version: 5.6.28
 
@@ -128,7 +128,84 @@ CREATE TABLE `customer` (
 INSERT INTO `customer` (`id`, `type`, `company_name`, `uen_no`, `fullname`, `nric`, `address`, `shipping_address`, `race_id`, `email`, `phone_number`, `mobile_number`, `fax_number`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
 (2, 1, 'maxwell freight management pte ltd', '198305727m', 'kristine pan smith', '', '20 maxwell road 0612 maxwell house singapore 069113', '201 maxwell road 0612 maxwell house singapore 069113', 0, 'kristine@maxwellfreight.com.sg', 62216988, 62216988, '62213325', 1, '2017-04-04 18:39:20', 1, '0000-00-00 00:00:00', 0),
 (3, 2, '', '', 'johnny tang', '19880305ph', '25th floor bpi buendia center makati city', '25th floor bpi buendia center makati city', 1, 'johnsmith@bpi.com.ph', 2147483647, 9557545, '9551236', 1, '2017-04-04 18:39:58', 1, '0000-00-00 00:00:00', 0),
-(6, 1, 'blade asia', '20101201ph', 'jaimee miyuki', '', '3rd floor pacific star building makati avenue makati city', 'blk 5 belair makati avenue makati city', 0, 'jaimeemiyuki@bladeasia.com', 8728292, 9224312, '9221236-', 1, '2017-04-08 19:46:13', 1, '0000-00-00 00:00:00', 0);
+(6, 1, 'blade asia', '20101201ph', 'jaimee miyuki', '', '3rd floor pacific star building makati avenue makati city', 'blk 5 belair makati avenue makati city', 0, 'jaimeemiyuki@bladeasia.com', 8728292, 9224312, '9221236-', 1, '2017-04-08 19:46:13', 1, '0000-00-00 00:00:00', 0),
+(8, 1, 'wang san corporation', '19000865sph', 'danilo ang', '', 'jackson building belair street malugay makati city', '24th street malugay makati city', 0, 'admin@wangsan.com.ph', 9557282, 9557283, '9557284', 1, '2017-04-11 16:28:33', 1, '0000-00-00 00:00:00', 0),
+(9, 1, 'zu wang kim trading corporation', '18000525cph', 'jackylou zu', '', 'acascia building binondo manila', 'blk 7 lot 12 turnisia street sta cruz manila', 0, 'jackyzu@yahoo.com', 7668696, 7669616, '7668656', 1, '2017-04-11 19:53:57', 1, '0000-00-00 00:00:00', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `delivery_order`
+--
+
+CREATE TABLE `delivery_order` (
+  `id` int(11) NOT NULL,
+  `delivery_order_code` varchar(100) NOT NULL,
+  `invoice_no` varchar(100) NOT NULL,
+  `user_id` int(5) NOT NULL,
+  `customer_id` int(5) NOT NULL,
+  `date_issue` date NOT NULL,
+  `grand_total` double NOT NULL,
+  `gst` double NOT NULL,
+  `gst_value` double NOT NULL,
+  `net` double NOT NULL,
+  `remarks` text NOT NULL,
+  `payment_type_id` int(5) NOT NULL,
+  `discount_amount` double NOT NULL,
+  `discount_remarks` text NOT NULL,
+  `status` int(5) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `created_by` int(5) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `updated_by` int(5) NOT NULL,
+  `paid` int(5) NOT NULL,
+  `deleted` int(5) NOT NULL,
+  `condition` int(5) NOT NULL,
+  `action_by` int(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `delivery_order`
+--
+
+INSERT INTO `delivery_order` (`id`, `delivery_order_code`, `invoice_no`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `gst_value`, `net`, `remarks`, `payment_type_id`, `discount_amount`, `discount_remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `paid`, `deleted`, `condition`, `action_by`) VALUES
+(1, 'DO201704001', '0', 4, 2, '2017-04-11', 770, 53.9, 7, 723.9, 'for testing case', 2, 100, 'HOLY WEEK DISCOUNT', 1, '2017-04-11 18:26:58', 1, '2017-04-11 19:35:29', 1, 0, 0, 0, 0),
+(2, 'QUO201704002', '0', 4, 9, '2017-04-11', 1525, 106.75, 7, 1531.75, 'for testing purposes only', 1, 100, 'holy week discount', 1, '2017-04-11 19:55:46', 1, '0000-00-00 00:00:00', 0, 0, 0, 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `delivery_order_detail`
+--
+
+CREATE TABLE `delivery_order_detail` (
+  `id` int(11) NOT NULL,
+  `delivery_order_id` int(5) NOT NULL,
+  `description` int(5) NOT NULL,
+  `quantity` int(5) NOT NULL,
+  `unit_price` double NOT NULL,
+  `sub_total` double NOT NULL,
+  `type` int(5) NOT NULL,
+  `status` int(5) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `created_by` int(5) NOT NULL,
+  `updated_at` datetime NOT NULL,
+  `updated_by` int(5) NOT NULL,
+  `deleted` int(5) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `delivery_order_detail`
+--
+
+INSERT INTO `delivery_order_detail` (`id`, `delivery_order_id`, `description`, `quantity`, `unit_price`, `sub_total`, `type`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
+(4, 1, 2, 1, 120, 120, 1, 1, '2017-04-11 19:35:30', 1, '2017-04-11 19:35:30', 1, 0),
+(5, 1, 3, 1, 150, 150, 1, 1, '2017-04-11 19:35:30', 1, '2017-04-11 19:35:30', 1, 0),
+(6, 1, 4, 1, 500, 500, 0, 1, '2017-04-11 19:35:30', 1, '2017-04-11 19:35:30', 1, 0),
+(7, 1, 4, 2, 130, 260, 1, 1, '2017-04-11 19:35:30', 1, '2017-04-11 19:35:30', 1, 0),
+(8, 1, 5, 1, 750, 750, 0, 1, '2017-04-11 19:35:30', 1, '2017-04-11 19:35:30', 1, 0),
+(9, 2, 5, 3, 175, 525, 1, 1, '2017-04-11 19:55:46', 1, '2017-04-11 19:55:46', 1, 0),
+(10, 2, 7, 1, 1000, 1000, 0, 1, '2017-04-11 19:55:46', 1, '2017-04-11 19:55:46', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -189,6 +266,9 @@ CREATE TABLE `invoice` (
   `gst_value` double NOT NULL,
   `net` double NOT NULL,
   `remarks` text NOT NULL,
+  `payment_type_id` int(5) NOT NULL,
+  `discount_amount` double NOT NULL,
+  `discount_remarks` text NOT NULL,
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
@@ -197,12 +277,17 @@ CREATE TABLE `invoice` (
   `do` int(5) NOT NULL,
   `paid` int(5) NOT NULL,
   `deleted` int(5) NOT NULL,
-  `payment_type_id` int(5) NOT NULL,
-  `discount_amount` double NOT NULL,
-  `discount_remarks` text NOT NULL,
   `condition` int(5) NOT NULL,
   `action_by` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `invoice`
+--
+
+INSERT INTO `invoice` (`id`, `quotation_code`, `invoice_no`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `gst_value`, `net`, `remarks`, `payment_type_id`, `discount_amount`, `discount_remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `do`, `paid`, `deleted`, `condition`, `action_by`) VALUES
+(1, '0', 'INV201704001', 4, 6, '2017-04-11', 1870, 130.90, 7, 1900.9, 'for testing case', 2, 100, 'SUMMER DISCOUNT', 1, '2017-04-11 15:35:00', 1, '2017-04-11 15:58:25', 1, 0, 0, 0, 0, 0),
+(2, '0', 'QUO201704002', 3, 8, '2017-04-11', 680, 47.60, 7, 627.6, 'for test case', 1, 100, 'summer discount', 1, '2017-04-11 16:37:26', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -225,6 +310,23 @@ CREATE TABLE `invoice_detail` (
   `updated_by` int(5) NOT NULL,
   `deleted` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `invoice_detail`
+--
+
+INSERT INTO `invoice_detail` (`id`, `invoice_id`, `description`, `quantity`, `unit_price`, `sub_total`, `type`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
+(17, 1, 1, 1, 150, 150, 1, 1, '2017-04-11 15:58:25', 1, '2017-04-11 15:58:25', 1, 0),
+(18, 1, 2, 1, 120, 120, 1, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
+(19, 1, 6, 1, 150, 150, 1, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
+(20, 1, 1, 1, 250, 250, 0, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
+(21, 1, 3, 1, 300, 300, 0, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
+(22, 1, 7, 1, 900, 900, 0, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
+(23, 1, 4, 1, 130, 130, 1, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
+(24, 1, 6, 1, 100, 100, 0, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
+(25, 2, 2, 1, 120, 120, 1, 1, '2017-04-11 16:37:26', 1, '2017-04-11 16:37:26', 1, 0),
+(26, 2, 4, 2, 130, 260, 1, 1, '2017-04-11 16:37:26', 1, '2017-04-11 16:37:26', 1, 0),
+(27, 2, 3, 1, 300, 300, 0, 1, '2017-04-11 16:37:27', 1, '2017-04-11 16:37:27', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -308,7 +410,11 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m170406_112007_create_payment_type_table', 1491477726),
 ('m170406_112228_create_payment_type_foreignkey', 1491478026),
 ('m170407_082009_add_condition_and_action_by_columns_to_quotation_and_invoice_table', 1491553382),
-('m170410_050145_add_gst_value_column_to_quotation_and_invoice_table', 1491800613);
+('m170410_050145_add_gst_value_column_to_quotation_and_invoice_table', 1491800613),
+('m170411_083920_create_delivery_order_table', 1491900522),
+('m170411_083940_create_delivery_order_detail_table', 1491900522),
+('m170411_084931_create_delivery_order_foreignkey', 1491900712),
+('m170411_085048_create_delivery_order_detail_foreignkey', 1491900713);
 
 -- --------------------------------------------------------
 
@@ -366,12 +472,12 @@ CREATE TABLE `parts` (
 --
 
 INSERT INTO `parts` (`id`, `supplier_id`, `storage_location_id`, `parts_category_id`, `parts_code`, `parts_name`, `unit_of_measure`, `quantity`, `cost_price`, `gst_price`, `selling_price`, `reorder_level`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 1, 1, 1, 'parts-2017-80692', 'bumper', 'pieces', 25, 120, 7, 150, 10, 1, '2017-04-06 14:12:29', 1, '0000-00-00 00:00:00', 0),
-(2, 1, 1, 1, 'parts-2017-70705', 'cowl screen', 'pieces', 25, 99, 7, 120, 10, 1, '2017-04-06 14:14:36', 1, '0000-00-00 00:00:00', 0),
-(3, 2, 2, 2, 'parts-2017-76511', 'hinges', 'pieces', 35, 120, 7, 150, 10, 1, '2017-04-06 16:53:33', 1, '0000-00-00 00:00:00', 0),
-(4, 2, 2, 2, 'parts-2017-20208', 'fuel tank', 'pieces', 25, 99, 7, 130, 10, 1, '2017-04-06 14:15:59', 1, '0000-00-00 00:00:00', 0),
-(5, 3, 4, 4, 'parts-2017-58484', 'window regulator', 'pieces', 35, 130, 7, 175, 10, 1, '2017-04-06 14:16:36', 1, '0000-00-00 00:00:00', 0),
-(6, 3, 4, 4, 'parts-2017-30373', 'window seal', 'pieces', 27, 120, 7, 150, 10, 1, '2017-04-06 14:17:20', 1, '0000-00-00 00:00:00', 0);
+(1, 1, 1, 1, 'parts-2017-80692', 'bumper', 'pieces', 11, 120, 7, 150, 10, 1, '2017-04-06 14:12:29', 1, '0000-00-00 00:00:00', 0),
+(2, 1, 1, 1, 'parts-2017-70705', 'cowl screen', 'pieces', 19, 99, 7, 120, 10, 1, '2017-04-06 14:14:36', 1, '0000-00-00 00:00:00', 0),
+(3, 2, 2, 2, 'parts-2017-76511', 'hinges', 'pieces', 19, 120, 7, 150, 10, 1, '2017-04-06 16:53:33', 1, '0000-00-00 00:00:00', 0),
+(4, 2, 2, 2, 'parts-2017-20208', 'fuel tank', 'pieces', 20, 99, 7, 130, 10, 1, '2017-04-06 14:15:59', 1, '0000-00-00 00:00:00', 0),
+(5, 3, 4, 4, 'parts-2017-58484', 'window regulator', 'pieces', 32, 130, 7, 175, 10, 1, '2017-04-06 14:16:36', 1, '0000-00-00 00:00:00', 0),
+(6, 3, 4, 4, 'parts-2017-30373', 'window seal', 'pieces', 22, 120, 7, 150, 10, 1, '2017-04-06 14:17:20', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -437,7 +543,58 @@ INSERT INTO `parts_inventory` (`id`, `parts_id`, `old_quantity`, `new_quantity`,
 (7, 4, 20, 25, 0, 3, '', '2017-04-06 14:56:28', '0000-00-00 00:00:00', 1, '2017-04-06 14:56:28', 1, '2017-04-06 14:56:28', 1),
 (8, 4, 20, 25, 0, 3, '', '2017-04-06 14:56:33', '0000-00-00 00:00:00', 1, '2017-04-06 14:56:33', 1, '2017-04-06 14:56:33', 1),
 (9, 6, 30, 27, 0, 3, '', '2017-04-06 14:58:20', '0000-00-00 00:00:00', 1, '2017-04-06 14:58:20', 1, '2017-04-06 14:58:20', 1),
-(10, 5, 30, 35, 0, 3, '', '2017-04-06 14:59:08', '0000-00-00 00:00:00', 1, '2017-04-06 14:59:08', 1, '2017-04-06 14:59:08', 1);
+(10, 5, 30, 35, 0, 3, '', '2017-04-06 14:59:08', '0000-00-00 00:00:00', 1, '2017-04-06 14:59:08', 1, '2017-04-06 14:59:08', 1),
+(11, 1, 25, 24, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:33:28', 1, '0000-00-00 00:00:00', 0),
+(12, 2, 25, 24, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:33:28', 1, '0000-00-00 00:00:00', 0),
+(13, 6, 27, 26, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:33:28', 1, '0000-00-00 00:00:00', 0),
+(14, 1, 24, 23, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:34:49', 1, '0000-00-00 00:00:00', 0),
+(15, 2, 24, 23, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:34:50', 1, '0000-00-00 00:00:00', 0),
+(16, 6, 26, 25, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:34:50', 1, '0000-00-00 00:00:00', 0),
+(17, 1, 23, 22, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:36:03', 1, '0000-00-00 00:00:00', 0),
+(18, 2, 23, 22, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:36:03', 1, '0000-00-00 00:00:00', 0),
+(19, 6, 25, 24, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:36:03', 1, '0000-00-00 00:00:00', 0),
+(20, 1, 22, 21, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 10:15:05', 1, '0000-00-00 00:00:00', 0),
+(21, 2, 22, 21, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 10:15:05', 1, '0000-00-00 00:00:00', 0),
+(22, 6, 24, 23, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 10:15:05', 1, '0000-00-00 00:00:00', 0),
+(23, 3, 35, 34, 1, 3, 'INV201704003', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 12:17:03', 1, '0000-00-00 00:00:00', 0),
+(24, 1, 21, 20, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:56:56', 1, '0000-00-00 00:00:00', 0),
+(25, 6, 23, 22, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:56:57', 1, '0000-00-00 00:00:00', 0),
+(26, 1, 20, 19, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:57:15', 1, '0000-00-00 00:00:00', 0),
+(27, 6, 22, 21, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:57:15', 1, '0000-00-00 00:00:00', 0),
+(28, 1, 19, 18, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:59:12', 1, '0000-00-00 00:00:00', 0),
+(29, 3, 34, 33, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:59:12', 1, '0000-00-00 00:00:00', 0),
+(30, 1, 18, 17, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:00:00', 1, '0000-00-00 00:00:00', 0),
+(31, 3, 33, 32, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:00:01', 1, '0000-00-00 00:00:00', 0),
+(32, 1, 17, 16, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:03:46', 1, '0000-00-00 00:00:00', 0),
+(33, 3, 32, 30, 2, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:03:46', 1, '0000-00-00 00:00:00', 0),
+(34, 1, 16, 15, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:04:27', 1, '0000-00-00 00:00:00', 0),
+(35, 3, 30, 28, 2, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:04:27', 1, '0000-00-00 00:00:00', 0),
+(36, 1, 15, 14, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:14:42', 1, '0000-00-00 00:00:00', 0),
+(37, 3, 28, 27, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:14:42', 1, '0000-00-00 00:00:00', 0),
+(38, 1, 14, 13, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:15:10', 1, '0000-00-00 00:00:00', 0),
+(39, 3, 27, 26, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:15:10', 1, '0000-00-00 00:00:00', 0),
+(40, 1, 13, 12, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:32:32', 1, '0000-00-00 00:00:00', 0),
+(41, 3, 26, 25, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:32:32', 1, '0000-00-00 00:00:00', 0),
+(42, 1, 12, 11, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:35:00', 1, '0000-00-00 00:00:00', 0),
+(43, 3, 25, 24, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:35:01', 1, '0000-00-00 00:00:00', 0),
+(44, 1, 12, 11, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:35:40', 1, '0000-00-00 00:00:00', 0),
+(45, 3, 24, 23, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:35:40', 1, '0000-00-00 00:00:00', 0),
+(46, 1, 12, 11, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:50:36', 1, '0000-00-00 00:00:00', 0),
+(47, 3, 23, 22, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:50:36', 1, '0000-00-00 00:00:00', 0),
+(48, 1, 12, 11, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:58:26', 1, '0000-00-00 00:00:00', 0),
+(49, 2, 24, 23, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:58:26', 1, '0000-00-00 00:00:00', 0),
+(50, 6, 23, 22, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:58:26', 1, '0000-00-00 00:00:00', 0),
+(51, 4, 25, 24, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:58:26', 1, '0000-00-00 00:00:00', 0),
+(52, 2, 23, 22, 1, 3, 'QUO201704002', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 16:37:26', 1, '0000-00-00 00:00:00', 0),
+(53, 4, 24, 22, 2, 3, 'QUO201704002', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 16:37:27', 1, '0000-00-00 00:00:00', 0),
+(54, 2, 22, 20, 2, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 18:25:40', 1, '0000-00-00 00:00:00', 0),
+(55, 3, 22, 20, 2, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 18:25:40', 1, '0000-00-00 00:00:00', 0),
+(56, 2, 20, 19, 1, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 18:26:58', 1, '0000-00-00 00:00:00', 0),
+(57, 3, 20, 19, 1, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 18:26:58', 1, '0000-00-00 00:00:00', 0),
+(58, 2, 20, 19, 1, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 19:35:30', 1, '0000-00-00 00:00:00', 0),
+(59, 3, 20, 19, 1, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 19:35:30', 1, '0000-00-00 00:00:00', 0),
+(60, 4, 22, 20, 2, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 19:35:30', 1, '0000-00-00 00:00:00', 0),
+(61, 5, 35, 32, 3, 3, 'QUO201704002', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 19:55:46', 1, '0000-00-00 00:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -613,7 +770,8 @@ CREATE TABLE `quotation` (
 --
 
 INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `gst_value`, `net`, `remarks`, `payment_type_id`, `discount_amount`, `discount_remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `invoice_created`, `deleted`, `condition`, `action_by`) VALUES
-(1, 'QUO201704001', 3, 2, '2017-04-10', 850, 59.5, 7, 909.5, 'FOR TEST CASE', 1, 0, 'NO DISCOUNT REMARKS', 1, '2017-04-10 19:26:25', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0);
+(1, 'QUO201704001', 3, 2, '2017-04-10', 850, 59.5, 7, 909.5, 'FOR TEST CASE', 1, 0, 'NO DISCOUNT REMARKS', 1, '2017-04-10 19:26:25', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0),
+(2, 'QUO201704002', 3, 3, '2017-04-10', 445, 31.15, 7, 476.15, 'test', 1, 0, 'No discount remarks', 1, '2017-04-11 09:02:08', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -647,7 +805,10 @@ INSERT INTO `quotation_detail` (`id`, `quotation_id`, `description`, `quantity`,
 (15, 1, 3, 1, 250, 250, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
 (16, 1, 4, 1, 300, 300, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
 (17, 1, 6, 1, 150, 150, 1, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
-(18, 1, 1, 1, 250, 250, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0);
+(18, 1, 1, 1, 250, 250, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
+(19, 2, 1, 1, 150, 150, 1, '2017-04-11 09:02:08', 1, '2017-04-11 09:02:08', 1, 1, 0),
+(20, 2, 2, 1, 120, 120, 1, '2017-04-11 09:02:08', 1, '2017-04-11 09:02:08', 1, 1, 0),
+(21, 2, 5, 1, 175, 175, 1, '2017-04-11 09:02:08', 1, '2017-04-11 09:02:08', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -731,7 +892,7 @@ INSERT INTO `service` (`id`, `service_category_id`, `service_name`, `description
 (1, 3, 'rentals of forklifter', 'renting of forklifts', 250, 1, '2017-02-03 14:30:00', 1, '2017-04-06 14:20:06', 1),
 (3, 5, 'forklift solid tyre', 'checking of all forklift tyres', 300, 1, '2017-02-03 17:59:46', 1, '2017-04-06 14:21:01', 1),
 (4, 5, 'forklift maintenance and servicing ', 'all service that needed a forklift', 500, 1, '2017-02-04 11:26:28', 1, '2017-04-06 14:21:32', 1),
-(5, 6, 'trade in or scrapped of used lorries', 'trading of non usable lorries', 750, 1, '2017-02-04 12:10:08', 1, '2017-04-06 14:23:45', 1),
+(5, 6, 'trader in or scrapped of used lorries', 'trading of non usable lorries', 750, 1, '2017-02-04 12:10:08', 1, '2017-04-06 14:23:45', 1),
 (6, 3, 'testing case', '123 testing case', 100, 0, '2017-04-04 19:43:50', 1, '2017-04-04 19:44:37', 1),
 (7, 6, 'trades in scrapped of used forklift', 'trading of non usable forklifts', 900, 1, '2017-04-06 14:23:19', 1, '0000-00-00 00:00:00', 0);
 
@@ -1019,6 +1180,21 @@ ALTER TABLE `customer`
   ADD KEY `fk-customer-race_id` (`race_id`);
 
 --
+-- Indexes for table `delivery_order`
+--
+ALTER TABLE `delivery_order`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk-delivery_order-user_id` (`user_id`),
+  ADD KEY `fk-delivery_order-customer_id` (`customer_id`);
+
+--
+-- Indexes for table `delivery_order_detail`
+--
+ALTER TABLE `delivery_order_detail`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk-delivery_order_detail-delivery_order_id` (`delivery_order_id`);
+
+--
 -- Indexes for table `designated_position`
 --
 ALTER TABLE `designated_position`
@@ -1217,7 +1393,17 @@ ALTER TABLE `user_permission`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+--
+-- AUTO_INCREMENT for table `delivery_order`
+--
+ALTER TABLE `delivery_order`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+--
+-- AUTO_INCREMENT for table `delivery_order_detail`
+--
+ALTER TABLE `delivery_order_detail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `designated_position`
 --
@@ -1232,12 +1418,12 @@ ALTER TABLE `gst`
 -- AUTO_INCREMENT for table `invoice`
 --
 ALTER TABLE `invoice`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `invoice_detail`
 --
 ALTER TABLE `invoice_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT for table `module`
 --
@@ -1257,7 +1443,7 @@ ALTER TABLE `parts_category`
 -- AUTO_INCREMENT for table `parts_inventory`
 --
 ALTER TABLE `parts_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 --
 -- AUTO_INCREMENT for table `payment_type`
 --
@@ -1282,12 +1468,12 @@ ALTER TABLE `product_inventory`
 -- AUTO_INCREMENT for table `quotation`
 --
 ALTER TABLE `quotation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `quotation_detail`
 --
 ALTER TABLE `quotation_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 --
 -- AUTO_INCREMENT for table `race`
 --
@@ -1360,6 +1546,19 @@ ALTER TABLE `auth_item`
 ALTER TABLE `auth_item_child`
   ADD CONSTRAINT `auth_item_child_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `auth_item_child_ibfk_2` FOREIGN KEY (`child`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `delivery_order`
+--
+ALTER TABLE `delivery_order`
+  ADD CONSTRAINT `fk-delivery_order-customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk-delivery_order-user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `delivery_order_detail`
+--
+ALTER TABLE `delivery_order_detail`
+  ADD CONSTRAINT `fk-delivery_order_detail-delivery_order_id` FOREIGN KEY (`delivery_order_id`) REFERENCES `delivery_order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `invoice`
