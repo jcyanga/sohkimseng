@@ -20,7 +20,7 @@ $partsCode = 'PARTS' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
 /* @var $searchModel common\models\SearchPartsInventory */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Parts Inventory';
+$this->title = 'Auto-Parts Inventory';
 $this->params['breadcrumbs'][] = $this->title;
 
 ?>
@@ -50,10 +50,12 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-
-    ['class' => 'yii\grid\SerialColumn'],
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
         [
-            'label' => 'Type',
+            'label' => 'INVENTORY TYPE',
             'value' => function($model)
             {   
                 switch($model->type){
@@ -78,10 +80,19 @@ $gridColumns = [
         [
             'attribute' => 'parts_name',
             'value' => 'parts.parts_name',
-            'label' => 'Parts Name',
+            'label' => 'AUTO-PARTS NAME',
+            'options' => ['style' => 'color: #444']
         ],
-        'old_quantity',
-        'new_quantity',
+        [
+            'label' => 'OLD QUANTITY',
+            'value' => 'old_quantity',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'NEW QUANTITY',
+            'value' => 'new_quantity',
+            'options' => ['style' => 'color: #444']
+        ],
 ]
 ?>
 
@@ -93,7 +104,7 @@ $gridColumns = [
     </div>
 
     <div class="col-md-2 pull-right">  
-        <?= Html::button('<li class=\'fa fa-cog\'></li> New Auto-Parts Category -',['class' => '_showCreatePCModal formBtn btn btn-block btn-info btn-sm']) ?>
+        <?= Html::button('<li class=\'fa fa-cog\'></li> New Category -',['class' => '_showCreatePCModal formBtn btn btn-block btn-info btn-sm']) ?>
     </div>
 
     <div class="col-md-2 pull-right">  
@@ -103,14 +114,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>

@@ -49,7 +49,7 @@ class Customer extends \yii\db\ActiveRecord
             [['race_id', 'created_at', 'updated_at'], 'safe'],
             [['fullname'], 'string', 'max' => 100],
             [['email', 'phone_number', 'mobile_number'], 'string', 'max' => 50],
-            [['fullname'], 'unique', 'message' => 'Fullname already exist.'],
+            [['fullname'], 'unique', 'message' => 'Name already exist.'],
             [['company_name'], 'unique', 'message' => 'Company name already exist.'],
         ];
     }

@@ -5,7 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 
-use common\models\serviceCategory;
+use common\models\ServiceCategory;
 
 $dataServiceCategory = ArrayHelper::map(ServiceCategory::find()->where(['status' => 1])->all(),'id', 'name');
 /* @var $this yii\web\View */
@@ -38,17 +38,35 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
         [
             'attribute' => 'service_category_id',
             'value' => 'serviceCategory.name',
-            'label' => 'Service Category',
+            'header' => 'Service Category',
+            'options' => ['style' => 'color: #444']
         ],
-        'service_name',
-        'description',
-        'price',
+        [
+            'label' => 'SERVICE NAME',
+            'value' => 'service_name',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'DESCRIPTION',
+            'value' => 'description',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'PRICE',
+            'value' => 'price',
+            'options' => ['style' => 'color: #444']
+        ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -92,14 +110,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>
@@ -147,7 +165,7 @@ $gridColumns = [
                 <?= $form->field($model, 'service_name')->textInput(['class' => 'inputForm form-control', 'id' => 'serviceName', 'placeholder' => 'Enter Service name here.'])->label(false) ?>
 
                 <label class="labelStyle">Description</label>
-                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'placeholder' => 'Enter Service description here.'])->label(false) ?>
+                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'rows' => 5, 'placeholder' => 'Enter Service description here.'])->label(false) ?>
 
                 <label class="labelStyle">Price</label>
                 <?= $form->field($model, 'price')->textInput(['class' => 'inputForm form-control', 'id' => 'price', 'placeholder' => 'Enter Price here.'])->label(false) ?>
@@ -184,7 +202,7 @@ $gridColumns = [
                 <?= $form->field($model, 'service_name')->textInput(['class' => 'inputForm form-control', 'id' => 'updateServiceName', 'placeholder' => 'Enter Service name here.'])->label(false) ?>
 
                 <label class="labelStyle">Description</label>
-                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'updateDescription', 'placeholder' => 'Enter Service description here.'])->label(false) ?>
+                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'updateDescription', 'rows' => 5, 'placeholder' => 'Enter Service description here.'])->label(false) ?>
 
                 <label class="labelStyle">Price</label>
                 <?= $form->field($model, 'price')->textInput(['class' => 'inputForm form-control', 'id' => 'updatePrice', 'placeholder' => 'Enter Price here.'])->label(false) ?>

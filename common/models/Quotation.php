@@ -136,7 +136,7 @@ class Quotation extends \yii\db\ActiveRecord
             return 0;
         }      
     }
-
+    
     // get parts 
     public function getPartsList()
     {

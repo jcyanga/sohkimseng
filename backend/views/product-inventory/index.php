@@ -60,9 +60,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 $gridColumns = [
 
-    ['class' => 'yii\grid\SerialColumn'],
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
         [
-            'label' => 'Type',
+            'label' => 'INVENTORY TYPE',
+            'options' => ['style' => 'color: #444'],
             'value' => function($model)
             {   
                 switch($model->type){
@@ -87,10 +91,19 @@ $gridColumns = [
         [
             'attribute' => 'product_name',
             'value' => 'product.product_name',
-            'label' => 'Product Name',
+            'header' => 'PRODUCT NAME',
+            'options' => ['style' => 'color: #444']
         ],
-        'old_quantity',
-        'new_quantity',
+        [
+            'label' => 'OLD QUANTITY',
+            'value' => 'old_quantity',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'NEW QUANTITY',
+            'value' => 'new_quantity',
+            'options' => ['style' => 'color: #444']
+        ],
 ]
 ?>
 
@@ -102,7 +115,7 @@ $gridColumns = [
     </div>
 
     <div class="col-md-2 pull-right">  
-        <?= Html::button('<li class=\'fa fa-cog\'></li> New Product Category -',['class' => '_showCreatePRCModal formBtn btn btn-block btn-info btn-sm']) ?>
+        <?= Html::button('<li class=\'fa fa-cog\'></li> New Category -',['class' => '_showCreatePRCModal formBtn btn btn-block btn-info btn-sm']) ?>
     </div>
 
     <div class="col-md-2 pull-right">  
@@ -112,14 +125,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>

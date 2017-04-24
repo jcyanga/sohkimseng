@@ -274,4 +274,21 @@ class CustomerController extends Controller
 
         $dompdf->stream('CustomerList-' . date('m-d-Y'));
     }
+
+    public function actionInsertCompanyContactpersonAddress()
+    {
+        $contact_person = Yii::$app->request->post('companyContactPerson');
+        $address = Yii::$app->request->post('companyAddress');
+        $ctr = Yii::$app->request->post('ctr');
+
+        $this->layout = false;
+
+        return $this->render('_insert-company-contactperson-address', [
+                'contact_person' => $contact_person,
+                'address' => $address,
+                'ctr' => $ctr,
+            ]);
+
+
+    }
 }

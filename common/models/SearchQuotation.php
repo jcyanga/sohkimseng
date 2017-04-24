@@ -12,6 +12,9 @@ use common\models\Quotation;
  */
 class SearchQuotation extends Quotation
 {
+    public $company_name;
+    public $fullname;
+
     /**
      * @inheritdoc
      */
@@ -19,7 +22,7 @@ class SearchQuotation extends Quotation
     {
         return [
             [['id', 'user_id', 'customer_id', 'status', 'created_by', 'updated_by', 'deleted'], 'integer'],
-            [['quotation_code', 'date_issue', 'remarks', 'created_at', 'updated_at'], 'safe'],
+            [['quotation_code', 'date_issue', 'remarks', 'created_at', 'updated_at', 'company_name', 'fullname'], 'safe'],
             [['grand_total', 'net'], 'number'],
         ];
     }
@@ -42,7 +45,7 @@ class SearchQuotation extends Quotation
      */
     public function search($params)
     {
-        $query = Quotation::find()->where(['quotation.status' => 1]);
+        $query = Quotation::find()->where(['quotation.status' => 1])->andWhere('quotation.condition <= 1');
         $query->joinWith(['user']);    
         $query->joinWith(['customer']);   
         // $query->joinWith(['payment_type']);    
@@ -64,7 +67,6 @@ class SearchQuotation extends Quotation
         $query->andFilterWhere([
             'id' => $this->id,
             'user_id' => $this->user_id,
-            'customer_id' => $this->customer_id,
             'date_issue' => $this->date_issue,
             'grand_total' => $this->grand_total,
             'net' => $this->net,
@@ -77,7 +79,8 @@ class SearchQuotation extends Quotation
         ]);
 
         $query->andFilterWhere(['like', 'quotation_code', $this->quotation_code])
-            ->andFilterWhere(['like', 'remarks', $this->remarks]);
+            ->andFilterWhere(['like', 'customer.company_name', $this->company_name])
+            ->andFilterWhere(['like', 'customer.fullname', $this->fullname]);
 
         return $dataProvider;
     }

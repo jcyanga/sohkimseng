@@ -296,7 +296,6 @@ $('._showCreateCustomerModal').click(function(){
 
 	$('#companyName').val('');	
     $('#companyAddress').val('');
-    $('#companyShippingAddress').val('');
     $('#companyUenNo').val('');
     $('#companyContactPerson').val('');
     $('#companyEmail').val('');
@@ -313,6 +312,36 @@ $('._showCreateCustomerModal').click(function(){
     $('#customerPhoneNumber').val('');	
     $('#customerOficeNumber').val('');
     $('#customerFaxNumber').val('');
+});
+
+$('#btnAddInformation').click(function(){
+	var companyContactPerson = $('#companyContactPerson').val();
+	var companyAddress = $('#companyAddress').val(); 
+
+	if(companyContactPerson == '' || companyAddress == ''){
+		alert('Please key contact person or company address.');
+		return false;
+
+	}else{
+
+		var ctr = $('#ctr').val();
+
+		ctr++;
+
+		$.post('?r=customer/insert-company-contactperson-address',{
+			companyContactPerson : companyContactPerson,
+			companyAddress : companyAddress,
+			ctr : ctr,
+
+		},function(data){
+			$('#ctr').val(ctr);
+			$('#companyContactPerson').val('');
+			$('#companyAddress').val('');
+
+			$('#company-contactperson-address').append(data); 
+		});
+
+	}
 });
 
 $('#submitCustomerFormCreate').click(function(){
@@ -3825,6 +3854,7 @@ $('._showCreatePartsModal').click(function(){
     $('#reorderLevel').val('');
     $('#gstPrice').val('');
     $('#sellingPrice').val('');
+    $('#remarks').val('');
 
 });
 
@@ -3840,6 +3870,7 @@ $('#submitPartsFormCreate').click(function(){
 	var reorderLevel = $('#reorderLevel').val();
 	var gstPrice = $('#gstPrice').val();
 	var sellingPrice = $('#sellingPrice').val();
+	var remarks = $('#remarks').val();
 
 	if( !onlyLetterAndNumber(partsName) ) {
 		alert('Invalid auto-parts name format.');
@@ -3883,6 +3914,7 @@ $('#submitPartsFormCreate').click(function(){
 		reorderLevel : reorderLevel,	
 		gstPrice : gstPrice,
 		sellingPrice : sellingPrice,
+		remarks : remarks,
 
 	}, 
 	function(data) {
@@ -3902,6 +3934,7 @@ $('#submitPartsFormCreate').click(function(){
 			$('#reorderLevel').val('');
 			$('#gstPrice').val('');
 			$('#sellingPrice').val('');	
+			$('#remarks').val('');	
 		    $('#modal-launcher-create-parts').toggle('fast');
 
 			alert(data.message);
@@ -3971,6 +4004,7 @@ $('._showUpdatePartsModal').each(function(){
 				$('#partsFormUpdate').find('input:text[id=updateReorderLevel]').val(parseInt(result.reorder_level));
 				$('#partsFormUpdate').find('input:text[id=updateGstPrice]').val(parseInt(result.gst_price));
 				$('#partsFormUpdate').find('input:text[id=updateSellingPrice]').val(parseFloat(result.selling_price).toFixed(2));
+				$('#partsFormUpdate').find('textarea[id=updateRemarks]').val(result.remarks.toUpperCase());
 			}
 
 		});
@@ -3992,6 +4026,7 @@ $('#submitPartsFormUpdate').click(function(){
 	var reorderLevel = $('#updateReorderLevel').val();
 	var gstPrice = $('#updateGstPrice').val();
 	var sellingPrice = $('#updateSellingPrice').val();
+	var remarks = $('#updateRemarks').val();
 
 	if( !onlyLetterAndNumber(partsName) ) {
 		alert('Invalid auto-parts name format.');
@@ -4036,6 +4071,7 @@ $('#submitPartsFormUpdate').click(function(){
 		reorderLevel : reorderLevel,	
 		gstPrice : gstPrice,
 		sellingPrice : sellingPrice,
+		remarks : remarks
 		
 	}, 
 	function(data) {
@@ -4056,6 +4092,7 @@ $('#submitPartsFormUpdate').click(function(){
 			$('#updateReorderLevel').val();
 			$('#updateGstPrice').val();
 			$('#updateSellingPrice').val();
+			$('#updateRemarks').val();
 		    $('#modal-launcher-update-parts').toggle('fast');
 
 			alert(data.message);

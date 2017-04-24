@@ -47,21 +47,35 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
-        'quotation_code',
-        'date_issue',
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
+        [
+            'label' => 'QUOTATION CODE',
+            'value' => 'quotation_code',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'DATE ISSUE',
+            'value' => 'date_issue',
+            'options' => ['style' => 'color: #444']
+        ],
         [
             'attribute' => 'customer_id',
             'value' => 'customer.fullname',
-            'label' => 'Customer Name'
+            'header' => 'CUSTOMER NAME',
+            'options' => ['style' => 'color: #444']
         ],
         [
             'attribute' => 'user_id',
             'value' => 'user.fullname',
-            'label' => 'Sales Person'
+            'header' => 'SALES PERSON',
+            'options' => ['style' => 'color: #444']
         ],
         [
-            'attribute' => 'condition',
+            'attribute' => 'STATUS',
+            'options' => ['style' => 'color: #444'],
             'value' => function($model)
             {   
                 switch($model->condition){
@@ -87,6 +101,8 @@ $gridColumns = [
     
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -134,14 +150,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>
@@ -351,7 +367,7 @@ $gridColumns = [
                         <?= $form->field($model, 'date_issue')->textInput(['class' => 'transactionForm form-control date_issue', 'id' => 'datepicker', 'value' => $dateNow, 'readonly' => 'readonly'])->label(false) ?>
                         
                         <label class="labelStyle"><i class="fa fa-users"></i> Customer Name</label>
-                        <?= $form->field($model, 'customer_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataCustomer, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'customerName', 'data-placeholder' => 'CHOOSE CUSTOMER NAME HERE' ])->label(false) ?>   
+                        <?= $form->field($model, 'customer_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataCustomer, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'quoteCustomerName', 'data-placeholder' => 'CHOOSE CUSTOMER NAME HERE' ])->label(false) ?>   
                         
                         <div id="customer-information" class="customer-information" ></div>
                         <br/>
@@ -432,7 +448,7 @@ $gridColumns = [
                         <br/><br/>
 
                         <input type="hidden" id="serviceCategory" class="serviceCategory" />
-                        <textarea class="transactionTxtAreaForm form-control editFormServiceDetails hidden" id="editFormServiceDetails" placeholder="Write service details"></textarea>
+                        <textarea class="transactionTxtAreaForm form-control editFormServiceDetails hidden" rows="5" id="editFormServiceDetails" placeholder="Write service details"></textarea>
 
                         <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-database"></i> Quantity</label>
                         <input type="text" name="servicesQty" id="servicesQty" class="transactionForm inputboxWidth form-control" onchange="updateServicesSubtotal()" placeholder="0" />

@@ -34,10 +34,19 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
-        'name',
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
+    [
+        'label' => 'MODULE NAME',
+        'value' => 'name',
+        'options' => ['style' => 'color: #444']
+    ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -81,14 +90,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>

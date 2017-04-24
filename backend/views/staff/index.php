@@ -42,23 +42,41 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
         [
             'attribute' => 'staff_group_id',
             'value' => 'staffGroup.name',
-            'label' => 'Department',
+            'header' => 'Department',
+            'options' => ['style' => 'color: #444']
         ],
         [
             'attribute' => 'designated_position_id',
             'value' => 'designatedPosition.name',
-            'label' => 'Designated Position',
+            'header' => 'Designated Position',
+            'options' => ['style' => 'color: #444']
         ],
-        'fullname',
-        'address',
-        'email',
-        'mobile_number',
+        [
+            'label' => 'FULLNAME',
+            'value' => 'fullname',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'EMAIL',
+            'value' => 'email',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'CONTACT NUMBER',
+            'value' => 'mobile_number',
+            'options' => ['style' => 'color: #444']
+        ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -102,14 +120,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>
@@ -160,7 +178,7 @@ $gridColumns = [
                 <?= $form->field($model, 'fullname')->textInput(['class' => 'inputForm form-control', 'id' => 'fullname', 'placeholder' => 'Enter Fullname here.'])->label(false) ?>
 
                 <label class="labelStyle">Address</label>
-                <?= $form->field($model, 'address')->textarea(['rows' => '3', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'address', 'placeholder' => 'Enter Address here.'])->label(false) ?>
+                <?= $form->field($model, 'address')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'address', 'placeholder' => 'Enter Address here.'])->label(false) ?>
 
                 <label class="labelStyle">Race</label>
                 <?= $form->field($model, 'race_id')->dropdownList(['0' => ' - CHOOSE RACE HERE - '] + $dataRace,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'race', 'data-placeholder' => 'PLEASE CHOOSE RACE HERE'])->label(false) ?>
@@ -206,7 +224,7 @@ $gridColumns = [
                 <?= $form->field($model, 'fullname')->textInput(['class' => 'inputForm form-control', 'id' => 'updateFullname', 'placeholder' => 'Enter Fullname here.'])->label(false) ?>
 
                 <label class="labelStyle">Address</label>
-                <?= $form->field($model, 'address')->textarea(['rows' => '3', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'updateAddress', 'placeholder' => 'Enter Address here.'])->label(false) ?>
+                <?= $form->field($model, 'address')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'updateAddress', 'placeholder' => 'Enter Address here.'])->label(false) ?>
 
                 <label class="labelStyle">Race</label>
                 <?= $form->field($model, 'race_id')->dropdownList(['0' => ' - CHOOSE RACE HERE - '] + $dataRace,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'updateRace', 'data-placeholder' => 'PLEASE CHOOSE RACE HERE'])->label(false) ?>

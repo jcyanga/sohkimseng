@@ -34,12 +34,29 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
-        'name',
-        'description',
-        'interest',
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
+        [
+            'label' => 'PAYMENT-TYPE NAME',
+            'value' => 'name',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'DESCRIPTION',
+            'value' => 'description',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'AMOUNT INTEREST',
+            'value' => 'interest',
+            'options' => ['style' => 'color: #444']
+        ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -83,14 +100,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>
@@ -135,7 +152,7 @@ $gridColumns = [
                 <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'name', 'placeholder' => 'Enter Payment-Type name here.'])->label(false) ?>
 
                 <label class="labelStyle">Description</label>
-                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'placeholder' => 'Enter Payment-Type description here.'])->label(false) ?>
+                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'rows' => 5, 'placeholder' => 'Enter Payment-Type description here.'])->label(false) ?>
 
                 <label class="labelStyle">Interest</label>
                 <?= $form->field($model, 'interest')->textInput(['class' => 'inputForm form-control', 'id' => 'interest', 'placeholder' => 'Enter Payment-Type interest here.'])->label(false) ?>
@@ -169,7 +186,7 @@ $gridColumns = [
                 <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'updateName', 'placeholder' => 'Enter Payment-Type name here.'])->label(false) ?>
 
                 <label class="labelStyle">Description</label>
-                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'updateDescription', 'placeholder' => 'Enter Payment-Type description here.'])->label(false) ?>
+                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'updateDescription', 'rows' => 5, 'placeholder' => 'Enter Payment-Type description here.'])->label(false) ?>
 
                 <label class="labelStyle">Interest</label>
                 <?= $form->field($model, 'interest')->textInput(['class' => 'inputForm form-control', 'id' => 'updateInterest', 'placeholder' => 'Enter Payment-Type interest here.'])->label(false) ?>

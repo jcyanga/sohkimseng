@@ -56,26 +56,40 @@ $gridColumns = [
         'checkboxOptions' => ['value' => $model->id, 'class' => 'autopartsSelected', 'id' => 'autopartsSelected' ],
         'header' => '<span class="glyphicon glyphicon-check"></span>' 
     ],
-
-    ['class' => 'yii\grid\SerialColumn'],
-        [
-            'attribute' => 'supplier_id',
-            'value' => 'supplier.name',
-            'label' => 'Supplier',
-        ],
-
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
         [
             'attribute' => 'parts_category_id',
             'value' => 'partsCategory.name',
-            'label' => 'Category',
+            'header' => 'AUTO_PARTS CATEGORY',
+            'options' => ['style' => 'color: #444']
         ],
-            'parts_code',
-            'parts_name',
-            'quantity',
-            'selling_price',
+            [
+                'label' => 'AUTO-PARTS CODE',
+                'value' => 'parts_code',
+                'options' => ['style' => 'color: #444']
+            ],
+            [
+                'label' => 'AUTO-PARTS NAME',
+                'value' => 'parts_name',
+                'options' => ['style' => 'color: #444']
+            ],
+            [
+                'label' => 'QUANTITY',
+                'value' => 'quantity',
+                'options' => ['style' => 'color: #444']
+            ],
+            [
+                'label' => 'AMOUNT',
+                'value' => 'selling_price',
+                'options' => ['style' => 'color: #444']
+            ],
         [
-
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{changeqty}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -125,20 +139,20 @@ $gridColumns = [
     </div>
 
     <div class="col-md-2 pull-right">  
-        <?= Html::button('<li class=\'fa fa-edit\'></li> Update Auto-Parts Qty -',['class' => '_showUpdateQtySelectedPartsModal formBtn btn btn-block btn-info btn-sm']) ?>
+        <?= Html::button('<li class=\'fa fa-edit\'></li> Edit Auto-Parts Qty -',['class' => '_showUpdateQtySelectedPartsModal formBtn btn btn-block btn-info btn-sm']) ?>
     </div>
 
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>
@@ -238,6 +252,13 @@ $gridColumns = [
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <label class="labelStyle">Remarks</label>
+                        <?= $form->field($model, 'remarks')->textarea(['class' => 'inputForm form-control', 'rows' => 5, 'id' => 'remarks', 'placeholder' => 'Enter Remarks here.'])->label(false) ?>
+                    </div>
+                </div>
+
             <?php ActiveForm::end(); ?>
         </div>
 
@@ -319,6 +340,13 @@ $gridColumns = [
 
                         <label class="labelStyle">Selling Price</label>
                         <?= $form->field($model, 'selling_price')->textInput(['class' => 'inputForm form-control', 'id' => 'updateSellingPrice', 'placeholder' => 'Enter Selling Price here.'])->label(false) ?>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <label class="labelStyle">Remarks</label>
+                        <?= $form->field($model, 'remarks')->textarea(['class' => 'inputForm form-control', 'id' => 'updateRemarks', 'rows' => 5, 'placeholder' => 'Enter Remarks here.'])->label(false) ?>
                     </div>
                 </div>
 

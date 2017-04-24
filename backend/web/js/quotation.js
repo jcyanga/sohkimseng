@@ -296,7 +296,7 @@ $('.closeQuotation').click(function(e){
 
 //========== Get Customer Information ==========//
 
-$('#customerName').change(function(){
+$('#quoteCustomerName').change(function(){
 	var customerId = $(this).val();
 
 	$.get('?r=quotation/get-customer-information',{
@@ -868,7 +868,7 @@ $('#submitQuotationForm').click(function(){
 	var paymentType = $('#quoteFormCreate').find('select[id=paymentType]').val();
 	var remarks = $('#quoteFormCreate').find('textarea[id=remarks]').val();
 	var dateIssue = $('input:text.date_issue').val();
-	var customerName = $('#quoteFormCreate').find('select[id=customerName]').val();
+	var customerName = $('#quoteFormCreate').find('select[id=quoteCustomerName]').val();
 	var grandTotal = $('#quoteFormCreate').find('input:text[id=grandTotal]').val();
 	var gst_amount = $('#quoteFormCreate').find('input:hidden[id=gst_amount]').val();
 	var gst_value = $('#quoteFormCreate').find('input:text[id=gst]').val();

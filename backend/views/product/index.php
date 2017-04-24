@@ -57,26 +57,41 @@ $gridColumns = [
         'header' => '<span class="glyphicon glyphicon-check"></span>' 
     ],
 
-    ['class' => 'yii\grid\SerialColumn'],
-        [
-            'attribute' => 'supplier_id',
-            'value' => 'supplier.name',
-            'label' => 'Supplier',
-        ],
-
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
         [
             'attribute' => 'product_category_id',
             'value' => 'productCategory.name',
-            'label' => 'Category',
+            'header' => 'PRODCT CATEGORY',
+            'options' => ['style' => 'color: #444']
         ],
-
-            'product_code',
-            'product_name',
-            'quantity',
-            'selling_price',
+            [
+                'label' => 'PRODUCT CODE',
+                'value' => 'product_code',
+                'options' => ['style' => 'color: #444']
+            ],
+            [
+                'label' => 'PRODUCT NAME',
+                'value' => 'product_name',
+                'options' => ['style' => 'color: #444']
+            ],
+            [
+                'label' => 'QUANTITY',
+                'value' => 'quantity',
+                'options' => ['style' => 'color: #444']
+            ],
+            [
+                'label' => 'AMOUNT',
+                'value' => 'selling_price',
+                'options' => ['style' => 'color: #444']
+            ],
 
         [
             'class' => 'yii\grid\ActionColumn',
+            'header' => 'Action',
+            'options' => ['style' => 'color: #444'],
             'template' => '{preview}{update}{changeqty}{delete}',
             'buttons' => [
                 'preview' => function ($url, $model) {
@@ -126,20 +141,20 @@ $gridColumns = [
     </div>
 
     <div class="col-md-2 pull-right">  
-        <?= Html::button('<li class=\'fa fa-edit\'></li> Update Product Qty -',['class' => '_showUpdateQtySelectedProductModal formBtn btn btn-block btn-info btn-sm']) ?>
+        <?= Html::button('<li class=\'fa fa-edit\'></li> Edit Product Qty -',['class' => '_showUpdateQtySelectedProductModal formBtn btn btn-block btn-info btn-sm']) ?>
     </div>
 
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>

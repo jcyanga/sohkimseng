@@ -34,11 +34,24 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
-        'name',
-        'description',
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
+        [
+            'label' => 'RACE NAME',
+            'value' => 'name',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'DESCRIPTION',
+            'value' => 'description',
+            'options' => ['style' => 'color: #444']
+        ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -82,14 +95,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>
@@ -134,7 +147,7 @@ $gridColumns = [
                 <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'name', 'placeholder' => 'Enter Race name here.'])->label(false) ?>
 
                 <label class="labelStyle">Description</label>
-                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'placeholder' => 'Enter Race description here.'])->label(false) ?>
+                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'rows' => 5, 'placeholder' => 'Enter Race description here.'])->label(false) ?>
 
             <?php ActiveForm::end(); ?>
         </div>
@@ -165,7 +178,7 @@ $gridColumns = [
                 <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'updateName', 'placeholder' => 'Enter Race name here.'])->label(false) ?>
 
                 <label class="labelStyle">Description</label>
-                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'updateDescription', 'placeholder' => 'Enter Race description here.'])->label(false) ?>
+                <?= $form->field($model, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'updateDescription', 'rows' => 5, 'placeholder' => 'Enter Race description here.'])->label(false) ?>
 
             <?php ActiveForm::end(); ?>
         </div>

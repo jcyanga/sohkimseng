@@ -37,13 +37,34 @@ $supplierCode = 'SUPPLIERS' . '-' .  date('Y') . '-' .  substr(uniqid('', true),
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
-        'supplier_code',
-        'name',
-        'address',
-        'contact_number',
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
+        [
+            'label' => 'SUPPLIER CODE',
+            'value' => 'supplier_code',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'SUPPLIER NAME',
+            'value' => 'name',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'ADDRESS',
+            'value' => 'address',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'CONTACT NUMBER',
+            'value' => 'contact_number',
+            'options' => ['style' => 'color: #444']
+        ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -87,14 +108,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>
@@ -143,7 +164,7 @@ $gridColumns = [
                 <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'name', 'placeholder' => 'Enter Supplier name here.'])->label(false) ?>
 
                 <label class="labelStyle">Address</label>
-                <?= $form->field($model, 'address')->textarea(['rows' => '3', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'address', 'placeholder' => 'Enter Address here.'])->label(false) ?>
+                <?= $form->field($model, 'address')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'address', 'placeholder' => 'Enter Address here.'])->label(false) ?>
 
                 <label class="labelStyle">Contact Number</label>
                 <?= $form->field($model, 'contact_number')->textInput(['class' => 'inputForm form-control', 'id' => 'contactNumber', 'placeholder' => 'Enter Contact number here.'])->label(false) ?>
@@ -180,7 +201,7 @@ $gridColumns = [
                 <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'updateName', 'placeholder' => 'Enter Supplier name here.'])->label(false) ?>
 
                 <label class="labelStyle">Address</label>
-                <?= $form->field($model, 'address')->textarea(['rows' => '3', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'updateAddress', 'placeholder' => 'Enter Address here.'])->label(false) ?>
+                <?= $form->field($model, 'address')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'updateAddress', 'placeholder' => 'Enter Address here.'])->label(false) ?>
 
                 <label class="labelStyle">Contact Number</label>
                 <?= $form->field($model, 'contact_number')->textInput(['class' => 'inputForm form-control', 'id' => 'updateContactNumber', 'placeholder' => 'Enter Contact number here.'])->label(false) ?>

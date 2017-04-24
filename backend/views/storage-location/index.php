@@ -34,13 +34,34 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
-        'rack',
-        'bay',
-        'level',
-        'position',
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
+        [
+            'label' => 'STORAGE RACK',
+            'value' => 'rack',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'STORAGE BAY',
+            'value' => 'bay',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'RACK-LEVEL',
+            'value' => 'level',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'ITEM POSITION',
+            'value' => 'position',
+            'options' => ['style' => 'color: #444']
+        ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -78,20 +99,20 @@ $gridColumns = [
 <div class="row">
 
     <div class="col-md-2 pull-right">  
-        <?= Html::button('<li class=\'fa fa-user-plus\'></li> New Storage Location -',['class' => '_showCreateSLModal formBtn btn btn-block btn-success btn-sm']) ?>
+        <?= Html::button('<li class=\'fa fa-user-plus\'></li> New Storage -',['class' => '_showCreateSLModal formBtn btn btn-block btn-success btn-sm']) ?>
     </div>
 
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>

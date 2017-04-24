@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.1
+-- version 4.5.4.1deb2ubuntu2
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: Apr 11, 2017 at 02:04 PM
--- Server version: 10.1.19-MariaDB
--- PHP Version: 5.6.28
+-- Host: localhost
+-- Generation Time: Apr 24, 2017 at 06:38 PM
+-- Server version: 5.7.17-0ubuntu0.16.04.2
+-- PHP Version: 7.0.15-0ubuntu0.16.04.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -41,7 +41,8 @@ INSERT INTO `auth_assignment` (`item_name`, `user_id`, `created_at`) VALUES
 ('developer', '2', 1486451748),
 ('sales', '3', 1487918909),
 ('sales', '4', 1486452408),
-('sales', '5', 1490583656);
+('sales', '5', 1490583656),
+('sales', '7', 1493024045);
 
 -- --------------------------------------------------------
 
@@ -129,8 +130,26 @@ INSERT INTO `customer` (`id`, `type`, `company_name`, `uen_no`, `fullname`, `nri
 (2, 1, 'maxwell freight management pte ltd', '198305727m', 'kristine pan smith', '', '20 maxwell road 0612 maxwell house singapore 069113', '201 maxwell road 0612 maxwell house singapore 069113', 0, 'kristine@maxwellfreight.com.sg', 62216988, 62216988, '62213325', 1, '2017-04-04 18:39:20', 1, '0000-00-00 00:00:00', 0),
 (3, 2, '', '', 'johnny tang', '19880305ph', '25th floor bpi buendia center makati city', '25th floor bpi buendia center makati city', 1, 'johnsmith@bpi.com.ph', 2147483647, 9557545, '9551236', 1, '2017-04-04 18:39:58', 1, '0000-00-00 00:00:00', 0),
 (6, 1, 'blade asia', '20101201ph', 'jaimee miyuki', '', '3rd floor pacific star building makati avenue makati city', 'blk 5 belair makati avenue makati city', 0, 'jaimeemiyuki@bladeasia.com', 8728292, 9224312, '9221236-', 1, '2017-04-08 19:46:13', 1, '0000-00-00 00:00:00', 0),
-(8, 1, 'wang san corporation', '19000865sph', 'danilo ang', '', 'jackson building belair street malugay makati city', '24th street malugay makati city', 0, 'admin@wangsan.com.ph', 9557282, 9557283, '9557284', 1, '2017-04-11 16:28:33', 1, '0000-00-00 00:00:00', 0),
+(8, 1, 'wang san corporation', '19000865sph', '', '', 'jackson building belair street malugay makati city', '24th street malugay makati city', 0, 'admin@wangsan.com.ph', 9557282, 9557283, '9557284', 1, '2017-04-11 16:28:33', 1, '0000-00-00 00:00:00', 0),
 (9, 1, 'zu wang kim trading corporation', '18000525cph', 'jackylou zu', '', 'acascia building binondo manila', 'blk 7 lot 12 turnisia street sta cruz manila', 0, 'jackyzu@yahoo.com', 7668696, 7669616, '7668656', 1, '2017-04-11 19:53:57', 1, '0000-00-00 00:00:00', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customer_contactperson_address`
+--
+
+CREATE TABLE `customer_contactperson_address` (
+  `id` int(11) NOT NULL,
+  `customer_id` int(5) NOT NULL,
+  `address` text NOT NULL,
+  `contact_person` varchar(50) NOT NULL,
+  `status` int(5) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `created_by` int(5) DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(5) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -220,8 +239,8 @@ CREATE TABLE `designated_position` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -230,7 +249,8 @@ CREATE TABLE `designated_position` (
 
 INSERT INTO `designated_position` (`id`, `name`, `description`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
 (1, 'web programmer', 'responsible for developing cms and crm\n', 1, '2017-04-04 14:44:18', 1, '0000-00-00 00:00:00', 0),
-(2, 'supervisor', 'responsible for supervise the facility', 1, '2017-04-04 14:44:48', 1, '0000-00-00 00:00:00', 0);
+(2, 'supervisor', 'responsible for supervise the facility', 1, '2017-04-04 14:44:48', 1, '2017-04-24 14:35:58', 1),
+(3, 'testing', '123 testing', 0, '2017-04-24 16:36:32', 1, '2017-04-24 16:36:43', 1);
 
 -- --------------------------------------------------------
 
@@ -414,7 +434,11 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m170411_083920_create_delivery_order_table', 1491900522),
 ('m170411_083940_create_delivery_order_detail_table', 1491900522),
 ('m170411_084931_create_delivery_order_foreignkey', 1491900712),
-('m170411_085048_create_delivery_order_detail_foreignkey', 1491900713);
+('m170411_085048_create_delivery_order_detail_foreignkey', 1491900713),
+('m170412_024542_add_contact_person_column_to_customer_table', 1491965238),
+('m170417_071216_add_remarks_column_to_parts_table', 1492413319),
+('m170424_092102_create_customer_contactperson_address_table', 1493026338),
+('m170424_093300_create_customer_contactperson_address_foreignkey', 1493026452);
 
 -- --------------------------------------------------------
 
@@ -428,8 +452,8 @@ CREATE TABLE `module` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -439,7 +463,8 @@ CREATE TABLE `module` (
 INSERT INTO `module` (`id`, `name`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
 (2, 'role', 1, '2017-02-03 10:08:17', 1, '2017-02-07 13:23:33', 1),
 (3, 'user', 1, '2017-02-07 13:23:26', 1, '2017-04-04 13:44:03', 1),
-(5, 'testing', 0, '2017-04-04 11:53:59', 1, '2017-04-04 11:54:10', 1);
+(5, 'testing', 0, '2017-04-04 11:53:59', 1, '2017-04-04 11:54:10', 1),
+(6, 'testings', 0, '2017-04-24 16:28:38', 1, '2017-04-24 16:29:13', 1);
 
 -- --------------------------------------------------------
 
@@ -460,24 +485,28 @@ CREATE TABLE `parts` (
   `gst_price` double NOT NULL,
   `selling_price` double NOT NULL,
   `reorder_level` int(10) NOT NULL,
+  `remarks` text NOT NULL,
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `parts`
 --
 
-INSERT INTO `parts` (`id`, `supplier_id`, `storage_location_id`, `parts_category_id`, `parts_code`, `parts_name`, `unit_of_measure`, `quantity`, `cost_price`, `gst_price`, `selling_price`, `reorder_level`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 1, 1, 1, 'parts-2017-80692', 'bumper', 'pieces', 11, 120, 7, 150, 10, 1, '2017-04-06 14:12:29', 1, '0000-00-00 00:00:00', 0),
-(2, 1, 1, 1, 'parts-2017-70705', 'cowl screen', 'pieces', 19, 99, 7, 120, 10, 1, '2017-04-06 14:14:36', 1, '0000-00-00 00:00:00', 0),
-(3, 2, 2, 2, 'parts-2017-76511', 'hinges', 'pieces', 19, 120, 7, 150, 10, 1, '2017-04-06 16:53:33', 1, '0000-00-00 00:00:00', 0),
-(4, 2, 2, 2, 'parts-2017-20208', 'fuel tank', 'pieces', 20, 99, 7, 130, 10, 1, '2017-04-06 14:15:59', 1, '0000-00-00 00:00:00', 0),
-(5, 3, 4, 4, 'parts-2017-58484', 'window regulator', 'pieces', 32, 130, 7, 175, 10, 1, '2017-04-06 14:16:36', 1, '0000-00-00 00:00:00', 0),
-(6, 3, 4, 4, 'parts-2017-30373', 'window seal', 'pieces', 22, 120, 7, 150, 10, 1, '2017-04-06 14:17:20', 1, '0000-00-00 00:00:00', 0);
+INSERT INTO `parts` (`id`, `supplier_id`, `storage_location_id`, `parts_category_id`, `parts_code`, `parts_name`, `unit_of_measure`, `quantity`, `cost_price`, `gst_price`, `selling_price`, `reorder_level`, `remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 1, 1, 1, 'parts-2017-80692', 'bumper', 'pieces', 11, 120, 7, 150, 10, '', 1, '2017-04-06 14:12:29', 1, '0000-00-00 00:00:00', 0),
+(2, 1, 1, 1, 'parts-2017-70705', 'cowl screen', 'pieces', 19, 99, 7, 120, 10, '', 1, '2017-04-06 14:14:36', 1, '0000-00-00 00:00:00', 0),
+(3, 2, 2, 2, 'parts-2017-76511', 'hinges', 'pieces', 19, 120, 7, 150, 10, '', 1, '2017-04-06 16:53:33', 1, '0000-00-00 00:00:00', 0),
+(4, 2, 2, 2, 'parts-2017-20208', 'fuel tank', 'pieces', 20, 99, 7, 130, 10, '', 1, '2017-04-06 14:15:59', 1, '0000-00-00 00:00:00', 0),
+(5, 3, 4, 4, 'parts-2017-58484', 'window regulator', 'pieces', 32, 130, 7, 175, 10, '', 1, '2017-04-06 14:16:36', 1, '0000-00-00 00:00:00', 0),
+(6, 3, 4, 4, 'parts-2017-30373', 'window seal', 'pieces', 22, 120, 7, 150, 10, '', 1, '2017-04-06 14:17:20', 1, '0000-00-00 00:00:00', 0),
+(7, 2, 2, 4, 'parts-2017-97598', 'windows 10', 'pieces', 30, 100, 7, 120, 10, 'for test case', 1, '2017-04-24 14:56:48', 1, '2017-04-24 14:56:48', 1),
+(8, 2, 2, 4, 'parts-2017-97598', 'windows xp', 'pieces', 30, 100, 7, 120, 10, 'for test case', 1, '2017-04-24 14:57:01', 1, '2017-04-24 14:57:01', 1),
+(9, 3, 5, 2, 'parts-2017-79283', 'door 10', 'pieces', 40, 120, 7, 150, 10, 'for test case', 1, '2017-04-24 15:02:54', 1, '2017-04-24 15:02:54', 1);
 
 -- --------------------------------------------------------
 
@@ -492,8 +521,8 @@ CREATE TABLE `parts_category` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -517,16 +546,16 @@ CREATE TABLE `parts_inventory` (
   `parts_id` int(5) NOT NULL,
   `old_quantity` int(25) NOT NULL,
   `new_quantity` int(25) NOT NULL,
-  `qty_purchased` int(25) NOT NULL,
+  `qty_purchased` int(11) DEFAULT NULL,
   `type` int(5) NOT NULL,
-  `invoice_no` varchar(50) NOT NULL,
-  `datetime_imported` datetime NOT NULL,
-  `datetime_purchased` datetime NOT NULL,
+  `invoice_no` varchar(50) DEFAULT NULL,
+  `datetime_imported` datetime DEFAULT NULL,
+  `datetime_purchased` datetime DEFAULT NULL,
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -610,8 +639,8 @@ CREATE TABLE `payment_type` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -645,8 +674,8 @@ CREATE TABLE `product` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -676,8 +705,8 @@ CREATE TABLE `product_category` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -702,15 +731,15 @@ CREATE TABLE `product_inventory` (
   `old_quantity` int(25) NOT NULL,
   `new_quantity` int(25) NOT NULL,
   `type` int(5) NOT NULL,
-  `qty_purchased` int(25) NOT NULL,
-  `invoice_no` varchar(50) NOT NULL,
-  `datetime_imported` datetime NOT NULL,
-  `datetime_purchased` datetime NOT NULL,
+  `qty_purchased` int(11) DEFAULT NULL,
+  `invoice_no` varchar(50) DEFAULT NULL,
+  `datetime_imported` datetime DEFAULT NULL,
+  `datetime_purchased` datetime DEFAULT NULL,
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -771,7 +800,9 @@ CREATE TABLE `quotation` (
 
 INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `gst_value`, `net`, `remarks`, `payment_type_id`, `discount_amount`, `discount_remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `invoice_created`, `deleted`, `condition`, `action_by`) VALUES
 (1, 'QUO201704001', 3, 2, '2017-04-10', 850, 59.5, 7, 909.5, 'FOR TEST CASE', 1, 0, 'NO DISCOUNT REMARKS', 1, '2017-04-10 19:26:25', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0),
-(2, 'QUO201704002', 3, 3, '2017-04-10', 445, 31.15, 7, 476.15, 'test', 1, 0, 'No discount remarks', 1, '2017-04-11 09:02:08', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0);
+(2, 'QUO201704002', 3, 3, '2017-04-10', 445, 31.15, 7, 476.15, 'test', 1, 0, 'No discount remarks', 1, '2017-04-11 09:02:08', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0),
+(3, 'QUO201704003', 4, 3, '2017-04-12', 580, 40.6, 7, 520.6, 'for test case', 1, 100, 'summer discount', 1, '2017-04-12 13:43:40', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0),
+(4, 'QUO201704004', 4, 6, '2017-04-12', 650, 45.5, 7, 595.5, 'for testing', 1, 100, 'summer discount', 1, '2017-04-12 13:57:24', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -808,7 +839,12 @@ INSERT INTO `quotation_detail` (`id`, `quotation_id`, `description`, `quantity`,
 (18, 1, 1, 1, 250, 250, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
 (19, 2, 1, 1, 150, 150, 1, '2017-04-11 09:02:08', 1, '2017-04-11 09:02:08', 1, 1, 0),
 (20, 2, 2, 1, 120, 120, 1, '2017-04-11 09:02:08', 1, '2017-04-11 09:02:08', 1, 1, 0),
-(21, 2, 5, 1, 175, 175, 1, '2017-04-11 09:02:08', 1, '2017-04-11 09:02:08', 1, 1, 0);
+(21, 2, 5, 1, 175, 175, 1, '2017-04-11 09:02:08', 1, '2017-04-11 09:02:08', 1, 1, 0),
+(22, 3, 3, 1, 150, 150, 1, '2017-04-12 13:43:40', 1, '2017-04-12 13:43:40', 1, 1, 0),
+(23, 3, 4, 1, 130, 130, 1, '2017-04-12 13:43:40', 1, '2017-04-12 13:43:40', 1, 1, 0),
+(24, 3, 3, 1, 300, 300, 0, '2017-04-12 13:43:41', 1, '2017-04-12 13:43:41', 1, 1, 0),
+(25, 4, 3, 1, 300, 300, 0, '2017-04-12 13:57:24', 1, '2017-04-12 13:57:24', 1, 1, 0),
+(26, 4, 5, 2, 175, 350, 1, '2017-04-12 13:57:24', 1, '2017-04-12 13:57:24', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -823,8 +859,8 @@ CREATE TABLE `race` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -849,8 +885,8 @@ CREATE TABLE `role` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -863,7 +899,8 @@ INSERT INTO `role` (`id`, `name`, `status`, `created_at`, `created_by`, `updated
 (3, 'sales', 1, '2017-02-07 15:10:00', 1, '0000-00-00 00:00:00', 0),
 (4, 'driver', 1, '2017-02-07 15:10:00', 1, '0000-00-00 00:00:00', 0),
 (5, 'technician', 1, '2017-02-07 15:10:00', 1, '0000-00-00 00:00:00', 0),
-(7, 'testing', 0, '2017-04-04 11:53:06', 1, '2017-04-04 11:53:15', 1);
+(7, 'testing', 0, '2017-04-04 11:53:06', 1, '2017-04-04 11:53:15', 1),
+(8, 'testings', 0, '2017-04-24 16:27:54', 1, '2017-04-24 16:28:22', 1);
 
 -- --------------------------------------------------------
 
@@ -880,8 +917,8 @@ CREATE TABLE `service` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -890,7 +927,7 @@ CREATE TABLE `service` (
 
 INSERT INTO `service` (`id`, `service_category_id`, `service_name`, `description`, `price`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
 (1, 3, 'rentals of forklifter', 'renting of forklifts', 250, 1, '2017-02-03 14:30:00', 1, '2017-04-06 14:20:06', 1),
-(3, 5, 'forklift solid tyre', 'checking of all forklift tyres', 300, 1, '2017-02-03 17:59:46', 1, '2017-04-06 14:21:01', 1),
+(3, 5, 'forklift solid tyre test', 'checking of all forklift tyres', 300, 1, '2017-02-03 17:59:46', 1, '2017-04-06 14:21:01', 1),
 (4, 5, 'forklift maintenance and servicing ', 'all service that needed a forklift', 500, 1, '2017-02-04 11:26:28', 1, '2017-04-06 14:21:32', 1),
 (5, 6, 'trader in or scrapped of used lorries', 'trading of non usable lorries', 750, 1, '2017-02-04 12:10:08', 1, '2017-04-06 14:23:45', 1),
 (6, 3, 'testing case', '123 testing case', 100, 0, '2017-04-04 19:43:50', 1, '2017-04-04 19:44:37', 1),
@@ -909,8 +946,8 @@ CREATE TABLE `service_category` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -942,8 +979,8 @@ CREATE TABLE `staff` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -952,7 +989,8 @@ CREATE TABLE `staff` (
 
 INSERT INTO `staff` (`id`, `staff_group_id`, `designated_position_id`, `fullname`, `address`, `race_id`, `email`, `mobile_number`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
 (1, 1, 1, 'JC YANGA', '148 SANCHEZ STREET MANGGAHAN COMMONWEALTH QUEZON CITY', 1, 'JCYANGA28@YAHOO.COM', '09959575415', 1, '2017-04-04 14:45:30', 1, '2017-04-04 14:46:32', 1),
-(2, 3, 2, 'testing', '123 test', 1, 'test@test.com', '123456', 1, '2017-04-04 14:49:39', 1, '0000-00-00 00:00:00', 0);
+(2, 3, 2, 'testing', '123 test', 1, 'test@test.com', '123456', 1, '2017-04-04 14:49:39', 1, '0000-00-00 00:00:00', 0),
+(3, 3, 2, 'GERALD RODerick Lim', '255 VENUS STREET WASHINGTON MAKATI CITY', 3, 'GERALDROD@YAHOO.COM', '09997896321', 1, '2017-04-24 16:55:42', 1, '2017-04-24 16:56:06', 1);
 
 -- --------------------------------------------------------
 
@@ -967,8 +1005,8 @@ CREATE TABLE `staff_group` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -977,7 +1015,8 @@ CREATE TABLE `staff_group` (
 
 INSERT INTO `staff_group` (`id`, `name`, `description`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
 (1, 'IT DEPARTMENT', 'ALL KNOWLEDGEABLE IN IT', 1, '2017-02-04 19:52:24', 1, '2017-02-04 19:53:23', 1),
-(3, 'driver department', 'all knowledgeable in driving', 1, '2017-02-04 19:54:13', 1, '0000-00-00 00:00:00', 0);
+(3, 'driver department', 'all knowledgeable in driving', 1, '2017-02-04 19:54:13', 1, '0000-00-00 00:00:00', 0),
+(4, 'testing', '123 testing', 0, '2017-04-24 16:30:48', 1, '2017-04-24 16:36:17', 1);
 
 -- --------------------------------------------------------
 
@@ -994,8 +1033,8 @@ CREATE TABLE `storage_location` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -1024,8 +1063,8 @@ CREATE TABLE `supplier` (
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -1054,14 +1093,14 @@ CREATE TABLE `user` (
   `username` varchar(50) NOT NULL,
   `password` varchar(50) NOT NULL,
   `password_hash` varchar(100) NOT NULL,
-  `password_reset_token` varchar(100) NOT NULL,
+  `password_reset_token` varchar(100) DEFAULT NULL,
   `auth_key` varchar(50) NOT NULL,
   `image` varchar(50) NOT NULL,
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
   `deleted` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -1074,8 +1113,9 @@ INSERT INTO `user` (`id`, `role_id`, `roles`, `fullname`, `email`, `username`, `
 (2, 1, 20, 'web developer', 'developer@firstcom.com.ph', 'developer', '', '$2y$13$Xr0Jr2bmqyRDCy0B2cuTjuLVSodQc/KAaMEiDO1Nr/AYS2.dH.uVa', '', 'xTr-fhDCnt0iz-gaaHRox_pNpQHNsbAf', 'user.png', 1, '2017-02-07 15:15:47', 1, '0000-00-00 00:00:00', 0, 0),
 (3, 3, 20, 'cherry lim', 'cherrylim@yahoo.com', 'sales', 'password', '$2y$13$ee1Glhw5QiVzMrTShsTemudAtCsRfJzOMxNni6YXxD8vJWsomTcNG', '', 'xhd3Gmx23S52nzJmK_YmJ-oW8bHfn2jY', 'user.png', 1, '2017-02-24 14:48:28', 2, '0000-00-00 00:00:00', 0, 0),
 (4, 3, 20, 'vicky roman', 'vickyroman@yahoo.com', 'vickyroman', 'password', '$2y$13$5ZcxbbpVqIXYbsv766qeQe0Yse5mg8MDAVLljLmzCzK//7cWcsTmy', '', 'ojvVOb7xdRQudsxky1HSpk1SCxk6F_n-', 'user.png', 1, '2017-03-27 11:00:15', 1, '0000-00-00 00:00:00', 0, 0),
-(5, 3, 20, 'vicky romans', 'vickyromans@yahoo.com', 'vickyromans', 'password', '$2y$13$ilIk7RfO6r6GEv2wMtIUF.v8SZdONEMpKu/ThG6m9HrtdwnbN0eJO', '', 'Jr8BmF7PbY2jwDEn5heeJRo1ZMIcCI9X', 'user.png', 1, '2017-03-27 11:00:55', 1, '0000-00-00 00:00:00', 0, 0),
-(6, 5, 20, 'testing', 'test@test.com', 'test123', 'password', '$2y$13$Am3vLOqjEuM2vQtlnScL7.cM/vGzLBnkUbkV8oO0eahIv6l/N3q7y', '', 'phEPW_szLccAF7o8ZqbgMFcM9rqLXOxi', 'user.png', 0, '2017-04-04 13:16:22', 1, '2017-04-04 13:17:18', 1, 0);
+(5, 3, 20, 'vicky romans', 'vickyromans@yahoo.com', 'vickyromans', 'password', '$2y$13$ilIk7RfO6r6GEv2wMtIUF.v8SZdONEMpKu/ThG6m9HrtdwnbN0eJO', '', 'Jr8BmF7PbY2jwDEn5heeJRo1ZMIcCI9X', 'user.png', 0, '2017-03-27 11:00:55', 1, '0000-00-00 00:00:00', 0, 0),
+(6, 5, 20, 'testing', 'test@test.com', 'test123', 'password', '$2y$13$Am3vLOqjEuM2vQtlnScL7.cM/vGzLBnkUbkV8oO0eahIv6l/N3q7y', '', 'phEPW_szLccAF7o8ZqbgMFcM9rqLXOxi', 'user.png', 0, '2017-04-04 13:16:22', 1, '2017-04-04 13:17:18', 1, 0),
+(7, 3, 20, 'miaka tang', 'miakatang@gmail.com', 'miakatang', '123456789', '$2y$13$9x4Dre6QG0PaaT5/zAxSEOFp8Lo6jsvGe6onz7orqz45z6dmDcxpW', NULL, 'MHLRB8mjR99xbWEwjVgDA1aPvAVLr_ql', 'user.png', 1, '2017-04-24 16:54:05', 1, '2017-04-24 16:54:34', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1089,7 +1129,7 @@ CREATE TABLE `user_permission` (
   `action` varchar(50) NOT NULL,
   `role_id` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
-  `updated_at` datetime NOT NULL
+  `updated_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -1136,7 +1176,28 @@ INSERT INTO `user_permission` (`id`, `controller`, `action`, `role_id`, `created
 (82, 'Module', 'get-data', 1, '2017-04-04 13:34:50', '0000-00-00 00:00:00'),
 (83, 'Module', 'delete', 1, '2017-04-04 13:34:50', '0000-00-00 00:00:00'),
 (84, 'Module', 'delete-column', 1, '2017-04-04 13:34:50', '0000-00-00 00:00:00'),
-(85, 'Module', 'export-pdf', 1, '2017-04-04 13:34:50', '0000-00-00 00:00:00');
+(85, 'Module', 'export-pdf', 1, '2017-04-04 13:34:50', '0000-00-00 00:00:00'),
+(86, 'DeliveryOrder', 'index', 2, '2017-04-24 16:30:35', NULL),
+(87, 'DeliveryOrder', 'view', 2, '2017-04-24 16:30:35', NULL),
+(88, 'DeliveryOrder', 'create', 2, '2017-04-24 16:30:35', NULL),
+(89, 'DeliveryOrder', 'create-company', 2, '2017-04-24 16:30:35', NULL),
+(90, 'DeliveryOrder', 'create-customer', 2, '2017-04-24 16:30:35', NULL),
+(91, 'DeliveryOrder', 'update', 2, '2017-04-24 16:30:35', NULL),
+(92, 'DeliveryOrder', 'get-data', 2, '2017-04-24 16:30:35', NULL),
+(93, 'DeliveryOrder', 'delete', 2, '2017-04-24 16:30:35', NULL),
+(94, 'DeliveryOrder', 'delete-column', 2, '2017-04-24 16:30:35', NULL),
+(95, 'DeliveryOrder', 'approve-column', 2, '2017-04-24 16:30:35', NULL),
+(96, 'DeliveryOrder', 'cancel-column', 2, '2017-04-24 16:30:35', NULL),
+(97, 'DeliveryOrder', 'close-column', 2, '2017-04-24 16:30:36', NULL),
+(98, 'DeliveryOrder', 'get-parts-price-and-qty', 2, '2017-04-24 16:30:36', NULL),
+(99, 'DeliveryOrder', 'insert-auto-parts-in-list', 2, '2017-04-24 16:30:36', NULL),
+(100, 'DeliveryOrder', 'get-services-price-and-qty', 2, '2017-04-24 16:30:36', NULL),
+(101, 'DeliveryOrder', 'insert-services-in-list', 2, '2017-04-24 16:30:36', NULL),
+(102, 'DeliveryOrder', 'save-service-details', 2, '2017-04-24 16:30:36', NULL),
+(103, 'DeliveryOrder', 'update-auto-parts-in-list', 2, '2017-04-24 16:30:36', NULL),
+(104, 'DeliveryOrder', 'update-services-in-list', 2, '2017-04-24 16:30:36', NULL),
+(105, 'DeliveryOrder', 'get-customer-information', 2, '2017-04-24 16:30:36', NULL),
+(106, 'DeliveryOrder', 'create-delivery-order', 2, '2017-04-24 16:30:36', NULL);
 
 --
 -- Indexes for dumped tables
@@ -1174,10 +1235,14 @@ ALTER TABLE `auth_rule`
 --
 ALTER TABLE `customer`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `fullname` (`fullname`),
-  ADD UNIQUE KEY `email` (`email`),
-  ADD UNIQUE KEY `company_name` (`company_name`),
   ADD KEY `fk-customer-race_id` (`race_id`);
+
+--
+-- Indexes for table `customer_contactperson_address`
+--
+ALTER TABLE `customer_contactperson_address`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk-customer_contactperson_address-customer_id` (`customer_id`);
 
 --
 -- Indexes for table `delivery_order`
@@ -1395,6 +1460,11 @@ ALTER TABLE `user_permission`
 ALTER TABLE `customer`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
+-- AUTO_INCREMENT for table `customer_contactperson_address`
+--
+ALTER TABLE `customer_contactperson_address`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+--
 -- AUTO_INCREMENT for table `delivery_order`
 --
 ALTER TABLE `delivery_order`
@@ -1408,7 +1478,7 @@ ALTER TABLE `delivery_order_detail`
 -- AUTO_INCREMENT for table `designated_position`
 --
 ALTER TABLE `designated_position`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `gst`
 --
@@ -1428,12 +1498,12 @@ ALTER TABLE `invoice_detail`
 -- AUTO_INCREMENT for table `module`
 --
 ALTER TABLE `module`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `parts`
 --
 ALTER TABLE `parts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 --
 -- AUTO_INCREMENT for table `parts_category`
 --
@@ -1468,12 +1538,12 @@ ALTER TABLE `product_inventory`
 -- AUTO_INCREMENT for table `quotation`
 --
 ALTER TABLE `quotation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `quotation_detail`
 --
 ALTER TABLE `quotation_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 --
 -- AUTO_INCREMENT for table `race`
 --
@@ -1483,7 +1553,7 @@ ALTER TABLE `race`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 --
 -- AUTO_INCREMENT for table `service`
 --
@@ -1498,12 +1568,12 @@ ALTER TABLE `service_category`
 -- AUTO_INCREMENT for table `staff`
 --
 ALTER TABLE `staff`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `staff_group`
 --
 ALTER TABLE `staff_group`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `storage_location`
 --
@@ -1518,12 +1588,12 @@ ALTER TABLE `supplier`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `user_permission`
 --
 ALTER TABLE `user_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 --
 -- Constraints for dumped tables
 --
@@ -1546,6 +1616,12 @@ ALTER TABLE `auth_item`
 ALTER TABLE `auth_item_child`
   ADD CONSTRAINT `auth_item_child_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `auth_item_child_ibfk_2` FOREIGN KEY (`child`) REFERENCES `auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `customer_contactperson_address`
+--
+ALTER TABLE `customer_contactperson_address`
+  ADD CONSTRAINT `fk-customer_contactperson_address-customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `delivery_order`

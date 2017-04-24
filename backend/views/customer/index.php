@@ -40,9 +40,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
         [
-            'label' => 'Customer Name',
+            'header' => 'Customer Name',
+            'options' => ['style' => 'color: #444'],
             'value' => function($model)
             {   
                 if($model->type == 1)
@@ -55,12 +59,25 @@ $gridColumns = [
                 }
             },
         ],
-        'address',
-        'email',
-        'phone_number',
-        'mobile_number',
+        [
+            'label' => 'EMAIL',
+            'value' => 'email',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'PHONE NUMBER',
+            'value' => 'phone_number',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'MOBILE NUMBER',
+            'value' => 'mobile_number',
+            'options' => ['style' => 'color: #444']
+        ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -104,14 +121,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>
@@ -171,40 +188,43 @@ $gridColumns = [
 
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
-                            <label class="labelStyle">Company Address</label>
-                            <textarea name="company_address" rows="3" class="inputForm form-control" placeholder="Enter Company address here." id="companyAddress" ></textarea>
+                            <label class="labelStyle">Contact Person</label>
+                            <input type="text" name="contact_person" class="inputForm form-control" placeholder="Enter Contact person here." id="companyContactPerson" />
                         </div>
                     </div>
                     <br/>
 
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
-                            <label class="labelStyle">Shipping Address</label>
-                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="companyShippingAddress" ></textarea>
+                            <label class="labelStyle">Company Address</label>
+                            <textarea name="company_address" rows="5" class="inputForm form-control" placeholder="Enter Company address here." id="companyAddress" ></textarea>
+                        </div>
+                        <div style="margin-top: 10px;" class="col-md-3 col-xs-3 col-sm-3 pull-right">
+                            <button type="button" class="formBtn btn btn-block btn-flat btn-info btn-xs" id="btnAddInformation" ><i class="fa fa-plus-circle"></i> Add Information - </button>
                         </div>
                     </div>
                     <br/>
 
+                    <input type="hidden" id="ctr" value="0" />
+
+                    <div class="company-contactperson-address" id="company-contactperson-address" ></div>
+
+                    <hr/>
                     <div class="row">
                         <div class="col-md-6 col-xs-6 col-sm-6">
                             <label class="labelStyle">Uen No.</label>
                             <input type="text" name="uen_no" class="inputForm form-control" placeholder="Enter UEN number here." id="companyUenNo" />
                             <br/>
 
-                            <label class="labelStyle">Contact Person</label>
-                            <input type="text" name="contact_person" class="inputForm form-control" placeholder="Enter Contact person here." id="companyContactPerson" />
-                            <br/>
-
                             <label class="labelStyle">E-mail Address</label>
                             <input type="text" name="company_email" class="inputForm form-control" placeholder="Enter Email address here." id="companyEmail"  />
                             <br/>
+
+                            <label class="labelStyle">Phone Number</label>
+                            <input type="text" name="company_hanphone" class="inputForm form-control" placeholder="Enter Phone number here." id="companyPhoneNumber" />
                         </div>
         
                         <div class="col-md-6 col-xs-6 col-sm-6">
-                            <label class="labelStyle">Phone Number</label>
-                            <input type="text" name="company_hanphone" class="inputForm form-control" placeholder="Enter Phone number here." id="companyPhoneNumber" />
-                            <br/>
-
                             <label class="labelStyle">Office Number</label>
                             <input type="text" name="company_officeno" class="inputForm form-control" placeholder="Enter Office number here." id="companyOfficeNumber" />
                             <br/>
@@ -226,7 +246,7 @@ $gridColumns = [
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Personal Address</label>
-                            <textarea name="individual_address" rows="3" class="inputForm form-control" placeholder="Enter Personal address here." id="customerAddress" ></textarea>
+                            <textarea name="individual_address" rows="3" class="inputForm form-control" placeholder="Enter Personal address here." id="customerAddress" rows = "5" ></textarea>
                         </div>
                     </div>
                     <br/>
@@ -234,7 +254,7 @@ $gridColumns = [
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Shipping Address</label>
-                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="customerShippingAddress" ></textarea>
+                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="customerShippingAddress" rows = "5" ></textarea>
                         </div>
                     </div>
                     <br/>
@@ -311,7 +331,7 @@ $gridColumns = [
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Company Address</label>
-                            <textarea name="company_address" rows="3" class="inputForm form-control" placeholder="Enter Company address here." id="updateCompanyAddress" ></textarea>
+                            <textarea name="company_address" rows="3" class="inputForm form-control" placeholder="Enter Company address here." id="updateCompanyAddress" rows = "5" ></textarea>
                         </div>
                     </div>
                     <br/>
@@ -319,7 +339,7 @@ $gridColumns = [
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Shipping Address</label>
-                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="updateCompanyShippingAddress" ></textarea>
+                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="updateCompanyShippingAddress" rows = "5" ></textarea>
                         </div>
                     </div>
                     <br/>
@@ -365,7 +385,7 @@ $gridColumns = [
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Personal Address</label>
-                            <textarea name="individual_address" rows="3" class="inputForm form-control" placeholder="Enter Personal address here." id="updateCustomerAddress" ></textarea>
+                            <textarea name="individual_address" rows="3" class="inputForm form-control" placeholder="Enter Personal address here." id="updateCustomerAddress" rows = "5" ></textarea>
                         </div>
                     </div>
                     <br/>
@@ -373,7 +393,7 @@ $gridColumns = [
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Shipping Address</label>
-                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="updateCustomerShippingAddress" ></textarea>
+                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="updateCustomerShippingAddress" rows = "5" ></textarea>
                         </div>
                     </div>
                     <br/>

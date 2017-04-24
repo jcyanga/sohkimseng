@@ -1,6 +1,10 @@
+@font-face {
+	font-family: AucoinLight;
+	src: url('./fonts/AucoinLight.ttf');
+}
 
 ._clientTitle {
-	font-size: 34px; 
+	font-size: 28px; 
 	font-family: Monotype Corsiva; 
 	font-weight: 600; 
 	font-style: italic; 
@@ -19,21 +23,22 @@
 }
 
 ._subHeader {
-	font-size: 14px; 
-	font-family: 
-	Tahoma;color:#fff;
+	font-size: 13px; 
+	font-family: AucoinLight, Arial, Helvetica Nuen;
+	color:#ddd;
 }
 
 ._loginFormLabel {
 	font-size: 12px; 
-	font-family: 
-	Tahoma; color: #fff;
+	font-family: AucoinLight, Arial, Helvetica Nuen;
+	color:#ddd;
 }
 
 ._inputForm {
 	text-align: center; 
 	font-size: 12px; 
-	font-family: tahoma;
+	font-family: AucoinLight, Arial, Helvetica Nuen;
+	color: #444;
 	border-radius: 5px; 
 	box-shadow: .5px .5px .5px .5px #000;
 }

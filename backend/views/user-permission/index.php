@@ -38,16 +38,30 @@ print_r($controllerActions);
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
-        'controller',
-        'action',
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
+    [
+        'label' => 'SYSTEM CONTROLLER',
+        'value' => 'controller',
+        'options' => ['style' => 'color: #444']
+    ],
+    [
+        'label' => 'CONTROLLER ACTION',
+        'value' => 'action',
+        'options' => ['style' => 'color: #444']
+    ],
         [
             'attribute' => 'role_id',
             'value' => 'role.name',
-            'label' => 'User Role',
+            'header' => 'User Role',
+            'options' => ['style' => 'color: #444']
         ],
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'Action',
+        'options' => ['style' => 'color: #444'],
         'template' => '{delete}',
         'buttons' => [
             'delete' => function ($url, $model) {
@@ -75,14 +89,14 @@ $gridColumns = [
 </div>
 </div>
 
-<div class="col-md-12 col-sm-12 col-xs-12 table-responsive contentWrapper">
+<div class="col-md-12 col-sm-12 col-xs-12 table table-striped table-responsive contentWrapper">
     <?=
         GridView::widget([
             'id' => 'tableID',
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
 </div>

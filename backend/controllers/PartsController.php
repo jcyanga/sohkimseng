@@ -85,9 +85,12 @@ class PartsController extends Controller
             $model->gst_price = Yii::$app->request->post('gstPrice');
             $model->selling_price = Yii::$app->request->post('sellingPrice');
             $model->reorder_level = Yii::$app->request->post('reorderLevel'); 
+            $model->remarks = Yii::$app->request->post('remarks');
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
 
             if($model->validate()) {
                $model->save();
@@ -145,6 +148,7 @@ class PartsController extends Controller
             $model->gst_price = Yii::$app->request->post('gstPrice');
             $model->selling_price = Yii::$app->request->post('sellingPrice');
             $model->reorder_level = Yii::$app->request->post('reorderLevel'); 
+            $model->remarks = Yii::$app->request->post('remarks');
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
@@ -183,6 +187,7 @@ class PartsController extends Controller
         $data['gst_price'] = $getParts->gst_price;
         $data['selling_price'] = $getParts->selling_price;
         $data['reorder_level'] = $getParts->reorder_level;
+        $data['remarks'] = $getParts->remarks;
         $data['status'] = $getParts->status;
 
         return json_encode(['status' => 'Success', 'result' => $data ]);
@@ -204,6 +209,7 @@ class PartsController extends Controller
         $data['selling_price'] = $getParts['selling_price'];
         $data['reorder_level'] = $getParts['reorder_level'];
         $data['unit_of_measure'] = $getParts['unit_of_measure'];
+        $data['remarks'] = $getParts['remarks'];
         $data['status'] = $getParts['status'];
         $data['parts_category_name'] = $getParts['name'];
         $data['supplier_name'] = $getParts['supplierName'];
