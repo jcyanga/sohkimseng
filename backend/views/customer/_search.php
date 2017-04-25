@@ -22,18 +22,26 @@ use yii\widgets\ActiveForm;
     <br/>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'fullname')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Customer fullname here.'])->label(false) ?>
+        <?= $form->field($model, 'customer_code')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Customer code here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
         <?= $form->field($model, 'company_name')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Company name here.'])->label(false) ?>
     </div>
 
+    <div class="col-md-3">
+        <?= $form->field($model, 'location')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Customer location here.'])->label(false) ?>
+    </div>
+
+    <div class="col-md-3">
+        <?= $form->field($model, 'remarks')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Customer remarks here.'])->label(false) ?>
+    </div>
+
 </div>
 
 <div class="row">
     
-    <div class="col-md-6">
+    <div class="col-md-12">
         <div style="text-align: right;">
             <?= Html::resetButton('<li class=\'fa fa-refresh\'></li> Clear', ['class' => 'formBtn btn btn-default']) ?>
             <?= Html::submitButton('<li class=\'fa fa-search\'></li> Search', ['class' => 'formBtn btn btn-primary']) ?>

@@ -73,7 +73,10 @@ class SearchCustomer extends Customer
             ->andFilterWhere(['like', 'race_id', $this->race_id])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'phone_number', $this->phone_number])
-            ->andFilterWhere(['like', 'mobile_number', $this->mobile_number]);
+            ->andFilterWhere(['like', 'mobile_number', $this->mobile_number])
+            ->andFilterWhere(['like', 'customer_code', $this->customer_code])
+            ->andFilterWhere(['like', 'location', $this->location])
+            ->andFilterWhere(['like', 'remarks', $this->remarks]);
 
         return $dataProvider;
     }

@@ -43,8 +43,7 @@ class Customer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['type', 'address', 'shipping_address', 'email', 'phone_number', 'mobile_number'], 'required', 'message' => 'Fill up all the required fields.'],
-            [['address'], 'string'],
+            [['type', 'email', 'phone_number', 'mobile_number'], 'required', 'message' => 'Fill up all the required fields.'],
             [['status', 'created_by', 'updated_by'], 'integer'],
             [['race_id', 'created_at', 'updated_at'], 'safe'],
             [['fullname'], 'string', 'max' => 100],
@@ -90,4 +89,51 @@ class Customer extends \yii\db\ActiveRecord
         
     }
     
+    // get Last Id
+    public function getLastId()
+    {
+        $query = new Query();
+
+        $result = $query->select(['Max(id) as customerId'])
+                        ->from('customer')
+                        ->where(['status' => 1])
+                        ->one();
+               
+        if( count($result) > 0 ) {
+            return $result['customerId'] + 1;
+        }else {
+            return 0;
+        }      
+    }
+
+    // get company contactperson and address
+    public function getCompanyContactpersonAddress($customer_id)
+    {
+        $query = new Query();
+
+        $result = $query->select(['customer_contactperson_address.*'])
+                            ->from('customer_contactperson_address')
+                            ->where(['customer_contactperson_address.customer_id' => $customer_id])
+                            ->all();
+
+        return $result;
+    }
+
+    // get Last Customer Company Info Id
+    public function getLastCompanyInformationId()
+    {
+        $query = new Query();
+
+        $result = $query->select(['Max(id) as companyinformationId'])
+                        ->from('customer_contactperson_address')
+                        ->where(['status' => 1])
+                        ->one();
+               
+        if( count($result) > 0 ) {
+            return $result['companyinformationId'] + 1;
+        }else {
+            return 0;
+        }      
+    }
+
 }

@@ -314,6 +314,8 @@ $('._showCreateCustomerModal').click(function(){
     $('#customerFaxNumber').val('');
 });
 
+// ========== Company Customer ========== //
+
 $('#btnAddInformation').click(function(){
 	var companyContactPerson = $('#companyContactPerson').val();
 	var companyAddress = $('#companyAddress').val(); 
@@ -344,6 +346,23 @@ $('#btnAddInformation').click(function(){
 	}
 });
 
+function editSelectedContactPersonAddress(n)
+{
+	var contact_person = $('#customer-contactperson-in-list-'+n).val();
+	var address = $('#customer-address-in-list-'+n).val();
+	
+	$('#companyContactPerson').val(contact_person);
+	$('#companyAddress').val(address);
+	$('.inserted-contactperson-address-in-list-'+n).detach();
+}
+
+function removeSelectedContactPersonAddress(n)
+{
+	$('.inserted-contactperson-address-in-list-'+n).remove();
+}
+
+// ============================================== //
+
 $('#submitCustomerFormCreate').click(function(){
 	var type = $('#customerType').val();
 	
@@ -355,61 +374,57 @@ $('#submitCustomerFormCreate').click(function(){
 
 	if(type == 1){
 
+		var companyCode = $('#companyCustomerCode').val();
 		var companyName = $('#companyName').val();
-		var companyAddress = $('#companyAddress').val();
-		var companyShippingAddress = $('#companyShippingAddress').val();
+		var companyLocation = $('#companyLocation').val();
+
+		var companyContactPerson = $('input.selectedContactPerson').serializeArray();
+		var companyAddress = $('input.selectedAddress').serializeArray();
+
 		var companyUenNo = $('#companyUenNo').val();
-		var companyContactPerson = $('#companyContactPerson').val();
 		var companyEmail = $('#companyEmail').val();
 		var companyPhoneNumber = $('#companyPhoneNumber').val();
 		var companyOfficeNumber = $('#companyOfficeNumber').val();
 		var companyFaxNumber = $('#companyFaxNumber').val();
+		var companyRemarks = $('#companyRemarks').val();
 
 		if( !onlyLetterAndNumber(companyName) ) {
 			alert('Invalid company name format.');
 			companyName.focus();
 		}
 
-		if( !onlyLetterAndNumber(companyAddress) ) {
-			alert('Invalid company address format.');
-			companyAddress.focus();
-		}
-
-		if( !onlyLetterAndNumber(companyShippingAddress) ) {
-			alert('Invalid company shipping address format.');
-			companyShippingAddress.focus();
-		}
-
 		if( !onlyLetterAndNumber(companyUenNo) ) {
-			alert('Invalid company uen number format.');
+			alert('Invalid uen number format.');
 			companyUenNo.focus();
 		}
 
 		if( !onlyForEmail(companyEmail) ) {
-			alert('Invalid company email format.');
+			alert('Invalid email format.');
 			companyEmail.focus();
 		}
 
 		if( !onlyNumber(companyPhoneNumber) ) {
-			alert('Invalid company phone number format.');
+			alert('Invalid phone number format.');
 			companyPhoneNumber.focus();
 		}
 
 		if( !onlyNumber(companyOfficeNumber) ) {
-			alert('Invalid company office number format.');
+			alert('Invalid office number format.');
 			companyOfficeNumber.focus();
 		}
 
 		$.post("?r=customer/create-company",{
+			companyCode : companyCode,
 			companyName : companyName,
-			companyAddress : companyAddress,
-			companyShippingAddress : companyShippingAddress,
-			companyUenNo : companyUenNo,
+			companyLocation : companyLocation,
 			companyContactPerson : companyContactPerson,
+			companyAddress : companyAddress,
+			companyUenNo : companyUenNo,
 			companyEmail : companyEmail,
 			companyPhoneNumber : companyPhoneNumber,
 			companyOfficeNumber : companyOfficeNumber,
-			companyFaxNumber : companyFaxNumber
+			companyFaxNumber : companyFaxNumber,
+			companyRemarks : companyRemarks,
 
 		}, 
 		function(data) {
@@ -419,15 +434,17 @@ $('#submitCustomerFormCreate').click(function(){
 				$('form input, textarea').removeClass('inputTxtError');
 			    $('label.error').remove();
 
+			    $('#companyCustomerCode').val('');
 			    $('#companyName').val('');	
+			    $('#companyLocation').val('');
 			    $('#companyAddress').val('');
-			    $('#companyShippingAddress').val('');
 			    $('#companyUenNo').val('');
 			    $('#companyContactPerson').val('');
 			    $('#companyEmail').val('');
 			    $('#companyPhoneNumber').val('');
 			    $('#companyOfficeNumber').val('');
 			    $('#companyFaxNumber').val('');
+			    $('#companyRemarks').val('');
 			    $('#modal-launcher-create-customer').toggle('fast');
 
 				alert(data.message);
@@ -454,7 +471,9 @@ $('#submitCustomerFormCreate').click(function(){
 
 	}else{
 
+		var customerCode = $('#individualCustomerCode').val();
 		var fullname = $('#fullname').val();
+		var location = $('#individualLocation').val();
 		var customerAddress = $('#customerAddress').val();
 		var customerShippingAddress = $('#customerShippingAddress').val();
 		var customerRace = $('#customerRace').val();
@@ -463,6 +482,7 @@ $('#submitCustomerFormCreate').click(function(){
 		var customerPhoneNumber = $('#customerPhoneNumber').val();
 		var customerOficeNumber = $('#customerOficeNumber').val();
 		var customerFaxNumber = $('#customerFaxNumber').val();
+		var customerRemarks = $('#customerRemarks').val();
 
 		if( !onlyLetterAndNumber(fullname) ) {
 			alert('Invalid customer name format.');
@@ -470,37 +490,39 @@ $('#submitCustomerFormCreate').click(function(){
 		}
 
 		if( !onlyLetterAndNumber(customerAddress) ) {
-			alert('Invalid customer address format.');
+			alert('Invalid billing address format.');
 			customerAddress.focus();
 		}
 
 		if( !onlyLetterAndNumber(customerShippingAddress) ) {
-			alert('Invalid customer shipping address format.');
+			alert('Invalid shipping address format.');
 			customerShippingAddress.focus();
 		}
 
 		if( !onlyLetterAndNumber(customerNric) ) {
-			alert('Invalid customer nric number format.');
+			alert('Invalid nric number format.');
 			customerNric.focus();
 		}
 
 		if( !onlyForEmail(customerEmail) ) {
-			alert('Invalid customer email format.');
+			alert('Invalid email format.');
 			customerEmail.focus();
 		}
 
 		if( !onlyNumber(customerPhoneNumber) ) {
-			alert('Invalid customer phone number format.');
+			alert('Invalid phone number format.');
 			customerPhoneNumber.focus();
 		}
 
 		if( !onlyNumber(customerOficeNumber) ) {
-			alert('Invalid customer office number format.');
+			alert('Invalid office number format.');
 			customerOficeNumber.focus();
 		}
 
 		$.post("?r=customer/create-customer",{
+			customerCode : customerCode,
 			fullname : fullname,
+			location : location,
 			customerAddress : customerAddress,
 			customerShippingAddress : customerShippingAddress,
 			customerRace : customerRace,
@@ -508,7 +530,8 @@ $('#submitCustomerFormCreate').click(function(){
 			customerEmail : customerEmail,
 			customerPhoneNumber : customerPhoneNumber,
 			customerOficeNumber : customerOficeNumber,
-			customerFaxNumber : customerFaxNumber
+			customerFaxNumber : customerFaxNumber,
+			customerRemarks : customerRemarks,
 
 		}, 
 		function(data) {
@@ -562,7 +585,26 @@ $('.closeNewCustomer').click(function(e){
     }
 });
 
-// Customer Update //
+// ========== Customer Update ========== //
+
+$('#updateCustomerType').change(function(){
+
+	if($(this).val() == 0){
+		$('#forUpdateCompany').hide('fast');
+		$('#forUpdateIndividual').hide('fast');
+
+	}else if($(this).val() == 1){
+		$('#forUpdateIndividual').hide('fast');
+		$('#forUpdateCompany').show('fast');
+
+	}else{
+		$('#forUpdateCompany').hide('fast');
+		$('#forUpdateIndividual').show('fast');
+
+	}
+
+});
+
 $('#forUpdateCompany').hide();
 $('#forUpdateIndividual').hide();
 
@@ -595,22 +637,76 @@ $('._showUpdateCustomerModal').each(function(){
 					$('#forUpdateCompany').show();
 					$('#customerFormUpdate').find('input:hidden[name=id]').val(result.id);
 					$('#customerFormUpdate').find('select[id=updateCustomerType]').val(1).change();
+					$('#customerFormUpdate').find('input:text[id=updateCompanyCustomerCode]').val(result.customer_code.toUpperCase());
 					$('#customerFormUpdate').find('input:text[id=updateCompanyName]').val(result.company_name.toUpperCase());
-					$('#customerFormUpdate').find('textarea[id=updateCompanyAddress]').val(result.address.toUpperCase());
-					$('#customerFormUpdate').find('textarea[id=updateCompanyShippingAddress]').val(result.shipping_address.toUpperCase());
+					$('#customerFormUpdate').find('input:text[id=updateCompanyLocation]').val(result.location.toUpperCase());
 					$('#customerFormUpdate').find('input:text[id=updateCompanyUenNo]').val(result.uen_no.toUpperCase());
-					$('#customerFormUpdate').find('input:text[id=updateCompanyContactPerson]').val(result.fullname.toUpperCase());
 					$('#customerFormUpdate').find('input:text[id=updateCompanyEmail]').val(result.email.toUpperCase());
 					$('#customerFormUpdate').find('input:text[id=updateCompanyPhoneNumber]').val(result.phone_number);
 					$('#customerFormUpdate').find('input:text[id=updateCompanyOfficeNumber]').val(result.mobile_number);
 					$('#customerFormUpdate').find('input:text[id=updateCompanyFaxNumber]').val(result.fax_number);
+					$('#customerFormUpdate').find('textarea[id=updateCompanyRemarks]').val(result.remarks.toUpperCase());
+
+					var companyInformation = data.companyInformation;
+					
+					$.each(companyInformation, function(key, cvalue){
+
+						var id = cvalue['id'];
+						var address = cvalue['address'];
+						var contact_person = cvalue['contact_person'];
+					
+						var companyinfo_html = '<div class="row insertedContactpersonAddressListDesign edit-contactperson-address-in-list-'+ id +'" >'+
+													'<div class="col-md-6">'+
+														'<label class="ContactpersonAddressHeader">'+
+															'<i class="fa fa-address-card-o"></i> COMPANY INFORMATION'+ 
+														'</label>'+
+													'</div>'+
+													'<div class="col-md-6">'+
+														'<div style="text-align: right;">'+
+															'<span class="edit-contactperson-address-button-'+ id +' edit-button">'+
+												                '<a href="javascript:editContactPersonAddress('+ id +')" class="selectedBtns" ><i class="fa fa-edit"></i> Edit</a>'+
+												            '</span>'+
+												            '&nbsp;'+
+												            '<span class="remove-button">'+
+												                '<a href="javascript:removeContactPersonAddress('+ id +')" class="selectedBtns" ><i class="fa fa-trash"></i> Remove</a>'+
+												            '</span>'+	
+														'</div>'+
+													'</div>'+
+												'</div>'+
+												'<div class="row insertedContactpersonAddressListDesign edit-contactperson-address-in-list-'+ id +'" >'+									
+													'<div class="col-md-12 ContactpersonAddressFontSize" >'+
+														'<span class="insertedContactpersonAddress" id="inlabel-contactperson-'+ id +'" >'+
+															'<b>Contact Person :</b>'+ contact_person +
+														'</span>'+
+													'</div>'+
+													'<br/>'+
+													'<div class="col-md-12 ContactpersonAddressFontSize" >'+
+														'<span class="insertedContactpersonAddress" id="inlabel-address-'+ id +'" >'+
+															'<b>Billing Address :</b>'+ address +
+														'</span>'+
+													'</div>'+
+												'<br/><hr/>'+
+												'</div>'+
+												'<div class="row insertedContactpersonAddressListDesign edit-contactperson-address-in-list-'+ id +' hidden" >'+
+													'<div class="col-md-4">'+
+														'<input type="text" id="edit-customer-contactperson-in-list-'+ id +'" value="'+ contact_person +'" name="CustomerContactpersonAddress[contact_person][]" class="inputForm form-control updateSelectedContactPerson" />'+	
+													'</div>'+
+													'<div class="col-md-8">'+
+														'<input type="text" id="edit-customer-address-in-list-'+ id +'" value="'+ address +'" name="CustomerContactpersonAddress[address][]" class="inputForm form-control updateSelectedAddress" />'+	
+													'</div>'+	
+												'</div>';
+						
+						$('.update-company-contactperson-address').append(companyinfo_html);
+					});
 
 				}else{
 
 					$('#forUpdateIndividual').show();
 					$('#customerFormUpdate').find('input:hidden[name=id]').val(result.id);
 					$('#customerFormUpdate').find('select[id=updateCustomerType]').val(2).change();
+					$('#customerFormUpdate').find('input:text[id=updateIndividualCustomerCode]').val(result.customer_code.toUpperCase());
 					$('#customerFormUpdate').find('input:text[id=updateFullname]').val(result.fullname.toUpperCase());
+					$('#customerFormUpdate').find('input:text[id=updateIndividualLocation]').val(result.location.toUpperCase());
 					$('#customerFormUpdate').find('textarea[id=updateCustomerAddress]').val(result.address.toUpperCase());
 					$('#customerFormUpdate').find('textarea[id=updateCustomerShippingAddress]').val(result.shipping_address.toUpperCase());
 					$('#customerFormUpdate').find('select[id=updateCustomerRace]').val(result.race_id).change();
@@ -619,6 +715,7 @@ $('._showUpdateCustomerModal').each(function(){
 					$('#customerFormUpdate').find('input:text[id=updateCustomerPhoneNumber]').val(result.phone_number);
 					$('#customerFormUpdate').find('input:text[id=updateCustomerOficeNumber]').val(result.mobile_number);
 					$('#customerFormUpdate').find('input:text[id=updateCustomerFaxNumber]').val(result.fax_number);
+					$('#customerFormUpdate').find('textarea[id=updateCustomerRemarks]').val(result.remarks.toUpperCase());
 
 				}
 			
@@ -630,23 +727,54 @@ $('._showUpdateCustomerModal').each(function(){
 
 }
 
-$('#updateCustomerType').change(function(){
+// ========== Company Customer ========== //
 
-	if($(this).val() == 0){
-		$('#forUpdateCompany').hide('fast');
-		$('#forUpdateIndividual').hide('fast');
+$('#btnAddInformationInEdit').click(function(){
+	var companyContactPerson = $('#updateCompanyContactPerson').val();
+	var companyAddress = $('#updateCompanyAddress').val(); 
 
-	}else if($(this).val() == 1){
-		$('#forUpdateIndividual').hide('fast');
-		$('#forUpdateCompany').show('fast');
+	if(companyContactPerson == '' || companyAddress == ''){
+		alert('Please key contact person or company address.');
+		return false;
 
 	}else{
-		$('#forUpdateCompany').hide('fast');
-		$('#forUpdateIndividual').show('fast');
+
+		var n = $('#n').val();
+
+		n++;
+
+		$.post('?r=customer/edit-company-contactperson-address',{
+			companyContactPerson : companyContactPerson,
+			companyAddress : companyAddress,
+			n : n,
+
+		},function(data){
+			$('#n').val(n);
+			$('#updateCompanyContactPerson').val('');
+			$('#updateCompanyAddress').val('');
+
+			$('#update-company-contactperson-address').append(data); 
+		});
 
 	}
-
 });
+
+function editContactPersonAddress(n)
+{
+	var contact_person = $('#edit-customer-contactperson-in-list-'+n).val();
+	var address = $('#edit-customer-address-in-list-'+n).val();
+	
+	$('#updateCompanyContactPerson').val(contact_person);
+	$('#updateCompanyAddress').val(address);
+	$('.edit-contactperson-address-in-list-'+n).detach();
+}
+
+function removeContactPersonAddress(n)
+{
+	$('.edit-contactperson-address-in-list-'+n).remove();
+}
+
+// ============================================== //
 
 $('#submitCustomerFormUpdate').click(function(){
 	var type = $('#updateCustomerType').val();
@@ -660,62 +788,63 @@ $('#submitCustomerFormUpdate').click(function(){
 	if(type == 1){
 
 		var id = $('#id').val();
+		var companyCode = $('#updateCompanyCustomerCode').val();
 		var companyName = $('#updateCompanyName').val();
-		var companyAddress = $('#updateCompanyAddress').val();
-		var companyShippingAddress = $('#updateCompanyShippingAddress').val();
+		var companyLocation = $('#updateCompanyLocation').val();
+
+		var selectedCompanyAddress = $('input.updateSelectedAddress').serializeArray();
+		var selectedCompanyContactPerson = $('input.updateSelectedContactPerson').serializeArray();
+
+		var companyAddress = $('input.updatedAddress').serializeArray();
+		var companyContactPerson = $('input.updateContactPerson').serializeArray();
+		
 		var companyUenNo = $('#updateCompanyUenNo').val();
-		var companyContactPerson = $('#updateCompanyContactPerson').val();
 		var companyEmail = $('#updateCompanyEmail').val();
 		var companyPhoneNumber = $('#updateCompanyPhoneNumber').val();
 		var companyOfficeNumber = $('#updateCompanyOfficeNumber').val();
 		var companyFaxNumber = $('#updateCompanyFaxNumber').val();
+		var companyRemarks = $('#updateCompanyRemarks').val();
 
 		if( !onlyLetterAndNumber(companyName) ) {
 			alert('Invalid company name format.');
 			companyName.focus();
 		}
 
-		if( !onlyLetterAndNumber(companyAddress) ) {
-			alert('Invalid company address format.');
-			companyAddress.focus();
-		}
-
-		if( !onlyLetterAndNumber(companyShippingAddress) ) {
-			alert('Invalid company shipping address format.');
-			companyShippingAddress.focus();
-		}
-
 		if( !onlyLetterAndNumber(companyUenNo) ) {
-			alert('Invalid company uen number format.');
+			alert('Invalid uen number format.');
 			companyUenNo.focus();
 		}
 
 		if( !onlyForEmail(companyEmail) ) {
-			alert('Invalid company email format.');
+			alert('Invalid email format.');
 			companyEmail.focus();
 		}
 
 		if( !onlyNumber(companyPhoneNumber) ) {
-			alert('Invalid company phone number format.');
+			alert('Invalid phone number format.');
 			companyPhoneNumber.focus();
 		}
 
 		if( !onlyNumber(companyOfficeNumber) ) {
-			alert('Invalid company office number format.');
+			alert('Invalid office number format.');
 			companyOfficeNumber.focus();
 		}
 
 		$.post("?r=customer/update-company",{
 			id : id,
+			companyCode : companyCode,
 			companyName : companyName,
+			companyLocation : companyLocation,
+			selectedCompanyAddress : selectedCompanyAddress,
+			selectedCompanyContactPerson : selectedCompanyContactPerson,
 			companyAddress : companyAddress,
-			companyShippingAddress : companyShippingAddress,
-			companyUenNo : companyUenNo,
 			companyContactPerson : companyContactPerson,
+			companyUenNo : companyUenNo,
 			companyEmail : companyEmail,
 			companyPhoneNumber : companyPhoneNumber,
 			companyOfficeNumber : companyOfficeNumber,
-			companyFaxNumber : companyFaxNumber
+			companyFaxNumber : companyFaxNumber,
+			companyRemarks : companyRemarks
 
 		}, 
 		function(data) {
@@ -726,15 +855,16 @@ $('#submitCustomerFormUpdate').click(function(){
 			    $('label.error').remove();
 
 			    $('#id').val('');
+			    $('#updateCompanyCustomerCode').val('');
 				$('#updateCompanyName').val('');
-				$('#updateCompanyAddress').val('');
-				$('#updateCompanyShippingAddress').val('');
+				$('#updateCompanyLocation').val('');
 				$('#updateCompanyUenNo').val('');
 				$('#updateCompanyContactPerson').val('');
 				$('#updateCompanyEmail').val('');
 				$('#updateCompanyPhoneNumber').val('');
 				$('#updateCompanyOfficeNumber').val('');
 				$('#updateCompanyFaxNumber').val('');
+				$('#updateCompanyRemarks').val('');
 			    $('#modal-launcher-update-customer').toggle('fast');
 
 				alert(data.message);
@@ -762,7 +892,9 @@ $('#submitCustomerFormUpdate').click(function(){
 	}else{
 
 		var id = $('#id').val();
+		var customerCode = $('#updateIndividualCustomerCode').val();
 		var fullname = $('#updateFullname').val();
+		var location = $('#updateIndividualLocation').val();
 		var customerAddress = $('#updateCustomerAddress').val();
 		var customerShippingAddress = $('#updateCustomerShippingAddress').val();
 		var customerRace = $('#updateCustomerRace').val();
@@ -771,6 +903,7 @@ $('#submitCustomerFormUpdate').click(function(){
 		var customerPhoneNumber = $('#updateCustomerPhoneNumber').val();
 		var customerOficeNumber = $('#updateCustomerOficeNumber').val();
 		var customerFaxNumber = $('#updateCustomerFaxNumber').val();
+		var customerRemarks = $('#updateCustomerRemarks').val();
 
 		if( !onlyLetterAndNumber(fullname) ) {
 			alert('Invalid customer name format.');
@@ -778,38 +911,40 @@ $('#submitCustomerFormUpdate').click(function(){
 		}
 
 		if( !onlyLetterAndNumber(customerAddress) ) {
-			alert('Invalid customer address format.');
+			alert('Invalid address format.');
 			customerAddress.focus();
 		}
 
 		if( !onlyLetterAndNumber(customerShippingAddress) ) {
-			alert('Invalid customer shipping address format.');
+			alert('Invalid shipping address format.');
 			customerShippingAddress.focus();
 		}
 
 		if( !onlyLetterAndNumber(customerNric) ) {
-			alert('Invalid customer nric number format.');
+			alert('Invalid nric number format.');
 			customerNric.focus();
 		}
 
 		if( !onlyForEmail(customerEmail) ) {
-			alert('Invalid customer email format.');
+			alert('Invalid email format.');
 			customerEmail.focus();
 		}
 
 		if( !onlyNumber(customerPhoneNumber) ) {
-			alert('Invalid customer phone number format.');
+			alert('Invalid phone number format.');
 			customerPhoneNumber.focus();
 		}
 
 		if( !onlyNumber(customerOficeNumber) ) {
-			alert('Invalid customer office number format.');
+			alert('Invalid office number format.');
 			customerOficeNumber.focus();
 		}
 
 		$.post("?r=customer/update-customer",{
 			id : id,
+			customerCode : customerCode,
 			fullname : fullname,
+			location : location,
 			customerAddress : customerAddress,
 			customerShippingAddress : customerShippingAddress,
 			customerRace : customerRace,
@@ -817,7 +952,8 @@ $('#submitCustomerFormUpdate').click(function(){
 			customerEmail : customerEmail,
 			customerPhoneNumber : customerPhoneNumber,
 			customerOficeNumber : customerOficeNumber,
-			customerFaxNumber : customerFaxNumber
+			customerFaxNumber : customerFaxNumber,
+			customerRemarks : customerRemarks
 
 		}, 
 		function(data) {
@@ -827,15 +963,18 @@ $('#submitCustomerFormUpdate').click(function(){
 				$('form input, textarea').removeClass('inputTxtError');
 			    $('label.error').remove();
 
-			    $('#updateFullname').val();
-				$('#updateCustomerAddress').val();
-				$('#updateCustomerShippingAddress').val();
-				$('#updateCustomerRace').val();
-				$('#updateCustomerNric').val();
-				$('#updateCustomerEmail').val();
-				$('#updateCustomerPhoneNumber').val();
-				$('#updateCustomerOficeNumber').val();
-				$('#updateCustomerFaxNumber').val();
+			    $('#updateIndividualCustomerCode').val('');
+			    $('#updateFullname').val('');
+			    $('#updateIndividualLocation').val('');
+				$('#updateCustomerAddress').val('');
+				$('#updateCustomerShippingAddress').val('');
+				$('#updateCustomerRace').val('');
+				$('#updateCustomerNric').val('');
+				$('#updateCustomerEmail').val('');
+				$('#updateCustomerPhoneNumber').val('');
+				$('#updateCustomerOficeNumber').val('');
+				$('#updateCustomerFaxNumber').val('');
+				$('#updateCustomerRemarks').val('');
 			    $('#modal-launcher-update-customer').toggle('fast');
 
 				alert(data.message);
@@ -934,6 +1073,10 @@ $('._showViewCustomerModal').each(function(){
 							'<td>'+result.id+'</td>'
 						+'</tr>'+
 						'<tr>'+
+							'<td><b>CUSTOMER CODE</b></td>' +
+							'<td>'+result.customer_code.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
 							'<td><b>COMPANY NAME</b></td>' +
 							'<td>'+result.company_name.toUpperCase()+'</td>'
 						+'</tr>'+
@@ -942,16 +1085,8 @@ $('._showViewCustomerModal').each(function(){
 							'<td>'+result.uen_no.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
-							'<td><b>ADDRESS</b></td>' +
-							'<td>'+result.address.toUpperCase()+'</td>'
-						+'</tr>'+
-						'<tr>'+
-							'<td><b>SHIPPING ADDRESS</b></td>' +
-							'<td>'+result.shipping_address.toUpperCase()+'</td>'
-						+'</tr>'+
-						'<tr>'+
-							'<td><b>CONTACT PERSON</b></td>' +
-							'<td>'+result.fullname.toUpperCase()+'</td>'
+							'<td><b>LOCATION</b></td>' +
+							'<td>'+result.location.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
 							'<td><b>COMPANY EMAIL</b></td>' +
@@ -970,10 +1105,35 @@ $('._showViewCustomerModal').each(function(){
 							'<td>'+result.fax_number+'</td>'
 						+'</tr>'+
 						'<tr>'+
+							'<td><b>REMARKS</b></td>' +
+							'<td>'+result.remarks.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
 							'<td><b>STATUS</b></td>' +
 							'<td>'+status+'</td>'
 						+'</tr>'
 					+'</table>';
+
+					var companyInformation = data.companyInformation;
+					
+					$.each(companyInformation, function(key, cvalue){
+						var id = cvalue['id'];
+						var address = cvalue['address'];
+						var contact_person = cvalue['contact_person'];
+
+						var customerInfo = '<table class="table table-hover table-striped viewTableContent">'+
+										'<tr>'+
+											'<td style="width:30%"><b>CONTACT PERSON</b></td>' +
+											'<td style="width:70%">'+ contact_person.toUpperCase() +'</td>'
+										+'</tr>'+
+										'<tr>'+
+											'<td style="width:30%"><b>BILLING ADDRESS</b></td>' +
+											'<td style="width:70%">'+ address.toUpperCase() +'</td>'
+										+'</tr>'+
+									'</table>';
+
+						$('#viewCustomerCompanyInformation').append(customerInfo);
+					});
 
 				}else{
 
@@ -981,6 +1141,10 @@ $('._showViewCustomerModal').each(function(){
 						'<tr>'+
 							'<td><b>ID</b></td>' +
 							'<td>'+result.id+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>CUSTOMER CODE</b></td>' +
+							'<td>'+result.customer_code.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
 							'<td><b>CUSTOMER NAME</b></td>' +
@@ -991,7 +1155,11 @@ $('._showViewCustomerModal').each(function(){
 							'<td>'+result.nric.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
-							'<td><b>ADDRESS</b></td>' +
+							'<td><b>LOCATION</b></td>' +
+							'<td>'+result.location.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>BILLING ADDRESS</b></td>' +
 							'<td>'+result.address.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
@@ -1013,6 +1181,10 @@ $('._showViewCustomerModal').each(function(){
 						'<tr>'+
 							'<td><b>FAX NUMBER</b></td>' +
 							'<td>'+result.fax_number+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>REMARKS</b></td>' +
+							'<td>'+result.remarks.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
 							'<td><b>STATUS</b></td>' +

@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Dompdf\Dompdf;
+use common\models\CustomerContactpersonAddress;
 
 /**
  * CustomerController implements the CRUD actions for Customer model.
@@ -41,10 +42,18 @@ class CustomerController extends Controller
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $model = new Customer();
 
+        $getLastId = $model->getLastId();
+        $yearNow = date('Y');
+        $customerCode = 'CUSTOMER' . $yearNow . sprintf('%005d', $getLastId);
+
+        $getLastCompanyInfoId = $model->getLastCompanyInformationId();
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'model' => $model
+            'model' => $model,
+            'customerCode' => $customerCode,
+            'getLastCompanyInfoId' => $getLastCompanyInfoId
         ]);
     }
 
@@ -72,21 +81,39 @@ class CustomerController extends Controller
         if ( Yii::$app->request->post() ) {
             
             $model->type = 1;
+            $model->customer_code = strtolower(Yii::$app->request->post('companyCode'));
             $model->company_name = strtolower(Yii::$app->request->post('companyName'));
+            $model->location = strtolower(Yii::$app->request->post('companyLocation'));
             $model->uen_no = strtolower(Yii::$app->request->post('companyUenNo'));
-            $model->fullname = strtolower(Yii::$app->request->post('companyContactPerson'));
-            $model->address = strtolower(Yii::$app->request->post('companyAddress'));
-            $model->shipping_address = strtolower(Yii::$app->request->post('companyShippingAddress'));
             $model->email = strtolower(Yii::$app->request->post('companyEmail'));
             $model->phone_number = Yii::$app->request->post('companyPhoneNumber');
             $model->mobile_number = Yii::$app->request->post('companyOfficeNumber');
             $model->fax_number = Yii::$app->request->post('companyFaxNumber');
+            $model->remarks = strtolower(Yii::$app->request->post('companyRemarks'));
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
-            $model->created_by = Yii::$app->user->identity->id;
+            $model->created_by = Yii::$app->user->identity->id;            
 
             if($model->validate()) {
                $model->save();
+
+               $contactPerson = Yii::$app->request->post('companyContactPerson');
+               $companyAddress = Yii::$app->request->post('companyAddress');
+
+               foreach($contactPerson as $cKey => $cValue){
+                    
+                    $companyInfo = new CustomerContactpersonAddress();
+                    
+                    $companyInfo->customer_id = $model->id;
+                    $companyInfo->address = $companyAddress[$cKey]['value'];
+                    $companyInfo->contact_person = $contactPerson[$cKey]['value'];
+                    $companyInfo->status = 1;
+                    $companyInfo->created_at = date('Y-m-d H:i:s');
+                    $companyInfo->created_by = Yii::$app->user->identity->id;
+                    $companyInfo->save();
+
+               }
+
                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success']);
 
             } else {
@@ -104,7 +131,9 @@ class CustomerController extends Controller
         if ( Yii::$app->request->post() ) {
             
             $model->type = 2;
+            $model->customer_code = strtolower(Yii::$app->request->post('customerCode'));
             $model->fullname = strtolower(Yii::$app->request->post('fullname'));
+            $model->location = strtolower(Yii::$app->request->post('location'));
             $model->nric = strtolower(Yii::$app->request->post('customerNric'));
             $model->address = strtolower(Yii::$app->request->post('customerAddress'));
             $model->shipping_address = strtolower(Yii::$app->request->post('customerShippingAddress'));
@@ -113,6 +142,7 @@ class CustomerController extends Controller
             $model->phone_number = Yii::$app->request->post('customerPhoneNumber');
             $model->mobile_number = Yii::$app->request->post('customerOficeNumber');
             $model->fax_number = Yii::$app->request->post('customerFaxNumber');
+            $model->remarks = strtolower(Yii::$app->request->post('customerRemarks'));
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
@@ -142,21 +172,69 @@ class CustomerController extends Controller
         if ( Yii::$app->request->post() ) {
             
             $model->type = 1;
+            $model->customer_code = strtolower(Yii::$app->request->post('companyCode'));
             $model->company_name = strtolower(Yii::$app->request->post('companyName'));
+            $model->location = strtolower(Yii::$app->request->post('companyLocation'));
             $model->uen_no = strtolower(Yii::$app->request->post('companyUenNo'));
-            $model->fullname = strtolower(Yii::$app->request->post('companyContactPerson'));
-            $model->address = strtolower(Yii::$app->request->post('companyAddress'));
-            $model->shipping_address = strtolower(Yii::$app->request->post('companyShippingAddress'));
             $model->email = strtolower(Yii::$app->request->post('companyEmail'));
             $model->phone_number = Yii::$app->request->post('companyPhoneNumber');
             $model->mobile_number = Yii::$app->request->post('companyOfficeNumber');
             $model->fax_number = Yii::$app->request->post('companyFaxNumber');
+            $model->remarks = strtolower(Yii::$app->request->post('companyRemarks'));
             $model->status = 1;
-            $model->created_at = date('Y-m-d H:i:s');
-            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
 
             if($model->validate()) {
                $model->save();
+
+                $customerId = Yii::$app->request->post('id');
+
+                CustomerContactpersonAddress::deleteAll(['customer_id' => $customerId]);
+
+               if( !empty(Yii::$app->request->post('selectedCompanyContactPerson')) || !empty(Yii::$app->request->post('selectedCompanyAddress'))) {
+
+                       $selectedContactPerson = Yii::$app->request->post('selectedCompanyContactPerson');
+                       $selectedAddress = Yii::$app->request->post('selectedCompanyAddress');
+
+                       foreach($selectedContactPerson as $scKey => $scValue){
+                            
+                            $scompanyInfo = new CustomerContactpersonAddress();
+                            
+                            $scompanyInfo->customer_id = $customerId;
+                            $scompanyInfo->address = $selectedAddress[$scKey]['value'];
+                            $scompanyInfo->contact_person = $selectedContactPerson[$scKey]['value'];
+                            $scompanyInfo->status = 1;
+                            $scompanyInfo->created_at = date('Y-m-d H:i:s');
+                            $scompanyInfo->created_by = Yii::$app->user->identity->id;
+                            $scompanyInfo->save();
+
+                       }
+
+               }
+
+               if( !empty(Yii::$app->request->post('companyAddress')) || !empty(Yii::$app->request->post('companyContactPerson'))) {
+
+                       $contactPerson = Yii::$app->request->post('companyContactPerson');
+                       $companyAddress = Yii::$app->request->post('companyAddress');
+
+                       foreach($contactPerson as $cKey => $cValue){
+                            
+                            $companyInfo = new CustomerContactpersonAddress();
+                            
+                            $companyInfo->customer_id = $customerId;
+                            $companyInfo->address = $companyAddress[$cKey]['value'];
+                            $companyInfo->contact_person = $contactPerson[$cKey]['value'];
+                            $companyInfo->status = 1;
+                            $companyInfo->created_at = date('Y-m-d H:i:s');
+                            $companyInfo->created_by = Yii::$app->user->identity->id;
+                            $companyInfo->save();
+
+                       }
+
+               }
+               
+
                return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
 
             } else {
@@ -174,7 +252,9 @@ class CustomerController extends Controller
         if ( Yii::$app->request->post() ) {
             
             $model->type = 2;
+            $model->customer_code = strtolower(Yii::$app->request->post('customerCode'));
             $model->fullname = strtolower(Yii::$app->request->post('fullname'));
+            $model->location = strtolower(Yii::$app->request->post('location'));
             $model->nric = strtolower(Yii::$app->request->post('customerNric'));
             $model->address = strtolower(Yii::$app->request->post('customerAddress'));
             $model->shipping_address = strtolower(Yii::$app->request->post('customerShippingAddress'));
@@ -183,9 +263,10 @@ class CustomerController extends Controller
             $model->phone_number = Yii::$app->request->post('customerPhoneNumber');
             $model->mobile_number = Yii::$app->request->post('customerOficeNumber');
             $model->fax_number = Yii::$app->request->post('customerFaxNumber');
+            $model->remarks = strtolower(Yii::$app->request->post('customerRemarks'));
             $model->status = 1;
-            $model->created_at = date('Y-m-d H:i:s');
-            $model->created_by = Yii::$app->user->identity->id;
+            $model->updated_at = date('Y-m-d H:i:s');
+            $model->updated_by = Yii::$app->user->identity->id;
 
             if($model->validate()) {
                $model->save();
@@ -203,11 +284,14 @@ class CustomerController extends Controller
     {  
         $model = new Customer();
         $getCustomers = Customer::find()->where(['id' => Yii::$app->request->get('id')])->one();
+        $getCustomerCompanyInfo = $model->getCompanyContactpersonAddress(Yii::$app->request->get('id'));
 
         $data = array();
         $data['id'] = $getCustomers['id'];
         $data['type'] = $getCustomers['type'];
+        $data['customer_code'] = $getCustomers['customer_code'];
         $data['company_name'] = $getCustomers['company_name'];
+        $data['location'] = $getCustomers['location'];
         $data['uen_no'] = $getCustomers['uen_no'];
         $data['fullname'] = $getCustomers['fullname'];
         $data['nric'] = $getCustomers['nric'];
@@ -218,9 +302,10 @@ class CustomerController extends Controller
         $data['phone_number'] = $getCustomers['phone_number'];
         $data['mobile_number'] = $getCustomers['mobile_number'];
         $data['fax_number'] = $getCustomers['fax_number'];
+        $data['remarks'] = $getCustomers['remarks'];
         $data['status'] = $getCustomers['status'];
 
-        return json_encode(['status' => 'Success', 'result' => $data ]);
+        return json_encode(['status' => 'Success', 'result' => $data, 'companyInformation' => $getCustomerCompanyInfo ]);
     }
 
     /**
@@ -288,7 +373,21 @@ class CustomerController extends Controller
                 'address' => $address,
                 'ctr' => $ctr,
             ]);
-
-
     }
+
+    public function actionEditCompanyContactpersonAddress()
+    {
+        $contact_person = Yii::$app->request->post('companyContactPerson');
+        $address = Yii::$app->request->post('companyAddress');
+        $n = Yii::$app->request->post('n');
+
+        $this->layout = false;
+
+        return $this->render('_edit-company-contactperson-address', [
+                'contact_person' => $contact_person,
+                'address' => $address,
+                'ctr' => $n,
+            ]);
+    }
+
 }

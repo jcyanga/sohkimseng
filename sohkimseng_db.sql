@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 24, 2017 at 06:38 PM
+-- Generation Time: Apr 25, 2017 at 06:07 PM
 -- Server version: 5.7.17-0ubuntu0.16.04.2
 -- PHP Version: 7.0.15-0ubuntu0.16.04.4
 
@@ -104,34 +104,34 @@ CREATE TABLE `auth_rule` (
 CREATE TABLE `customer` (
   `id` int(11) NOT NULL,
   `type` int(5) NOT NULL,
-  `company_name` varchar(100) NOT NULL,
-  `uen_no` varchar(50) NOT NULL,
-  `fullname` varchar(100) NOT NULL,
-  `nric` varchar(50) NOT NULL,
-  `address` text NOT NULL,
-  `shipping_address` text NOT NULL,
-  `race_id` int(5) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `phone_number` int(15) NOT NULL,
-  `mobile_number` int(15) NOT NULL,
-  `fax_number` varchar(50) NOT NULL,
+  `customer_code` varchar(100) DEFAULT NULL,
+  `company_name` varchar(100) DEFAULT NULL,
+  `uen_no` varchar(50) DEFAULT NULL,
+  `fullname` varchar(100) DEFAULT NULL,
+  `nric` varchar(50) DEFAULT NULL,
+  `location` varchar(150) DEFAULT NULL,
+  `address` text,
+  `shipping_address` text,
+  `race_id` int(11) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `phone_number` int(15) DEFAULT NULL,
+  `mobile_number` int(15) DEFAULT NULL,
+  `fax_number` varchar(50) DEFAULT NULL,
+  `remarks` text,
   `status` int(5) NOT NULL,
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `customer`
 --
 
-INSERT INTO `customer` (`id`, `type`, `company_name`, `uen_no`, `fullname`, `nric`, `address`, `shipping_address`, `race_id`, `email`, `phone_number`, `mobile_number`, `fax_number`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(2, 1, 'maxwell freight management pte ltd', '198305727m', 'kristine pan smith', '', '20 maxwell road 0612 maxwell house singapore 069113', '201 maxwell road 0612 maxwell house singapore 069113', 0, 'kristine@maxwellfreight.com.sg', 62216988, 62216988, '62213325', 1, '2017-04-04 18:39:20', 1, '0000-00-00 00:00:00', 0),
-(3, 2, '', '', 'johnny tang', '19880305ph', '25th floor bpi buendia center makati city', '25th floor bpi buendia center makati city', 1, 'johnsmith@bpi.com.ph', 2147483647, 9557545, '9551236', 1, '2017-04-04 18:39:58', 1, '0000-00-00 00:00:00', 0),
-(6, 1, 'blade asia', '20101201ph', 'jaimee miyuki', '', '3rd floor pacific star building makati avenue makati city', 'blk 5 belair makati avenue makati city', 0, 'jaimeemiyuki@bladeasia.com', 8728292, 9224312, '9221236-', 1, '2017-04-08 19:46:13', 1, '0000-00-00 00:00:00', 0),
-(8, 1, 'wang san corporation', '19000865sph', '', '', 'jackson building belair street malugay makati city', '24th street malugay makati city', 0, 'admin@wangsan.com.ph', 9557282, 9557283, '9557284', 1, '2017-04-11 16:28:33', 1, '0000-00-00 00:00:00', 0),
-(9, 1, 'zu wang kim trading corporation', '18000525cph', 'jackylou zu', '', 'acascia building binondo manila', 'blk 7 lot 12 turnisia street sta cruz manila', 0, 'jackyzu@yahoo.com', 7668696, 7669616, '7668656', 1, '2017-04-11 19:53:57', 1, '0000-00-00 00:00:00', 0);
+INSERT INTO `customer` (`id`, `type`, `customer_code`, `company_name`, `uen_no`, `fullname`, `nric`, `location`, `address`, `shipping_address`, `race_id`, `email`, `phone_number`, `mobile_number`, `fax_number`, `remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 1, 'customer201700001', 'wu thang incorporated', '20010115ph', NULL, NULL, 'cubao quezon city', NULL, NULL, NULL, 'admin@wuthang.com', 9557585, 9327282, '9327484', 'for testing company customer', 1, '2017-04-25 13:38:46', 1, '2017-04-25 16:35:18', 1),
+(2, 2, 'customer201700002', NULL, NULL, 'jericho so', '19900201ph', 'makati city', '28th floor pacific star tower makati avenue makati city', '25th floor bpi buendia center makati avenue makati city', 1, 'jerichoso@gmail.com', 4327282, 9557585, '9558474', 'FOR TESTing CUSTOMER INDIVIDUAL', 1, '2017-04-25 13:50:51', 1, '2017-04-25 16:55:54', 1);
 
 -- --------------------------------------------------------
 
@@ -148,8 +148,17 @@ CREATE TABLE `customer_contactperson_address` (
   `created_at` datetime DEFAULT NULL,
   `created_by` int(5) DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `updated_by` int(5) DEFAULT NULL
+  `updated_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `customer_contactperson_address`
+--
+
+INSERT INTO `customer_contactperson_address` (`id`, `customer_id`, `address`, `contact_person`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(3, 1, '23rd floor emerald building gateway araneta center cubao quezon city', 'yurikawa taki', 1, '2017-04-25 16:35:19', 1, NULL, NULL),
+(4, 1, 'blk 5 lot 15 wuthang warehouse sta ana paco manila', 'jameer lim ong', 1, '2017-04-25 16:35:19', 1, NULL, NULL),
+(5, 1, '25th high street bonifacio global city taguig', 'ria jem takayuki', 1, '2017-04-25 16:35:19', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -183,14 +192,6 @@ CREATE TABLE `delivery_order` (
   `action_by` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `delivery_order`
---
-
-INSERT INTO `delivery_order` (`id`, `delivery_order_code`, `invoice_no`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `gst_value`, `net`, `remarks`, `payment_type_id`, `discount_amount`, `discount_remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `paid`, `deleted`, `condition`, `action_by`) VALUES
-(1, 'DO201704001', '0', 4, 2, '2017-04-11', 770, 53.9, 7, 723.9, 'for testing case', 2, 100, 'HOLY WEEK DISCOUNT', 1, '2017-04-11 18:26:58', 1, '2017-04-11 19:35:29', 1, 0, 0, 0, 0),
-(2, 'QUO201704002', '0', 4, 9, '2017-04-11', 1525, 106.75, 7, 1531.75, 'for testing purposes only', 1, 100, 'holy week discount', 1, '2017-04-11 19:55:46', 1, '0000-00-00 00:00:00', 0, 0, 0, 1, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -212,19 +213,6 @@ CREATE TABLE `delivery_order_detail` (
   `updated_by` int(5) NOT NULL,
   `deleted` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `delivery_order_detail`
---
-
-INSERT INTO `delivery_order_detail` (`id`, `delivery_order_id`, `description`, `quantity`, `unit_price`, `sub_total`, `type`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
-(4, 1, 2, 1, 120, 120, 1, 1, '2017-04-11 19:35:30', 1, '2017-04-11 19:35:30', 1, 0),
-(5, 1, 3, 1, 150, 150, 1, 1, '2017-04-11 19:35:30', 1, '2017-04-11 19:35:30', 1, 0),
-(6, 1, 4, 1, 500, 500, 0, 1, '2017-04-11 19:35:30', 1, '2017-04-11 19:35:30', 1, 0),
-(7, 1, 4, 2, 130, 260, 1, 1, '2017-04-11 19:35:30', 1, '2017-04-11 19:35:30', 1, 0),
-(8, 1, 5, 1, 750, 750, 0, 1, '2017-04-11 19:35:30', 1, '2017-04-11 19:35:30', 1, 0),
-(9, 2, 5, 3, 175, 525, 1, 1, '2017-04-11 19:55:46', 1, '2017-04-11 19:55:46', 1, 0),
-(10, 2, 7, 1, 1000, 1000, 0, 1, '2017-04-11 19:55:46', 1, '2017-04-11 19:55:46', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -301,14 +289,6 @@ CREATE TABLE `invoice` (
   `action_by` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `invoice`
---
-
-INSERT INTO `invoice` (`id`, `quotation_code`, `invoice_no`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `gst_value`, `net`, `remarks`, `payment_type_id`, `discount_amount`, `discount_remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `do`, `paid`, `deleted`, `condition`, `action_by`) VALUES
-(1, '0', 'INV201704001', 4, 6, '2017-04-11', 1870, 130.90, 7, 1900.9, 'for testing case', 2, 100, 'SUMMER DISCOUNT', 1, '2017-04-11 15:35:00', 1, '2017-04-11 15:58:25', 1, 0, 0, 0, 0, 0),
-(2, '0', 'QUO201704002', 3, 8, '2017-04-11', 680, 47.60, 7, 627.6, 'for test case', 1, 100, 'summer discount', 1, '2017-04-11 16:37:26', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -330,23 +310,6 @@ CREATE TABLE `invoice_detail` (
   `updated_by` int(5) NOT NULL,
   `deleted` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `invoice_detail`
---
-
-INSERT INTO `invoice_detail` (`id`, `invoice_id`, `description`, `quantity`, `unit_price`, `sub_total`, `type`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `deleted`) VALUES
-(17, 1, 1, 1, 150, 150, 1, 1, '2017-04-11 15:58:25', 1, '2017-04-11 15:58:25', 1, 0),
-(18, 1, 2, 1, 120, 120, 1, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
-(19, 1, 6, 1, 150, 150, 1, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
-(20, 1, 1, 1, 250, 250, 0, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
-(21, 1, 3, 1, 300, 300, 0, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
-(22, 1, 7, 1, 900, 900, 0, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
-(23, 1, 4, 1, 130, 130, 1, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
-(24, 1, 6, 1, 100, 100, 0, 1, '2017-04-11 15:58:26', 1, '2017-04-11 15:58:26', 1, 0),
-(25, 2, 2, 1, 120, 120, 1, 1, '2017-04-11 16:37:26', 1, '2017-04-11 16:37:26', 1, 0),
-(26, 2, 4, 2, 130, 260, 1, 1, '2017-04-11 16:37:26', 1, '2017-04-11 16:37:26', 1, 0),
-(27, 2, 3, 1, 300, 300, 0, 1, '2017-04-11 16:37:27', 1, '2017-04-11 16:37:27', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -438,7 +401,8 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m170412_024542_add_contact_person_column_to_customer_table', 1491965238),
 ('m170417_071216_add_remarks_column_to_parts_table', 1492413319),
 ('m170424_092102_create_customer_contactperson_address_table', 1493026338),
-('m170424_093300_create_customer_contactperson_address_foreignkey', 1493026452);
+('m170424_093300_create_customer_contactperson_address_foreignkey', 1493026452),
+('m170425_040151_add_columns_to_customer_table', 1493093144);
 
 -- --------------------------------------------------------
 
@@ -794,16 +758,6 @@ CREATE TABLE `quotation` (
   `action_by` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `quotation`
---
-
-INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `gst_value`, `net`, `remarks`, `payment_type_id`, `discount_amount`, `discount_remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `invoice_created`, `deleted`, `condition`, `action_by`) VALUES
-(1, 'QUO201704001', 3, 2, '2017-04-10', 850, 59.5, 7, 909.5, 'FOR TEST CASE', 1, 0, 'NO DISCOUNT REMARKS', 1, '2017-04-10 19:26:25', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0),
-(2, 'QUO201704002', 3, 3, '2017-04-10', 445, 31.15, 7, 476.15, 'test', 1, 0, 'No discount remarks', 1, '2017-04-11 09:02:08', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0),
-(3, 'QUO201704003', 4, 3, '2017-04-12', 580, 40.6, 7, 520.6, 'for test case', 1, 100, 'summer discount', 1, '2017-04-12 13:43:40', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0),
-(4, 'QUO201704004', 4, 6, '2017-04-12', 650, 45.5, 7, 595.5, 'for testing', 1, 100, 'summer discount', 1, '2017-04-12 13:57:24', 1, '0000-00-00 00:00:00', 0, 0, 0, 0, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -825,26 +779,6 @@ CREATE TABLE `quotation_detail` (
   `status` int(5) NOT NULL,
   `deleted` int(5) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `quotation_detail`
---
-
-INSERT INTO `quotation_detail` (`id`, `quotation_id`, `description`, `quantity`, `unit_price`, `sub_total`, `type`, `created_at`, `created_by`, `updated_at`, `updated_by`, `status`, `deleted`) VALUES
-(13, 1, 1, 1, 150, 150, 1, '2017-04-10 19:26:25', 1, '2017-04-10 19:26:25', 1, 1, 0),
-(14, 1, 2, 1, 150, 150, 1, '2017-04-10 19:26:25', 1, '2017-04-10 19:26:25', 1, 1, 0),
-(15, 1, 3, 1, 250, 250, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
-(16, 1, 4, 1, 300, 300, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
-(17, 1, 6, 1, 150, 150, 1, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
-(18, 1, 1, 1, 250, 250, 0, '2017-04-10 19:26:26', 1, '2017-04-10 19:26:26', 1, 1, 0),
-(19, 2, 1, 1, 150, 150, 1, '2017-04-11 09:02:08', 1, '2017-04-11 09:02:08', 1, 1, 0),
-(20, 2, 2, 1, 120, 120, 1, '2017-04-11 09:02:08', 1, '2017-04-11 09:02:08', 1, 1, 0),
-(21, 2, 5, 1, 175, 175, 1, '2017-04-11 09:02:08', 1, '2017-04-11 09:02:08', 1, 1, 0),
-(22, 3, 3, 1, 150, 150, 1, '2017-04-12 13:43:40', 1, '2017-04-12 13:43:40', 1, 1, 0),
-(23, 3, 4, 1, 130, 130, 1, '2017-04-12 13:43:40', 1, '2017-04-12 13:43:40', 1, 1, 0),
-(24, 3, 3, 1, 300, 300, 0, '2017-04-12 13:43:41', 1, '2017-04-12 13:43:41', 1, 1, 0),
-(25, 4, 3, 1, 300, 300, 0, '2017-04-12 13:57:24', 1, '2017-04-12 13:57:24', 1, 1, 0),
-(26, 4, 5, 2, 175, 350, 1, '2017-04-12 13:57:24', 1, '2017-04-12 13:57:24', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -1458,22 +1392,22 @@ ALTER TABLE `user_permission`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `customer_contactperson_address`
 --
 ALTER TABLE `customer_contactperson_address`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `delivery_order`
 --
 ALTER TABLE `delivery_order`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `delivery_order_detail`
 --
 ALTER TABLE `delivery_order_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `designated_position`
 --
@@ -1488,12 +1422,12 @@ ALTER TABLE `gst`
 -- AUTO_INCREMENT for table `invoice`
 --
 ALTER TABLE `invoice`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `invoice_detail`
 --
 ALTER TABLE `invoice_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `module`
 --
@@ -1538,12 +1472,12 @@ ALTER TABLE `product_inventory`
 -- AUTO_INCREMENT for table `quotation`
 --
 ALTER TABLE `quotation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `quotation_detail`
 --
 ALTER TABLE `quotation_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `race`
 --

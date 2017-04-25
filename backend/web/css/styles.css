@@ -1,12 +1,21 @@
 @font-face {
-	font-family: AucoinLight;
-	src: url('./fonts/AucoinLight.ttf');
+	font-family: BenjaminSans-Bold;
+	src: url('fonts/BenjaminSans-Bold.ttf');
 }
 
+@font-face {
+	font-family: AucoinLight;
+	src: url('fonts/AucoinLight.ttf');
+}
+
+@font-face {
+	font-family: Bernstein;
+	src: url('fonts/Bernstein.ttf');
+}
 
 /* dashboardHeader */
 #logo {
-	font-family: Tahoma; 
+	font-family: BenjaminSans-Bold; 
 	font-size: 26px;
 }
 
@@ -178,7 +187,7 @@
 }
 
 .breadcrumbs-container {
-	font-family: AucoinLight, Arial, Helvetica Nuen;
+	font-family: Bernstein, Arial, Helvetica Nuen;
 	font-size: 12px; 
 	border-radius: 5px;box-shadow: 1px 1px 1px 1px; 
   	background: #ffffff; 
@@ -186,7 +195,7 @@
 }
 /* Content */
 .divContainer {
-	font-family: AucoinLight, Arial, Helvetica Nuen;
+	font-family: Bernstein, Arial, Helvetica Nuen;
 }
 
 .containerHeadWrapper {
@@ -197,7 +206,7 @@
 }
 
 .divHeaderLabel {
-	font-family: AucoinLight, Arial, Helvetica Nuen; 
+	font-family: Bernstein, Arial, Helvetica Nuen; 
 	text-shadow: 1px 1px #eeeeee;
 	color: #444;
 }
@@ -213,7 +222,7 @@
 	border-radius: 5px;
 	box-shadow: inset .5px .5px .5px 0 #707070;
 	text-transform: uppercase;
-	font-family: AucoinLight, Arial, Helvetica Nuen;
+	font-family: Bernstein, Arial, Helvetica Nuen;
 	color: #444;
 }
 
@@ -254,13 +263,13 @@
 }
 
 .modal-title {
-	font-family: AucoinLight, Arial, Helvetica Nuen; 
+	font-family: Bernstein, Arial, Helvetica Nuen; 
 	color: #444;
 	text-shadow: 1px 1px #eeeeee;
 }
 
 .labelStyle {
-	font-size: 11.5px; 
+	font-size: 11px; 
 	color: #444;
 }
 
@@ -298,8 +307,21 @@
 	margin: 0 auto;
 }
 
+.insertedContactpersonAddressListDesign {
+	width: 100%; 
+	margin: 0 auto;
+}
+
+.ContactpersonAddressHeader {
+	font-family: Bernstein, Arial, Helvetica Nuen; 
+	color: #444;
+	font-weight: 600;
+	font-size: 12px;
+	margin-left: -10px;
+}
+
 .selectedBtns {
-	font-size: 11.5px;
+	font-size: 11px;
 }
 
 .modalUPDesign {
@@ -320,7 +342,7 @@
 
 .headerLabel {
 	color: #fff; 
-	font-family: AucoinLight, Arial, Helvetica Nuen; 
+	font-family: Bernstein, Arial, Helvetica Nuen; 
 	font-size: 12px; 
 	font-weight: 600; 
 	margin-left: 5px;
@@ -336,7 +358,7 @@
 	border-radius: 5px;
 	box-shadow: inset .5px .5px .5px 0 #707070;
 	text-transform: uppercase;
-	font-family: AucoinLight, Arial, Helvetica Nuen;
+	font-family: Bernstein, Arial, Helvetica Nuen;
 	color: #444;
 	text-align: center;
 	width: 65%;
@@ -349,7 +371,7 @@
 	border-radius: 5px;
 	box-shadow: inset .5px .5px .5px 0 #707070;
 	text-transform: uppercase;
-	font-family: AucoinLight, Arial, Helvetica Nuen;
+	font-family: Bernstein, Arial, Helvetica Nuen;
 	color: #444;
 	width: 95%;
 }
@@ -360,7 +382,7 @@
 	border-radius: 5px;
 	box-shadow: inset .5px .5px .5px 0 #707070;
 	text-transform: uppercase;
-	font-family: AucoinLight, Arial, Helvetica Nuen;
+	font-family: Bernstein, Arial, Helvetica Nuen;
 	color: #444;
 }
 
@@ -384,7 +406,7 @@
 	font-size: 14px; 
 	font-weight: 600; 
 	color: #444;
-	font-family: AucoinLight, Arial, Helvetica Nuen;
+	font-family: Bernstein, Arial, Helvetica Nuen;
 }
 
 .inputboxTotalAlignment {
@@ -392,7 +414,7 @@
 }
 
 .selectedPartsAndServices {
-	font-family: AucoinLight, Arial, Helvetica Nuen; 
+	font-family: Bernstein, Arial, Helvetica Nuen; 
 	font-family: 11px; 
 	font-weight: 600; 
 	color: #444;
@@ -400,7 +422,19 @@
 }
 
 .selectedPartsAndServicesFontSize {
-	font-size: 11.5px;
+	font-size: 11px;
+}
+
+.insertedContactpersonAddress {
+	font-family: Bernstein, Arial, Helvetica Nuen; 
+	font-family: 11px;
+	color: #444;
+	text-transform: uppercase;
+	margin-left: 8px;
+}
+
+.ContactpersonAddressFontSize {
+	font-size: 11px;
 }
 
 #currentQtyStyle {
@@ -439,12 +473,18 @@
 	font-weight: 600;
 }
 
+.readonlyForm {
+	text-align: center; 
+	font-weight: 600; 
+	color: #444;
+}
+
 /* Prview Quotation */
 .branchRowContainer {
 	text-align: center; 
 	font-size: 11px;
 	color: #444;
-	font-family: AucoinLight, Arial, Josefin sans, sans-serif;
+	font-family: Bernstein, Arial, Josefin sans, sans-serif;
 }
 
 .quoteCodeAndDate {
@@ -455,7 +495,7 @@
 	border: solid .5px #73879C; 
 	margin: 0 auto; 
 	font-size: 11px; 
-	font-family: AucoinLight, Arial, Helvetica Nuen;
+	font-family: Bernstein, Arial, Helvetica Nuen;
 }
 
 .customerRowContainer {
@@ -530,21 +570,21 @@
 .viewTableContent {
 	border: solid 1px #ddd; 
 	font-size: 11px; 
-	font-family: AucoinLight, Arial, Helvetica Nuen; 
+	font-family: Bernstein, Arial, Helvetica Nuen; 
 	color: #444;
 }
 
 .viewTableContent  table{
 	border: solid 1px #ddd; 
 	font-size: 11px; 
-	font-family: AucoinLight, Arial, Helvetica Nuen; 
+	font-family: Bernstein, Arial, Helvetica Nuen; 
 	color: #444;
 }
 
 .viewTableContent  tr td{
 	border: solid 1px #ddd; 
 	font-size: 11px; 
-	font-family: AucoinLight, Arial, Helvetica Nuen; 
+	font-family: Bernstein, Arial, Helvetica Nuen; 
 	color: #444;
 }
 
