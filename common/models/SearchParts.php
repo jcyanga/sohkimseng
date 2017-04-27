@@ -18,7 +18,7 @@ class SearchParts extends Parts
     public function rules()
     {
         return [
-            [['id', 'parts_category_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['id', 'status', 'created_by', 'updated_by'], 'integer'],
             [['parts_code', 'parts_name', 'quantity', 'cost_price', 'gst_price', 'selling_price', 'unit_of_measure', 'created_at', 'updated_at'], 'safe'],
         ];
     }
@@ -60,7 +60,6 @@ class SearchParts extends Parts
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'parts_category_id' => $this->parts_category_id,
             'parts_code' => $this->parts_code,
             'unit_of_measure' => $this->unit_of_measure,
             'status' => $this->status,

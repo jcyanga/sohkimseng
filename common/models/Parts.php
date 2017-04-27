@@ -24,7 +24,6 @@ use yii\db\Query;
  * @property integer $selling_price
  * @property integer $reorder_level
  *
- * @property PartsCategory $partsCategory
  * @property Supplier $supplier
  * @property StorageLocations $storageLocation
  */
@@ -44,12 +43,11 @@ class Parts extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['supplier_id', 'storage_location_id', 'parts_category_id', 'parts_name', 'parts_code', 'quantity', 'unit_of_measure', 'cost_price', 'gst_price', 'selling_price', 'reorder_level', 'status'], 'required', 'message' => 'Fill up all the required fields.'],
-            [['parts_category_id', 'status', 'created_by', 'updated_by'], 'integer'],
+            [['supplier_id', 'storage_location_id', 'parts_name', 'parts_code', 'quantity', 'unit_of_measure', 'cost_price', 'gst_price', 'selling_price', 'reorder_level', 'status'], 'required', 'message' => 'Fill up all the required fields.'],
+            [['status', 'created_by', 'updated_by'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['parts_name'], 'string', 'max' => 150],
             [['parts_name'], 'unique', 'message' => 'Auto-Parts name already exist.'],
-            [['parts_category_id'], 'exist', 'skipOnError' => true, 'targetClass' => PartsCategory::className(), 'targetAttribute' => ['parts_category_id' => 'id']],
             [['supplier_id'], 'exist', 'skipOnError' => true, 'targetClass' => Supplier::className(), 'targetAttribute' => ['supplier_id' => 'id']],
             [['storage_location_id'], 'exist', 'skipOnError' => true, 'targetClass' => StorageLocations::className(), 'targetAttribute' => ['storage_location_id' => 'id']],
         ];
@@ -62,7 +60,6 @@ class Parts extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'parts_category_id' => 'Parts Category ID',
             'parts_code' => 'Parts Code',
             'parts_name' => 'Name',
             'unit_of_measure' => 'Unit of Measure',
@@ -77,10 +74,6 @@ class Parts extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPartsCategory()
-    {
-        return $this->hasOne(PartsCategory::className(), ['id' => 'parts_category_id']);
-    }
 
     public function getSupplier()
     {
@@ -97,14 +90,27 @@ class Parts extends \yii\db\ActiveRecord
     {
         $rows = new Query();
 
-        $result = $rows->select(['parts.*', 'parts_category.name', 'supplier.name as supplierName', 'storage_location.rack as storagelocationName' ])
+        $result = $rows->select(['parts.*', 'supplier.name as supplierName', 'storage_location.rack as storagelocationName' ])
             ->from('parts')
             ->leftJoin('supplier', 'parts.supplier_id = supplier.id')
-            ->leftJoin('parts_category', 'parts.parts_category_id = parts_category.id')
             ->leftJoin('storage_location', 'parts.storage_location_id = storage_location.id')
             ->where(['parts.id' => $id])
             ->andWhere(['parts.status' => 1])
             ->one();
+
+        return $result;
+    }
+
+    public function getPartsCategoryByPartsId($id)
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['parts_type.id', 'parts_type.parts_category_id', 'parts_category.name' ])
+            ->from('parts_type')
+            ->leftJoin('parts_category', 'parts_type.parts_category_id = parts_category.id')
+            ->where(['parts_type.parts_id' => $id])
+            ->andWhere(['parts_type.status' => 1])
+            ->all();
 
         return $result;
     }
@@ -120,6 +126,20 @@ class Parts extends \yii\db\ActiveRecord
             ->leftJoin('parts_category', 'parts.parts_category_id = parts_category.id')
             ->leftJoin('storage_location', 'parts.storage_location_id = storage_location.id')
             ->where(['parts.status' => 1])
+            ->all();
+
+        return $result;
+    }
+
+    //  get parts category
+    public function getPartsCategory($partsId)
+    {
+        $rows = new Query();
+
+        $result = $rows->select(['parts_type.id', 'parts_type.parts_category_id', 'parts_category.name' ])
+            ->from('parts_type')
+            ->leftJoin('parts_category', 'parts_type.parts_category_id = parts_category.id')
+            ->where(['parts_type.parts_id' => $partsId])
             ->all();
 
         return $result;

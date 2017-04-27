@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 25, 2017 at 06:07 PM
+-- Generation Time: Apr 27, 2017 at 06:38 PM
 -- Server version: 5.7.17-0ubuntu0.16.04.2
 -- PHP Version: 7.0.15-0ubuntu0.16.04.4
 
@@ -131,7 +131,9 @@ CREATE TABLE `customer` (
 
 INSERT INTO `customer` (`id`, `type`, `customer_code`, `company_name`, `uen_no`, `fullname`, `nric`, `location`, `address`, `shipping_address`, `race_id`, `email`, `phone_number`, `mobile_number`, `fax_number`, `remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
 (1, 1, 'customer201700001', 'wu thang incorporated', '20010115ph', NULL, NULL, 'cubao quezon city', NULL, NULL, NULL, 'admin@wuthang.com', 9557585, 9327282, '9327484', 'for testing company customer', 1, '2017-04-25 13:38:46', 1, '2017-04-25 16:35:18', 1),
-(2, 2, 'customer201700002', NULL, NULL, 'jericho so', '19900201ph', 'makati city', '28th floor pacific star tower makati avenue makati city', '25th floor bpi buendia center makati avenue makati city', 1, 'jerichoso@gmail.com', 4327282, 9557585, '9558474', 'FOR TESTing CUSTOMER INDIVIDUAL', 1, '2017-04-25 13:50:51', 1, '2017-04-25 16:55:54', 1);
+(2, 2, 'customer201700002', NULL, NULL, 'jericho so', '19900201ph', 'makati city', '28th floor pacific star tower makati avenue makati city', '25th floor bpi buendia center makati avenue makati city', 1, 'jerichoso@gmail.com', 4327282, 9557585, '9558474', 'FOR TESTing CUSTOMER INDIVIDUAL', 1, '2017-04-25 13:50:51', 1, '2017-04-25 16:55:54', 1),
+(3, 1, 'customer201700003', 'everest corporation', '20050115ph', NULL, NULL, 'pasay', NULL, NULL, NULL, 'admin@everest.com.ph', 9227282, 7538363, '7528262', 'for test company customer by quotation', 1, '2017-04-27 13:30:21', 1, NULL, NULL),
+(4, 1, 'customer201700003', 'everlasting corporation', '20050115ph', NULL, NULL, 'pasay', NULL, NULL, NULL, 'admin@everlasting.com.ph', 9227282, 7538363, '7528262', 'for test company customer by quotation', 1, '2017-04-27 13:32:11', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -158,7 +160,9 @@ CREATE TABLE `customer_contactperson_address` (
 INSERT INTO `customer_contactperson_address` (`id`, `customer_id`, `address`, `contact_person`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
 (3, 1, '23rd floor emerald building gateway araneta center cubao quezon city', 'yurikawa taki', 1, '2017-04-25 16:35:19', 1, NULL, NULL),
 (4, 1, 'blk 5 lot 15 wuthang warehouse sta ana paco manila', 'jameer lim ong', 1, '2017-04-25 16:35:19', 1, NULL, NULL),
-(5, 1, '25th high street bonifacio global city taguig', 'ria jem takayuki', 1, '2017-04-25 16:35:19', 1, NULL, NULL);
+(5, 1, '25th high street bonifacio global city taguig', 'ria jem takayuki', 1, '2017-04-25 16:35:19', 1, NULL, NULL),
+(6, 4, 'blk 10 lot 15 ruby street harrison pasay city', 'jimwel sy', 1, '2017-04-27 13:32:11', 1, NULL, NULL),
+(7, 4, 'blk 10 lot 15 ruby street harrison pasay city', 'jimwel sy', 1, '2017-04-27 13:32:11', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -402,7 +406,10 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 ('m170417_071216_add_remarks_column_to_parts_table', 1492413319),
 ('m170424_092102_create_customer_contactperson_address_table', 1493026338),
 ('m170424_093300_create_customer_contactperson_address_foreignkey', 1493026452),
-('m170425_040151_add_columns_to_customer_table', 1493093144);
+('m170425_040151_add_columns_to_customer_table', 1493093144),
+('m170426_031827_add_columns_to_supplier_table', 1493176894),
+('m170426_052009_create_parts_type_table', 1493184107),
+('m170426_052208_create_parts_type_foreignkey', 1493184388);
 
 -- --------------------------------------------------------
 
@@ -440,7 +447,6 @@ CREATE TABLE `parts` (
   `id` int(11) NOT NULL,
   `supplier_id` int(5) NOT NULL,
   `storage_location_id` int(5) NOT NULL,
-  `parts_category_id` int(5) NOT NULL,
   `parts_code` varchar(100) NOT NULL,
   `parts_name` varchar(150) NOT NULL,
   `unit_of_measure` varchar(100) NOT NULL,
@@ -461,16 +467,8 @@ CREATE TABLE `parts` (
 -- Dumping data for table `parts`
 --
 
-INSERT INTO `parts` (`id`, `supplier_id`, `storage_location_id`, `parts_category_id`, `parts_code`, `parts_name`, `unit_of_measure`, `quantity`, `cost_price`, `gst_price`, `selling_price`, `reorder_level`, `remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 1, 1, 1, 'parts-2017-80692', 'bumper', 'pieces', 11, 120, 7, 150, 10, '', 1, '2017-04-06 14:12:29', 1, '0000-00-00 00:00:00', 0),
-(2, 1, 1, 1, 'parts-2017-70705', 'cowl screen', 'pieces', 19, 99, 7, 120, 10, '', 1, '2017-04-06 14:14:36', 1, '0000-00-00 00:00:00', 0),
-(3, 2, 2, 2, 'parts-2017-76511', 'hinges', 'pieces', 19, 120, 7, 150, 10, '', 1, '2017-04-06 16:53:33', 1, '0000-00-00 00:00:00', 0),
-(4, 2, 2, 2, 'parts-2017-20208', 'fuel tank', 'pieces', 20, 99, 7, 130, 10, '', 1, '2017-04-06 14:15:59', 1, '0000-00-00 00:00:00', 0),
-(5, 3, 4, 4, 'parts-2017-58484', 'window regulator', 'pieces', 32, 130, 7, 175, 10, '', 1, '2017-04-06 14:16:36', 1, '0000-00-00 00:00:00', 0),
-(6, 3, 4, 4, 'parts-2017-30373', 'window seal', 'pieces', 22, 120, 7, 150, 10, '', 1, '2017-04-06 14:17:20', 1, '0000-00-00 00:00:00', 0),
-(7, 2, 2, 4, 'parts-2017-97598', 'windows 10', 'pieces', 30, 100, 7, 120, 10, 'for test case', 1, '2017-04-24 14:56:48', 1, '2017-04-24 14:56:48', 1),
-(8, 2, 2, 4, 'parts-2017-97598', 'windows xp', 'pieces', 30, 100, 7, 120, 10, 'for test case', 1, '2017-04-24 14:57:01', 1, '2017-04-24 14:57:01', 1),
-(9, 3, 5, 2, 'parts-2017-79283', 'door 10', 'pieces', 40, 120, 7, 150, 10, 'for test case', 1, '2017-04-24 15:02:54', 1, '2017-04-24 15:02:54', 1);
+INSERT INTO `parts` (`id`, `supplier_id`, `storage_location_id`, `parts_code`, `parts_name`, `unit_of_measure`, `quantity`, `cost_price`, `gst_price`, `selling_price`, `reorder_level`, `remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(1, 2, 2, 'parts-2017-40193', 'front right side door glasses', 'pieces', 30, 100, 7, 150, 10, 'FOR TESTing AUTO PARTS', 1, '2017-04-26 15:53:56', 1, '2017-04-26 14:17:44', 1);
 
 -- --------------------------------------------------------
 
@@ -494,10 +492,9 @@ CREATE TABLE `parts_category` (
 --
 
 INSERT INTO `parts_category` (`id`, `name`, `description`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'body components', 'for body and main parts of the vehicle', 1, '2017-02-04 14:28:17', 1, '2017-04-05 13:12:48', 1),
-(2, 'doors', 'for doors of the vehicle', 1, '2017-02-04 14:30:31', 1, '2017-04-05 13:13:06', 1),
-(3, 'testing cases', 'for testing case only', 0, '2017-04-05 10:53:45', 1, '2017-04-05 10:55:11', 1),
-(4, 'windows', 'for windows of the vehicle', 1, '2017-04-05 13:13:22', 1, '0000-00-00 00:00:00', 0);
+(1, 'doors', 'doors in auto parts', 1, '2017-04-26 13:55:59', 1, NULL, NULL),
+(2, 'windows', 'doors in auto parts', 1, '2017-04-26 13:56:38', 1, NULL, NULL),
+(3, 'cameras', 'cameras in auto parts', 1, '2017-04-26 13:57:01', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -527,67 +524,33 @@ CREATE TABLE `parts_inventory` (
 --
 
 INSERT INTO `parts_inventory` (`id`, `parts_id`, `old_quantity`, `new_quantity`, `qty_purchased`, `type`, `invoice_no`, `datetime_imported`, `datetime_purchased`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 1, 25, 25, 0, 1, '', '2017-04-06 14:12:29', '0000-00-00 00:00:00', 1, '2017-04-06 14:12:29', 1, '2017-04-06 14:12:29', 1),
-(2, 2, 25, 25, 0, 1, '', '2017-04-06 14:14:37', '0000-00-00 00:00:00', 1, '2017-04-06 14:14:37', 1, '2017-04-06 14:14:37', 1),
-(3, 3, 35, 35, 0, 1, '', '2017-04-06 14:15:24', '0000-00-00 00:00:00', 1, '2017-04-06 14:15:24', 1, '2017-04-06 14:15:24', 1),
-(4, 4, 20, 20, 0, 1, '', '2017-04-06 14:15:59', '0000-00-00 00:00:00', 1, '2017-04-06 14:15:59', 1, '2017-04-06 14:15:59', 1),
-(5, 5, 30, 30, 0, 1, '', '2017-04-06 14:16:36', '0000-00-00 00:00:00', 1, '2017-04-06 14:16:36', 1, '2017-04-06 14:16:36', 1),
-(6, 6, 30, 30, 0, 1, '', '2017-04-06 14:17:21', '0000-00-00 00:00:00', 1, '2017-04-06 14:17:21', 1, '2017-04-06 14:17:21', 1),
-(7, 4, 20, 25, 0, 3, '', '2017-04-06 14:56:28', '0000-00-00 00:00:00', 1, '2017-04-06 14:56:28', 1, '2017-04-06 14:56:28', 1),
-(8, 4, 20, 25, 0, 3, '', '2017-04-06 14:56:33', '0000-00-00 00:00:00', 1, '2017-04-06 14:56:33', 1, '2017-04-06 14:56:33', 1),
-(9, 6, 30, 27, 0, 3, '', '2017-04-06 14:58:20', '0000-00-00 00:00:00', 1, '2017-04-06 14:58:20', 1, '2017-04-06 14:58:20', 1),
-(10, 5, 30, 35, 0, 3, '', '2017-04-06 14:59:08', '0000-00-00 00:00:00', 1, '2017-04-06 14:59:08', 1, '2017-04-06 14:59:08', 1),
-(11, 1, 25, 24, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:33:28', 1, '0000-00-00 00:00:00', 0),
-(12, 2, 25, 24, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:33:28', 1, '0000-00-00 00:00:00', 0),
-(13, 6, 27, 26, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:33:28', 1, '0000-00-00 00:00:00', 0),
-(14, 1, 24, 23, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:34:49', 1, '0000-00-00 00:00:00', 0),
-(15, 2, 24, 23, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:34:50', 1, '0000-00-00 00:00:00', 0),
-(16, 6, 26, 25, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:34:50', 1, '0000-00-00 00:00:00', 0),
-(17, 1, 23, 22, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:36:03', 1, '0000-00-00 00:00:00', 0),
-(18, 2, 23, 22, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:36:03', 1, '0000-00-00 00:00:00', 0),
-(19, 6, 25, 24, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 09:36:03', 1, '0000-00-00 00:00:00', 0),
-(20, 1, 22, 21, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 10:15:05', 1, '0000-00-00 00:00:00', 0),
-(21, 2, 22, 21, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 10:15:05', 1, '0000-00-00 00:00:00', 0),
-(22, 6, 24, 23, 1, 2, 'INV201704001', '0000-00-00 00:00:00', '2017-04-10 00:00:00', 1, '2017-04-11 10:15:05', 1, '0000-00-00 00:00:00', 0),
-(23, 3, 35, 34, 1, 3, 'INV201704003', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 12:17:03', 1, '0000-00-00 00:00:00', 0),
-(24, 1, 21, 20, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:56:56', 1, '0000-00-00 00:00:00', 0),
-(25, 6, 23, 22, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:56:57', 1, '0000-00-00 00:00:00', 0),
-(26, 1, 20, 19, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:57:15', 1, '0000-00-00 00:00:00', 0),
-(27, 6, 22, 21, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:57:15', 1, '0000-00-00 00:00:00', 0),
-(28, 1, 19, 18, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:59:12', 1, '0000-00-00 00:00:00', 0),
-(29, 3, 34, 33, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 14:59:12', 1, '0000-00-00 00:00:00', 0),
-(30, 1, 18, 17, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:00:00', 1, '0000-00-00 00:00:00', 0),
-(31, 3, 33, 32, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:00:01', 1, '0000-00-00 00:00:00', 0),
-(32, 1, 17, 16, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:03:46', 1, '0000-00-00 00:00:00', 0),
-(33, 3, 32, 30, 2, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:03:46', 1, '0000-00-00 00:00:00', 0),
-(34, 1, 16, 15, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:04:27', 1, '0000-00-00 00:00:00', 0),
-(35, 3, 30, 28, 2, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:04:27', 1, '0000-00-00 00:00:00', 0),
-(36, 1, 15, 14, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:14:42', 1, '0000-00-00 00:00:00', 0),
-(37, 3, 28, 27, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:14:42', 1, '0000-00-00 00:00:00', 0),
-(38, 1, 14, 13, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:15:10', 1, '0000-00-00 00:00:00', 0),
-(39, 3, 27, 26, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:15:10', 1, '0000-00-00 00:00:00', 0),
-(40, 1, 13, 12, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:32:32', 1, '0000-00-00 00:00:00', 0),
-(41, 3, 26, 25, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:32:32', 1, '0000-00-00 00:00:00', 0),
-(42, 1, 12, 11, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:35:00', 1, '0000-00-00 00:00:00', 0),
-(43, 3, 25, 24, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:35:01', 1, '0000-00-00 00:00:00', 0),
-(44, 1, 12, 11, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:35:40', 1, '0000-00-00 00:00:00', 0),
-(45, 3, 24, 23, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:35:40', 1, '0000-00-00 00:00:00', 0),
-(46, 1, 12, 11, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:50:36', 1, '0000-00-00 00:00:00', 0),
-(47, 3, 23, 22, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:50:36', 1, '0000-00-00 00:00:00', 0),
-(48, 1, 12, 11, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:58:26', 1, '0000-00-00 00:00:00', 0),
-(49, 2, 24, 23, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:58:26', 1, '0000-00-00 00:00:00', 0),
-(50, 6, 23, 22, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:58:26', 1, '0000-00-00 00:00:00', 0),
-(51, 4, 25, 24, 1, 3, 'INV201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 15:58:26', 1, '0000-00-00 00:00:00', 0),
-(52, 2, 23, 22, 1, 3, 'QUO201704002', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 16:37:26', 1, '0000-00-00 00:00:00', 0),
-(53, 4, 24, 22, 2, 3, 'QUO201704002', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 16:37:27', 1, '0000-00-00 00:00:00', 0),
-(54, 2, 22, 20, 2, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 18:25:40', 1, '0000-00-00 00:00:00', 0),
-(55, 3, 22, 20, 2, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 18:25:40', 1, '0000-00-00 00:00:00', 0),
-(56, 2, 20, 19, 1, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 18:26:58', 1, '0000-00-00 00:00:00', 0),
-(57, 3, 20, 19, 1, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 18:26:58', 1, '0000-00-00 00:00:00', 0),
-(58, 2, 20, 19, 1, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 19:35:30', 1, '0000-00-00 00:00:00', 0),
-(59, 3, 20, 19, 1, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 19:35:30', 1, '0000-00-00 00:00:00', 0),
-(60, 4, 22, 20, 2, 3, 'DO201704001', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 19:35:30', 1, '0000-00-00 00:00:00', 0),
-(61, 5, 35, 32, 3, 3, 'QUO201704002', '0000-00-00 00:00:00', '2017-04-11 00:00:00', 1, '2017-04-11 19:55:46', 1, '0000-00-00 00:00:00', 0);
+(1, 1, 30, 30, NULL, 1, NULL, '2017-04-26 14:17:44', NULL, 1, '2017-04-26 14:17:44', 1, '2017-04-26 14:17:44', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `parts_type`
+--
+
+CREATE TABLE `parts_type` (
+  `id` int(11) NOT NULL,
+  `parts_category_id` int(5) DEFAULT NULL,
+  `parts_id` int(5) DEFAULT NULL,
+  `status` int(5) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `created_by` int(5) DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(5) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `parts_type`
+--
+
+INSERT INTO `parts_type` (`id`, `parts_category_id`, `parts_id`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
+(3, 1, 1, 1, '2017-04-26 15:53:56', 1, '2017-04-26 15:53:56', 1),
+(4, 2, 1, 1, '2017-04-26 15:53:56', 1, '2017-04-26 15:53:56', 1),
+(5, 3, 1, 1, '2017-04-26 15:53:56', 1, '2017-04-26 15:53:56', 1);
 
 -- --------------------------------------------------------
 
@@ -736,27 +699,34 @@ INSERT INTO `product_inventory` (`id`, `product_id`, `old_quantity`, `new_quanti
 CREATE TABLE `quotation` (
   `id` int(11) NOT NULL,
   `quotation_code` varchar(100) NOT NULL,
-  `user_id` int(5) NOT NULL,
-  `customer_id` int(5) NOT NULL,
-  `date_issue` date NOT NULL,
-  `grand_total` double NOT NULL,
-  `gst` double NOT NULL,
-  `gst_value` double NOT NULL,
-  `net` double NOT NULL,
-  `remarks` text NOT NULL,
-  `payment_type_id` int(5) NOT NULL,
-  `discount_amount` double NOT NULL,
-  `discount_remarks` text NOT NULL,
-  `status` int(5) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL,
-  `invoice_created` int(5) NOT NULL,
-  `deleted` int(5) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `customer_id` int(11) DEFAULT NULL,
+  `date_issue` date DEFAULT NULL,
+  `grand_total` double DEFAULT NULL,
+  `gst` double DEFAULT NULL,
+  `gst_value` double DEFAULT NULL,
+  `net` double DEFAULT NULL,
+  `remarks` text,
+  `payment_type_id` int(11) DEFAULT NULL,
+  `discount_amount` double DEFAULT NULL,
+  `discount_remarks` text,
+  `status` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `invoice_created` int(11) DEFAULT NULL,
+  `deleted` int(11) DEFAULT NULL,
   `condition` int(5) NOT NULL,
-  `action_by` int(5) NOT NULL
+  `action_by` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `quotation`
+--
+
+INSERT INTO `quotation` (`id`, `quotation_code`, `user_id`, `customer_id`, `date_issue`, `grand_total`, `gst`, `gst_value`, `net`, `remarks`, `payment_type_id`, `discount_amount`, `discount_remarks`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `invoice_created`, `deleted`, `condition`, `action_by`) VALUES
+(1, 'QUO201704001', 7, 3, '2017-04-27', 800, 56, 7, 756, 'for test case', 1, 100, 'summer discount', 1, '2017-04-27 18:04:18', 1, NULL, NULL, 0, 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -766,19 +736,27 @@ CREATE TABLE `quotation` (
 
 CREATE TABLE `quotation_detail` (
   `id` int(11) NOT NULL,
-  `quotation_id` int(5) NOT NULL,
-  `description` int(5) NOT NULL,
-  `quantity` int(5) NOT NULL,
-  `unit_price` double NOT NULL,
-  `sub_total` double NOT NULL,
-  `type` int(5) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `created_by` int(5) NOT NULL,
-  `updated_at` datetime NOT NULL,
-  `updated_by` int(5) NOT NULL,
-  `status` int(5) NOT NULL,
-  `deleted` int(5) NOT NULL
+  `quotation_id` int(11) DEFAULT NULL,
+  `description` int(11) DEFAULT NULL,
+  `quantity` int(11) DEFAULT NULL,
+  `unit_price` double DEFAULT NULL,
+  `sub_total` double DEFAULT NULL,
+  `type` int(11) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  `updated_by` int(11) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `deleted` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `quotation_detail`
+--
+
+INSERT INTO `quotation_detail` (`id`, `quotation_id`, `description`, `quantity`, `unit_price`, `sub_total`, `type`, `created_at`, `created_by`, `updated_at`, `updated_by`, `status`, `deleted`) VALUES
+(1, 1, 1, 2, 150, 300, 1, '2017-04-27 18:04:18', 1, '2017-04-27 18:04:18', 1, 1, 0),
+(2, 1, 4, 1, 500, 500, 0, '2017-04-27 18:04:18', 1, '2017-04-27 18:04:18', 1, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -998,19 +976,22 @@ CREATE TABLE `supplier` (
   `created_at` datetime NOT NULL,
   `created_by` int(5) NOT NULL,
   `updated_at` datetime DEFAULT NULL,
-  `updated_by` int(11) DEFAULT NULL
+  `updated_by` int(11) DEFAULT NULL,
+  `remarks` text,
+  `location` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `supplier`
 --
 
-INSERT INTO `supplier` (`id`, `supplier_code`, `name`, `address`, `contact_number`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`) VALUES
-(1, 'suppliers-2017-60189', 'advance automotive center', '2734e taft avenue ext pasay city', '028311296', 1, '2017-04-06 13:58:37', 1, '0000-00-00 00:00:00', 0),
-(2, 'suppliers-2017-82599', 'alto motor parts', '385d banawe st qc', '027113053', 1, '2017-04-06 13:59:06', 1, '0000-00-00 00:00:00', 0),
-(3, 'suppliers-2017-54287', 'atco auto supply', '275860 taft avenue extension pasay city', '028316365', 1, '2017-04-06 13:59:35', 1, '0000-00-00 00:00:00', 0),
-(4, 'suppliers-2017-35259', 'autospecs motor sales', '37h banawe st qc', '027115046', 1, '2017-04-06 13:59:59', 1, '0000-00-00 00:00:00', 0),
-(5, 'suppliers-2017-10441', 'bbw sales international', '35b banawe st qc', '027417906', 1, '2017-04-06 14:00:29', 1, '0000-00-00 00:00:00', 0);
+INSERT INTO `supplier` (`id`, `supplier_code`, `name`, `address`, `contact_number`, `status`, `created_at`, `created_by`, `updated_at`, `updated_by`, `remarks`, `location`) VALUES
+(1, 'suppliers-2017-60189', 'advance automotive center', '2734e taft avenue ext pasay city', '028311296', 1, '2017-04-06 13:58:37', 1, '0000-00-00 00:00:00', 0, NULL, NULL),
+(2, 'suppliers-2017-82599', 'alto motor parts', '385d banawe st qc', '027113053', 1, '2017-04-06 13:59:06', 1, '0000-00-00 00:00:00', 0, NULL, NULL),
+(3, 'suppliers-2017-54287', 'atco auto supply', '275860 taft avenue extension pasay city', '028316365', 1, '2017-04-06 13:59:35', 1, '0000-00-00 00:00:00', 0, NULL, NULL),
+(4, 'suppliers-2017-35259', 'autospecs motor sales', '37h banawe st qc', '027115046', 1, '2017-04-06 13:59:59', 1, '0000-00-00 00:00:00', 0, NULL, NULL),
+(5, 'suppliers-2017-10441', 'bbw sales international', '35b banawe st qc', '027417906', 1, '2017-04-06 14:00:29', 1, '0000-00-00 00:00:00', 0, NULL, NULL),
+(6, 'suppliers-2017-82168', 'so en trading corp', '23rd un avenue taft manila city', '9557585', 1, '2017-04-26 11:52:12', 1, '2017-04-26 12:56:14', 1, 'for test supplier', 'manila');
 
 -- --------------------------------------------------------
 
@@ -1242,7 +1223,6 @@ ALTER TABLE `module`
 ALTER TABLE `parts`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `name` (`parts_name`),
-  ADD KEY `fk-parts-parts_category_id` (`parts_category_id`),
   ADD KEY `fk-parts-supplier_id` (`supplier_id`),
   ADD KEY `fk-parts-storage_location_id` (`storage_location_id`);
 
@@ -1259,6 +1239,14 @@ ALTER TABLE `parts_category`
 ALTER TABLE `parts_inventory`
   ADD PRIMARY KEY (`id`),
   ADD KEY `fk-parts_inventory-parts_id` (`parts_id`);
+
+--
+-- Indexes for table `parts_type`
+--
+ALTER TABLE `parts_type`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk-parts_type-parts_category_id` (`parts_category_id`),
+  ADD KEY `fk-parts_type-parts_id` (`parts_id`);
 
 --
 -- Indexes for table `payment_type`
@@ -1392,12 +1380,12 @@ ALTER TABLE `user_permission`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `customer_contactperson_address`
 --
 ALTER TABLE `customer_contactperson_address`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `delivery_order`
 --
@@ -1437,17 +1425,22 @@ ALTER TABLE `module`
 -- AUTO_INCREMENT for table `parts`
 --
 ALTER TABLE `parts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `parts_category`
 --
 ALTER TABLE `parts_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `parts_inventory`
 --
 ALTER TABLE `parts_inventory`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT for table `parts_type`
+--
+ALTER TABLE `parts_type`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `payment_type`
 --
@@ -1472,12 +1465,12 @@ ALTER TABLE `product_inventory`
 -- AUTO_INCREMENT for table `quotation`
 --
 ALTER TABLE `quotation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- AUTO_INCREMENT for table `quotation_detail`
 --
 ALTER TABLE `quotation_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `race`
 --
@@ -1517,7 +1510,7 @@ ALTER TABLE `storage_location`
 -- AUTO_INCREMENT for table `supplier`
 --
 ALTER TABLE `supplier`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `user`
 --
@@ -1588,7 +1581,6 @@ ALTER TABLE `invoice_detail`
 -- Constraints for table `parts`
 --
 ALTER TABLE `parts`
-  ADD CONSTRAINT `fk-parts-parts_category_id` FOREIGN KEY (`parts_category_id`) REFERENCES `parts_category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk-parts-storage_location_id` FOREIGN KEY (`storage_location_id`) REFERENCES `storage_location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk-parts-supplier_id` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
@@ -1597,6 +1589,13 @@ ALTER TABLE `parts`
 --
 ALTER TABLE `parts_inventory`
   ADD CONSTRAINT `fk-parts_inventory-parts_id` FOREIGN KEY (`parts_id`) REFERENCES `parts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `parts_type`
+--
+ALTER TABLE `parts_type`
+  ADD CONSTRAINT `fk-parts_type-parts_category_id` FOREIGN KEY (`parts_category_id`) REFERENCES `parts_category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk-parts_type-parts_id` FOREIGN KEY (`parts_id`) REFERENCES `parts` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `product`

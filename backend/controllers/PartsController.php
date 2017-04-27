@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
+use common\models\PartsType;
 use common\models\PartsInventory;
 
 use Dompdf\Dompdf;
@@ -77,7 +78,6 @@ class PartsController extends Controller
             $model->storage_location_id = Yii::$app->request->post('storageLocation');
             $model->supplier_id = Yii::$app->request->post('supplier');
             $model->parts_code = strtolower(Yii::$app->request->post('partsCode'));
-            $model->parts_category_id = Yii::$app->request->post('partsCategory');
             $model->parts_name = strtolower(Yii::$app->request->post('partsName'));
             $model->unit_of_measure = strtolower(Yii::$app->request->post('uom'));
             $model->quantity = Yii::$app->request->post('quantity');
@@ -85,7 +85,7 @@ class PartsController extends Controller
             $model->gst_price = Yii::$app->request->post('gstPrice');
             $model->selling_price = Yii::$app->request->post('sellingPrice');
             $model->reorder_level = Yii::$app->request->post('reorderLevel'); 
-            $model->remarks = Yii::$app->request->post('remarks');
+            $model->remarks = strtolower(Yii::$app->request->post('remarks'));
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
@@ -95,6 +95,23 @@ class PartsController extends Controller
             if($model->validate()) {
                $model->save();
 
+                if( !empty(Yii::$app->request->post('partsCategory')) ){
+                    $partsCategory = Yii::$app->request->post('partsCategory');
+
+                    foreach($partsCategory as $pcKey => $pcRow){
+                        $partstypeModel = new PartsType();
+
+                        $partstypeModel->parts_category_id = $partsCategory[$pcKey]['value'];
+                        $partstypeModel->parts_id = $model->id;
+                        $partstypeModel->status = 1;
+                        $partstypeModel->created_at = date('Y-m-d H:i:s');
+                        $partstypeModel->created_by = Yii::$app->user->identity->id;
+                        $partstypeModel->updated_at = date('Y-m-d H:i:s');
+                        $partstypeModel->updated_by = Yii::$app->user->identity->id;
+                        $partstypeModel->save();
+                    }
+                }
+            
                 $partsinventoryModel = new PartsInventory();
 
                 $partsinventoryModel->parts_id = $model->id;
@@ -140,7 +157,6 @@ class PartsController extends Controller
             $model->storage_location_id = Yii::$app->request->post('storageLocation');
             $model->supplier_id = Yii::$app->request->post('supplier');
             $model->parts_code = strtolower(Yii::$app->request->post('partsCode'));
-            $model->parts_category_id = Yii::$app->request->post('partsCategory');
             $model->parts_name = strtolower(Yii::$app->request->post('partsName'));
             $model->unit_of_measure = strtolower(Yii::$app->request->post('uom'));
             $model->quantity = Yii::$app->request->post('quantity');
@@ -148,13 +164,35 @@ class PartsController extends Controller
             $model->gst_price = Yii::$app->request->post('gstPrice');
             $model->selling_price = Yii::$app->request->post('sellingPrice');
             $model->reorder_level = Yii::$app->request->post('reorderLevel'); 
-            $model->remarks = Yii::$app->request->post('remarks');
+            $model->remarks = strtolower(Yii::$app->request->post('remarks'));
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
 
             if($model->validate()) {
                $model->save();
+
+               $parts_id = Yii::$app->request->post('id');
+
+               PartsType::deleteAll(['parts_id' => $parts_id ]);
+
+               if( !empty(Yii::$app->request->post('partsCategory')) ){
+                    $partsCategory = Yii::$app->request->post('partsCategory');
+
+                    foreach($partsCategory as $uKey => $uRow){
+                        $partstypeModel = new PartsType();
+
+                        $partstypeModel->parts_category_id = $partsCategory[$uKey]['value'];
+                        $partstypeModel->parts_id = $parts_id;
+                        $partstypeModel->status = 1;
+                        $partstypeModel->created_at = date('Y-m-d H:i:s');
+                        $partstypeModel->created_by = Yii::$app->user->identity->id;
+                        $partstypeModel->updated_at = date('Y-m-d H:i:s');
+                        $partstypeModel->updated_by = Yii::$app->user->identity->id;
+                        $partstypeModel->save();
+                    }
+                }
+
                return json_encode(['message' => 'Your record was successfully updated in the database.', 'status' => 'Success']);
 
             } else {
@@ -179,7 +217,6 @@ class PartsController extends Controller
         $data['storage_location_id'] = $getParts->storage_location_id;
         $data['supplier_id'] = $getParts->supplier_id;
         $data['parts_code'] = $getParts->parts_code;
-        $data['parts_category_id'] = $getParts->parts_category_id;
         $data['parts_name'] = $getParts->parts_name;
         $data['unit_of_measure'] = $getParts->unit_of_measure;
         $data['quantity'] = $getParts->quantity;
@@ -190,14 +227,18 @@ class PartsController extends Controller
         $data['remarks'] = $getParts->remarks;
         $data['status'] = $getParts->status;
 
-        return json_encode(['status' => 'Success', 'result' => $data ]);
+        $model = new Parts();
+        $getPartsCategories = $model->getPartsCategory($getParts->id);
+
+        return json_encode(['status' => 'Success', 'result' => $data, 'parts_categories' =>$getPartsCategories ]);
     }
 
     public function actionGetDataForView()
     {  
         $model = new Parts();
         
-        $getParts = $model->getPartsById(Yii::$app->request->get('id')); 
+        $getParts = $model->getPartsById(Yii::$app->request->get('id'));
+        $getPartsCategory = $model->getPartsCategoryByPartsId(Yii::$app->request->get('id')); 
 
         $data = array();
         $data['id'] = $getParts['id'];
@@ -211,11 +252,10 @@ class PartsController extends Controller
         $data['unit_of_measure'] = $getParts['unit_of_measure'];
         $data['remarks'] = $getParts['remarks'];
         $data['status'] = $getParts['status'];
-        $data['parts_category_name'] = $getParts['name'];
         $data['supplier_name'] = $getParts['supplierName'];
         $data['storage_location_name'] = $getParts['storagelocationName'];
 
-        return json_encode(['status' => 'Success', 'result' => $data ]);
+        return json_encode(['status' => 'Success', 'result' => $data, 'parts_categories' => $getPartsCategory ]);
     }
 
     /**

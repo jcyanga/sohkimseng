@@ -70,7 +70,9 @@ class SearchSupplier extends Supplier
         $query->andFilterWhere(['like', 'supplier_code', $this->supplier_code])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'address', $this->address])
-            ->andFilterWhere(['like', 'contact_number', $this->contact_number]);
+            ->andFilterWhere(['like', 'contact_number', $this->contact_number])
+            ->andFilterWhere(['like', 'location', $this->contact_number])
+            ->andFilterWhere(['like', 'remarks', $this->contact_number]);
 
         return $dataProvider;
     }

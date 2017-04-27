@@ -260,7 +260,7 @@ $gridColumns = [
                 <?= $form->field($prcModel, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'name', 'placeholder' => 'Enter Product Category name here.'])->label(false) ?>
 
                 <label class="labelStyle">Description</label>
-                <?= $form->field($prcModel, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'placeholder' => 'Enter Product Category description here.'])->label(false) ?>
+                <?= $form->field($prcModel, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'placeholder' => 'Enter Product Category description here.', 'rows' => 5])->label(false) ?>
 
             <?php ActiveForm::end(); ?>
         </div>
@@ -292,12 +292,18 @@ $gridColumns = [
                 <label class="labelStyle">Supplier Name</label>
                 <?= $form->field($supplierModel, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'name', 'placeholder' => 'Enter Supplier name here.'])->label(false) ?>
 
+                <label class="labelStyle">Location</label>
+                <?= $form->field($supplierModel, 'location')->textInput(['class' => 'inputForm form-control', 'id' => 'location', 'placeholder' => 'Enter Location here.'])->label(false) ?>
+
                 <label class="labelStyle">Address</label>
-                <?= $form->field($supplierModel, 'address')->textarea(['rows' => '3', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'address', 'placeholder' => 'Enter Address here.'])->label(false) ?>
+                <?= $form->field($supplierModel, 'address')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'address', 'placeholder' => 'Enter Address here.'])->label(false) ?>
 
                 <label class="labelStyle">Contact Number</label>
                 <?= $form->field($supplierModel, 'contact_number')->textInput(['class' => 'inputForm form-control', 'id' => 'contactNumber', 'placeholder' => 'Enter Contact number here.'])->label(false) ?>
 
+                <label class="labelStyle">Remarks</label>
+                <?= $form->field($supplierModel, 'remarks')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'remarks', 'placeholder' => 'Enter Remarks here.'])->label(false) ?>
+                
             <?php ActiveForm::end(); ?>
         </div>
 

@@ -22,18 +22,22 @@ use yii\widgets\ActiveForm;
     <br/>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'supplier_code')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Supplier code here.'])->label(false) ?>
+        <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Supplier name here.'])->label(false) ?>
     </div>
 
     <div class="col-md-3">
-        <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Supplier name here.'])->label(false) ?>
+        <?= $form->field($model, 'location')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Supplier location here.'])->label(false) ?>
+    </div>
+
+    <div class="col-md-4">
+        <?= $form->field($model, 'remarks')->textInput(['class' => 'inputForm form-control', 'placeholder' => 'Enter Remarks here.'])->label(false) ?>
     </div>
 
 </div>
 
 <div class="row">
 
-    <div class="col-md-6">
+    <div class="col-md-10">
         <div style="text-align: right;">
             <?= Html::resetButton('<li class=\'fa fa-refresh\'></li> Clear', ['class' => 'formBtn btn btn-default']) ?>
             <?= Html::submitButton('<li class=\'fa fa-search\'></li> Search', ['class' => 'formBtn btn btn-primary']) ?>

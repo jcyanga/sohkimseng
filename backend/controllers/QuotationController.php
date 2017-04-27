@@ -19,6 +19,7 @@ use common\models\Invoice;
 use common\models\InvoiceDetail;
 use common\models\Parts;
 use common\models\PartsInventory;
+use common\models\CustomerContactpersonAddress;
 
 /**
  * QuotationController implements the CRUD actions for Quotation model.
@@ -52,6 +53,10 @@ class QuotationController extends Controller
         $model = new Quotation();
         $customerModel = new Customer();
 
+        $getLastId = $customerModel->getLastId();
+        $yearNow = date('Y');
+        $customerCode = 'CUSTOMER' . $yearNow . sprintf('%005d', $getLastId);
+
         // Last ID and code for quotation code // 
         $quotationId = $model->getQuotationId();
         $yrNow = date('Y');
@@ -60,7 +65,7 @@ class QuotationController extends Controller
         // for date issue //
         $dateNow = date('d-m-Y');
         // get customer list //
-        $dataCustomer = ArrayHelper::map(Customer::find()->where(['status' => 1])->all(),'id', 'fullname');
+        $dataCustomerList = $model->getCustomerList();
         // get user list //
         $dataUser = ArrayHelper::map(User::find()->where('role_id <> 1', ['status' => 1])->all(),'id', 'fullname');
         // get parts //
@@ -74,11 +79,13 @@ class QuotationController extends Controller
                         'model' => $model,
                         'quotationCode' => $quotationCode,
                         'dateNow' => $dateNow,
-                        'dataCustomer' => $dataCustomer,
+                        'dataCustomerList' => $dataCustomerList,
                         'dataUser' => $dataUser,
                         'partsResult' => $partsResult,
                         'servicesResult' => $servicesResult,
                         'customerModel' => $customerModel,
+                        'customerCode' => $customerCode,
+
                     ]);
     }
 
@@ -97,7 +104,7 @@ class QuotationController extends Controller
         // for date issue //
         $dateNow = date('d-m-Y');
         // get customer list //
-        $dataCustomer = ArrayHelper::map(Customer::find()->where('status = 1')->all(),'id', 'fullname');
+        $dataCustomerList = $model->getCustomerList();
         // get user list //
         $dataUser = ArrayHelper::map(User::find()->where('role_id <> 1', ['status' => 1])->all(),'id', 'fullname');
         // get parts //
@@ -111,7 +118,7 @@ class QuotationController extends Controller
             'getQuoteServicesInfo' => $getQuoteServicesInfo,
             'getQuotePartsInfo' => $getQuotePartsInfo,
             'dateNow' => $dateNow,
-            'dataCustomer' => $dataCustomer,
+            'dataCustomerList' => $dataCustomerList,
             'dataUser' => $dataUser,
             'partsResult' => $partsResult,
             'servicesResult' => $servicesResult,
@@ -146,6 +153,7 @@ class QuotationController extends Controller
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
             $model->invoice_created = 0;
+            $model->condition = 0;
             $model->deleted = 0;
 
             if($model->validate()) {
@@ -194,24 +202,42 @@ class QuotationController extends Controller
     {
         $model = new Customer();
 
-        if ( Yii::$app->request->post() ) {
+         if ( Yii::$app->request->post() ) {
             
             $model->type = 1;
+            $model->customer_code = strtolower(Yii::$app->request->post('companyCode'));
             $model->company_name = strtolower(Yii::$app->request->post('companyName'));
+            $model->location = strtolower(Yii::$app->request->post('companyLocation'));
             $model->uen_no = strtolower(Yii::$app->request->post('companyUenNo'));
-            $model->fullname = strtolower(Yii::$app->request->post('companyContactPerson'));
-            $model->address = strtolower(Yii::$app->request->post('companyAddress'));
-            $model->shipping_address = strtolower(Yii::$app->request->post('companyShippingAddress'));
             $model->email = strtolower(Yii::$app->request->post('companyEmail'));
             $model->phone_number = Yii::$app->request->post('companyPhoneNumber');
             $model->mobile_number = Yii::$app->request->post('companyOfficeNumber');
             $model->fax_number = Yii::$app->request->post('companyFaxNumber');
+            $model->remarks = strtolower(Yii::$app->request->post('companyRemarks'));
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
-            $model->created_by = Yii::$app->user->identity->id;
+            $model->created_by = Yii::$app->user->identity->id;            
 
             if($model->validate()) {
                $model->save();
+
+               $contactPerson = Yii::$app->request->post('companyContactPerson');
+               $companyAddress = Yii::$app->request->post('companyAddress');
+
+               foreach($contactPerson as $cKey => $cValue){
+                    
+                    $companyInfo = new CustomerContactpersonAddress();
+                    
+                    $companyInfo->customer_id = $model->id;
+                    $companyInfo->address = $companyAddress[$cKey]['value'];
+                    $companyInfo->contact_person = $contactPerson[$cKey]['value'];
+                    $companyInfo->status = 1;
+                    $companyInfo->created_at = date('Y-m-d H:i:s');
+                    $companyInfo->created_by = Yii::$app->user->identity->id;
+                    $companyInfo->save();
+
+               }
+
                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success', 'id' => $model->id ]);
 
             } else {
@@ -282,6 +308,7 @@ class QuotationController extends Controller
             $model->updated_at = date('Y-m-d H:i:s');
             $model->updated_by = Yii::$app->user->identity->id;
             $model->invoice_created = 0;
+            $model->condition = 0;
             $model->deleted = 0;
 
             if($model->validate()) {
@@ -621,12 +648,14 @@ class QuotationController extends Controller
         $data['uen_no'] = $customerInfo['uen_no'];
         $data['fullname'] = $customerInfo['fullname'];
         $data['nric'] = $customerInfo['nric'];
+        $data['location'] = $customerInfo['location'];
         $data['address'] = $customerInfo['address'];
         $data['shipping_address'] = $customerInfo['shipping_address'];
         $data['email'] = $customerInfo['email'];
         $data['phone_number'] = $customerInfo['phone_number'];
         $data['mobile_number'] = $customerInfo['mobile_number'];
         $data['fax_number'] = $customerInfo['fax_number'];
+        $data['remarks'] = $customerInfo['remarks'];
 
         return json_encode([ 'status' => 'Success', 'result' => $data ]);
     }
@@ -782,5 +811,20 @@ class QuotationController extends Controller
             return json_encode(['status' => 'Success', 'message' => 'Invoice was successfully created.', 'id' => $invoiceId ]);
         }
 
+    }
+
+    public function actionInsertCompanyContactpersonAddress()
+    {
+        $contact_person = Yii::$app->request->post('companyContactPerson');
+        $address = Yii::$app->request->post('companyAddress');
+        $ctr = Yii::$app->request->post('ctr');
+
+        $this->layout = false;
+
+        return $this->render('_insert-company-contactperson-address', [
+                'contact_person' => $contact_person,
+                'address' => $address,
+                'ctr' => $ctr,
+            ]);
     }
 }

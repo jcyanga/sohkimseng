@@ -163,11 +163,17 @@ $gridColumns = [
                 <label class="labelStyle">Supplier Name</label>
                 <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'name', 'placeholder' => 'Enter Supplier name here.'])->label(false) ?>
 
+                <label class="labelStyle">Location</label>
+                <?= $form->field($model, 'location')->textInput(['class' => 'inputForm form-control', 'id' => 'location', 'placeholder' => 'Enter Location here.'])->label(false) ?>
+
                 <label class="labelStyle">Address</label>
                 <?= $form->field($model, 'address')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'address', 'placeholder' => 'Enter Address here.'])->label(false) ?>
 
                 <label class="labelStyle">Contact Number</label>
                 <?= $form->field($model, 'contact_number')->textInput(['class' => 'inputForm form-control', 'id' => 'contactNumber', 'placeholder' => 'Enter Contact number here.'])->label(false) ?>
+
+                <label class="labelStyle">Remarks</label>
+                <?= $form->field($model, 'remarks')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'remarks', 'placeholder' => 'Enter Remarks here.'])->label(false) ?>
 
             <?php ActiveForm::end(); ?>
         </div>
@@ -200,11 +206,17 @@ $gridColumns = [
                 <label class="labelStyle">Supplier Name</label>
                 <?= $form->field($model, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'updateName', 'placeholder' => 'Enter Supplier name here.'])->label(false) ?>
 
+                <label class="labelStyle">Location</label>
+                <?= $form->field($model, 'location')->textInput(['class' => 'inputForm form-control', 'id' => 'updateLocation', 'placeholder' => 'Enter Location here.'])->label(false) ?>
+
                 <label class="labelStyle">Address</label>
                 <?= $form->field($model, 'address')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'updateAddress', 'placeholder' => 'Enter Address here.'])->label(false) ?>
 
                 <label class="labelStyle">Contact Number</label>
                 <?= $form->field($model, 'contact_number')->textInput(['class' => 'inputForm form-control', 'id' => 'updateContactNumber', 'placeholder' => 'Enter Contact number here.'])->label(false) ?>
+
+                <label class="labelStyle">Remarks</label>
+                <?= $form->field($model, 'remarks')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'updateRemarks', 'placeholder' => 'Enter Remarks here.'])->label(false) ?>
 
             <?php ActiveForm::end(); ?>
         </div>

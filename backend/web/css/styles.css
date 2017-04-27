@@ -479,6 +479,12 @@
 	color: #444;
 }
 
+.inputChkbox {
+	font-size: 11px; 
+	color: #444; 
+	text-transform: uppercase;
+}
+
 /* Prview Quotation */
 .branchRowContainer {
 	text-align: center; 

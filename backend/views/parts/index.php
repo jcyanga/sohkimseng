@@ -11,7 +11,7 @@ use common\models\Supplier;
 
 $rows = new Query();
 
-$dataPartsCategory = ArrayHelper::map(PartsCategory::find()->where(['status' => 1])->all(),'id', 'name');
+$dataPartsCategory = PartsCategory::find()->where(['status' => 1])->all();
 $dataSupplier = ArrayHelper::map(Supplier::find()->where(['status' => 1])->all(),'id', 'name');
 $dataStorageLocation = ArrayHelper::map(
                     $rows->select(['concat("[ ", rack," ] ",bay," - ",level," - ",position) as slName', 'id'])
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <hr/>
 
     <?php  echo $this->render('_search', [
-                            'model' => $searchModel, 'dataPartsCategory' => $dataPartsCategory ]); 
+                            'model' => $searchModel ]); 
                         ?>    
     </div>
 
@@ -60,12 +60,6 @@ $gridColumns = [
         'class' => 'yii\grid\SerialColumn',
         'options' => ['style' => 'color: #444']
     ],
-        [
-            'attribute' => 'parts_category_id',
-            'value' => 'partsCategory.name',
-            'header' => 'AUTO_PARTS CATEGORY',
-            'options' => ['style' => 'color: #444']
-        ],
             [
                 'label' => 'AUTO-PARTS CODE',
                 'value' => 'parts_code',
@@ -217,9 +211,15 @@ $gridColumns = [
                 <div class="row">
                     <div class="col-md-12 col-xs-12 col-sm-12">
                         <label class="labelStyle">Auto-Parts Category</label>
-                        <?= $form->field($model, 'parts_category_id')->dropdownList(['0' => '- CHOOSE AUTO-PARTS CATEGORY HERE -'] + $dataPartsCategory,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'partsCategory', 'data-placeholder' => 'PLEASE SELECT CATEGORY HERE' ])->label(false) ?>
+                        <br/>
+
+                        <?php foreach($dataPartsCategory as $pcKey => $pcRow): ?>
+                            <input type="checkbox" name="partsCategory[]" class="minimal partsCategory" id="partsCategory" value="<?= $pcRow['id'] ?>" /> <span class="inputChkbox" ><?= $pcRow['name'] ?></span>&nbsp;
+                        <?php endforeach; ?>
+
                     </div>
                 </div>
+                <br/>
 
                 <div class="row">
                     <div class="col-md-12 col-xs-12 col-sm-12">
@@ -308,9 +308,15 @@ $gridColumns = [
                 <div class="row">
                     <div class="col-md-12 col-xs-12 col-sm-12">
                         <label class="labelStyle">Auto-Parts Category</label>
-                        <?= $form->field($model, 'parts_category_id')->dropdownList(['0' => '- CHOOSE AUTO-PARTS CATEGORY HERE -'] + $dataPartsCategory,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'updatePartsCategory', 'data-placeholder' => 'PLEASE SELECT SUPPLIER HERE' ])->label(false) ?>
+                        <br/>
+
+                        <?php foreach($dataPartsCategory as $pcKey => $pcRow): ?>
+                            <input type="checkbox" name="updatePartsCategory[]" class="minimal updatePartsCategory" id="updatePartsCategory-<?= $pcRow['id'] ?>" value="<?= $pcRow['id'] ?>" /> <span class="inputChkbox" ><?= $pcRow['name'] ?></span>&nbsp;
+                        <?php endforeach; ?>
+
                     </div>
                 </div>
+                <br/>
 
                 <div class="row">
                     <div class="col-md-12 col-xs-12 col-sm-12">
@@ -371,6 +377,10 @@ $gridColumns = [
                 <h5 class="modal-title" id="myModalLabel"><i class="fa fa-desktop"></i> View Parts Information</h5>
             </div>
 
+            <div class="modal-body" id="viewPartsCategory">
+                <!-- Information Content -->
+            </div>
+            
             <div class="modal-body" id="viewParts">
                 <!-- Information Content -->
             </div>

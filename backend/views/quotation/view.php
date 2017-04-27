@@ -85,7 +85,6 @@ $n = 0;
                     <address class="customerRowContainer" >
                         <b>Sold To :</b>
                         <br/><b><?= $getQuoteInfo['company_name'] ?></b> 
-                        <br><?= $getQuoteInfo['address'] ?>
                         <br><b>TEL :</b>  <?= $getQuoteInfo['phone_number'] ?> / <?= $getQuoteInfo['mobile_number'] ?>
                         <br><b>FAX :</b>  <?= $getQuoteInfo['fax_number'] ?>
                         <br><b>ATTN :</b> <?= $getQuoteInfo['customerName'] ?> 
@@ -101,7 +100,6 @@ $n = 0;
                     <address class="customerRowContainer" >
                         <b>Ship To / Remark :</b>
                         <br/><b><?= $getQuoteInfo['company_name'] ?></b> 
-                        <br><?= $getQuoteInfo['shipping_address'] ?>
                         <br><b>TEL :</b>  <?= $getQuoteInfo['phone_number'] ?> / <?= $getQuoteInfo['mobile_number'] ?>
                         <br><b>FAX :</b>  <?= $getQuoteInfo['fax_number'] ?>
                         <br><b>ATTN :</b> <?= $getQuoteInfo['customerName'] ?> 
@@ -194,7 +192,7 @@ $n = 0;
                 <p class="text-muted well well-sm no-shadow quoPreviewRemarks remarksContent" >
                     - <?= $getQuoteInfo['remarks'] ?>
                 </p>
-            <br/>
+                
                 <p class="lead remarksamountdueHeader"><i class="fa fa-comments-o"></i> Discount Remarks.</p>
                 <p class="text-muted well well-sm no-shadow quoPreviewRemarks remarksContent" >
                     - <?= $getQuoteInfo['discount_remarks'] ?>
@@ -298,7 +296,7 @@ $n = 0;
                         <?= $form->field($model, 'payment_type_id')->dropdownList(['0' => ' - PLEASE SELECT PAYMENT TYPE HERE - '] + $dataPaymentType, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'update_paymentType', 'data-placeholder' => 'CHOOSE PAYMENT TYPE HERE'])->label(false) ?>
 
                         <label class="labelStyle"><i class="fa fa-comments"></i> Remarks</label>
-                        <?= $form->field($model, 'remarks')->textarea(['rows' => 4, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'update_remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
+                        <?= $form->field($model, 'remarks')->textarea(['rows' => 5, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'update_remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
                         <br/>
 
                     </div>
@@ -338,7 +336,7 @@ $n = 0;
                         <select name="parts" class="inputForm select2" id="update_parts" style="width: 95%;" onchange="getUpdatePartsPriceAndQty()" data-placeholder="CHOOSE AUTO-PARTS HERE" >
                                 <option value="0"> - PLEASE SELECT AUTO-PARTS HERE - </option>
                             <?php foreach($partsResult as $partsRow): ?>
-                                <option value="<?= $partsRow['id']; ?>" >[<?= $partsRow['name']; ?>] <?= $partsRow['parts_name']; ?> </option>
+                                <option value="<?= $partsRow['id']; ?>" > <?= $partsRow['parts_name']; ?> </option>
                             <?php endforeach; ?>
                         </select>
 
@@ -454,7 +452,7 @@ $n = 0;
 
                 <div class="col-md-8 col-xs-8 col-sm-8">
                     <span class="labelStyle"><i class="fa fa-commenting"></i> Discount Remarks</span>
-                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'update_discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 2 ])->label(false) ?>
+                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'update_discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 5 ])->label(false) ?>
                 </div>
                 <br/>
 

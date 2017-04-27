@@ -10,7 +10,7 @@ use common\models\PartsCategory;
 use common\models\Supplier;
 
 $dataParts = ArrayHelper::map(Parts::find()->where(['status' => 1])->all(),'id', 'parts_name');
-$dataPartsCategory = ArrayHelper::map(PartsCategory::find()->where(['status' => 1])->all(),'id', 'name');
+$dataPartsCategory = PartsCategory::find()->where(['status' => 1])->all();
 $dataSupplier = ArrayHelper::map(Supplier::find()->where(['status' => 1])->all(),'id', 'name');
 
 $supplierCode = 'SUPPLIERS' . '-' .  date('Y') . '-' .  substr(uniqid('', true), -5);
@@ -173,11 +173,17 @@ $gridColumns = [
                 <label class="labelStyle">Supplier Name</label>
                 <?= $form->field($supplierModel, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'name', 'placeholder' => 'Enter Supplier name here.'])->label(false) ?>
 
+                <label class="labelStyle">Location</label>
+                <?= $form->field($supplierModel, 'location')->textInput(['class' => 'inputForm form-control', 'id' => 'location', 'placeholder' => 'Enter Location here.'])->label(false) ?>
+
                 <label class="labelStyle">Address</label>
-                <?= $form->field($supplierModel, 'address')->textarea(['rows' => '3', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'address', 'placeholder' => 'Enter Address here.'])->label(false) ?>
+                <?= $form->field($supplierModel, 'address')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'address', 'placeholder' => 'Enter Address here.'])->label(false) ?>
 
                 <label class="labelStyle">Contact Number</label>
                 <?= $form->field($supplierModel, 'contact_number')->textInput(['class' => 'inputForm form-control', 'id' => 'contactNumber', 'placeholder' => 'Enter Contact number here.'])->label(false) ?>
+
+                <label class="labelStyle">Remarks</label>
+                <?= $form->field($supplierModel, 'remarks')->textarea(['rows' => '5', 'cols' => '2', 'class' => 'inputForm form-control', 'id' => 'remarks', 'placeholder' => 'Enter Remarks here.'])->label(false) ?>
 
             <?php ActiveForm::end(); ?>
         </div>
@@ -207,7 +213,7 @@ $gridColumns = [
                 <?= $form->field($partscategoryModel, 'name')->textInput(['class' => 'inputForm form-control', 'id' => 'name', 'placeholder' => 'Enter Auto-Parts Category name here.'])->label(false) ?>
 
                 <label class="labelStyle">Description</label>
-                <?= $form->field($partscategoryModel, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'placeholder' => 'Enter Auto-Parts Category description here.'])->label(false) ?>
+                <?= $form->field($partscategoryModel, 'description')->textarea(['class' => 'inputForm form-control', 'id' => 'description', 'placeholder' => 'Enter Auto-Parts Category description here.', 'rows' => 5 ])->label(false) ?>
 
             <?php ActiveForm::end(); ?>
         </div>
@@ -250,9 +256,15 @@ $gridColumns = [
                 <div class="row">
                     <div class="col-md-12 col-xs-12 col-sm-12">
                         <label class="labelStyle">Auto-Parts Category</label>
-                        <?= $form->field($partsModel, 'parts_category_id')->dropdownList(['0' => '- CHOOSE AUTO-PARTS CATEGORY HERE -'] + $dataPartsCategory,['style' => 'width: 100%;', 'class' => 'inputForm select2', 'id' => 'partsCategory', 'data-placeholder' => 'PLEASE SELECT SUPPLIER HERE' ])->label(false) ?>
+                        <br/>
+
+                        <?php foreach($dataPartsCategory as $pcKey => $pcRow): ?>
+                            <input type="checkbox" name="partsCategory[]" class="minimal partsCategory" id="partsCategory" value="<?= $pcRow['id'] ?>" /> <span class="inputChkbox" ><?= $pcRow['name'] ?></span>&nbsp;
+                        <?php endforeach; ?>
+
                     </div>
                 </div>
+                <br/>
 
                 <div class="row">
                     <div class="col-md-12 col-xs-12 col-sm-12">
@@ -285,6 +297,13 @@ $gridColumns = [
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-12 col-xs-12 col-sm-12">
+                        <label class="labelStyle">Remarks</label>
+                        <?= $form->field($partsModel, 'remarks')->textarea(['class' => 'inputForm form-control', 'rows' => 5, 'id' => 'remarks', 'placeholder' => 'Enter Remarks here.'])->label(false) ?>
+                    </div>
+                </div>
+                
             <?php ActiveForm::end(); ?>
         </div>
 

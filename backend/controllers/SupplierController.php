@@ -74,8 +74,10 @@ class SupplierController extends Controller
             
             $model->supplier_code = strtolower(Yii::$app->request->post('supplierCode'));
             $model->name = strtolower(Yii::$app->request->post('name'));
+            $model->location = strtolower(Yii::$app->request->post('location'));
             $model->address = strtolower(Yii::$app->request->post('address'));
             $model->contact_number = Yii::$app->request->post('contactNumber');
+            $model->remarks = strtolower(Yii::$app->request->post('remarks'));
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
@@ -112,8 +114,10 @@ class SupplierController extends Controller
             
             $model->supplier_code = strtolower(Yii::$app->request->post('supplierCode'));
             $model->name = strtolower(Yii::$app->request->post('name'));
+            $model->location = strtolower(Yii::$app->request->post('location'));
             $model->address = strtolower(Yii::$app->request->post('address'));
             $model->contact_number = Yii::$app->request->post('contactNumber');
+            $model->remarks = strtolower(Yii::$app->request->post('remarks'));
             $model->status = 1;
             $model->updated_at = date('Y-m-d H:i:s');
             $model->updated_by = Yii::$app->user->identity->id;
@@ -143,8 +147,10 @@ class SupplierController extends Controller
         $data['id'] = $getSuppliers->id;
         $data['supplier_code'] = $getSuppliers->supplier_code;
         $data['name'] = $getSuppliers->name;
+        $data['location'] = $getSuppliers->location;
         $data['address'] = $getSuppliers->address;
         $data['contact_number'] = $getSuppliers->contact_number;
+        $data['remarks'] = $getSuppliers->remarks;
         $data['status'] = $getSuppliers->status;
 
         return json_encode(['status' => 'Success', 'result' => $data ]);

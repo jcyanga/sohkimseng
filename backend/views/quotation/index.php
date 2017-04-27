@@ -9,6 +9,7 @@ use common\models\Supplier;
 use common\models\Race;
 use common\models\PaymentType;
 
+$dataCustomer = ArrayHelper::map($dataCustomerList,'id', 'customerInfo');
 $dataSupplier = ArrayHelper::map(Supplier::find()->where(['status' => 1])->all(),'id', 'name');
 $dataRace = ArrayHelper::map(Race::find()->where(['status' => 1])->all(),'id', 'name');
 $dataPaymentType = ArrayHelper::map(PaymentType::find()->where(['status' => 1])->all(),'id', 'name');
@@ -210,6 +211,14 @@ $gridColumns = [
                 <div id="forCompany">
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label class="labelStyle">Customer Code</label>
+                            <input type="text" name="customer_code" class="inputForm form-control readonlyForm" value = "<?= $customerCode ?>" id="companyCustomerCode" readonly = "readonly" />
+                        </div>
+                    </div>
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Company Name</label>
                             <?= $form->field($customerModel, 'company_name')->textInput(['class' => 'inputForm form-control', 'id' => 'companyName', 'placeholder' => 'Enter Company name here.'])->label(false) ?>
                         </div>
@@ -217,19 +226,33 @@ $gridColumns = [
 
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
-                            <label class="labelStyle">Company Address</label>
-                            <textarea name="company_address" rows="3" class="inputForm form-control" placeholder="Enter Company address here." id="companyAddress" ></textarea>
+                            <label class="labelStyle">Location</label>
+                            <input type="text" name="company_location" class="inputForm form-control" placeholder="Enter Company location here." id="companyLocation" />
                         </div>
                     </div>
                     <br/>
 
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
-                            <label class="labelStyle">Shipping Address</label>
-                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="companyShippingAddress" ></textarea>
+                            <label class="labelStyle">Contact Person</label>
+                            <input type="text" name="contact_person" class="inputForm form-control" placeholder="Enter Contact person here." id="companyContactPerson" />
                         </div>
                     </div>
                     <br/>
+
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label class="labelStyle">Billing Address</label>
+                            <textarea name="company_address" rows="5" class="inputForm form-control" placeholder="Enter Billing address here." id="companyAddress" ></textarea>
+                        </div>
+                        <div style="margin-top: 10px;" class="col-md-3 col-xs-3 col-sm-3 pull-right">
+                            <button type="button" class="formBtn btn btn-block btn-flat btn-info btn-xs" id="btnAddInformation" ><i class="fa fa-plus-circle"></i> Add Information - </button>
+                        </div>
+                    </div>
+                    <hr/>
+
+                    <input type="hidden" id="ctr" value="0" />
+                    <div class="company-contactperson-address" id="company-contactperson-address" ></div>
 
                     <div class="row">
                         <div class="col-md-6 col-xs-6 col-sm-6">
@@ -237,20 +260,15 @@ $gridColumns = [
                             <input type="text" name="uen_no" class="inputForm form-control" placeholder="Enter UEN number here." id="companyUenNo" />
                             <br/>
 
-                            <label class="labelStyle">Contact Person</label>
-                            <input type="text" name="contact_person" class="inputForm form-control" placeholder="Enter Contact person here." id="companyContactPerson" />
-                            <br/>
-
                             <label class="labelStyle">E-mail Address</label>
                             <input type="text" name="company_email" class="inputForm form-control" placeholder="Enter Email address here." id="companyEmail"  />
                             <br/>
+
+                            <label class="labelStyle">Phone Number</label>
+                            <input type="text" name="company_hanphone" class="inputForm form-control" placeholder="Enter Phone number here." id="companyPhoneNumber" />
                         </div>
         
                         <div class="col-md-6 col-xs-6 col-sm-6">
-                            <label class="labelStyle">Phone Number</label>
-                            <input type="text" name="company_hanphone" class="inputForm form-control" placeholder="Enter Phone number here." id="companyPhoneNumber" />
-                            <br/>
-
                             <label class="labelStyle">Office Number</label>
                             <input type="text" name="company_officeno" class="inputForm form-control" placeholder="Enter Office number here." id="companyOfficeNumber" />
                             <br/>
@@ -259,9 +277,25 @@ $gridColumns = [
                             <input type="text" name="company_faxno" class="inputForm form-control" placeholder="Enter Fax number here." id="companyFaxNumber" />
                         </div>
                     </div>
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label class="labelStyle">Remarks</label>
+                            <textarea name="company_remarks" rows="5" class="inputForm form-control" placeholder="Enter Company remarks here." id="companyRemarks" ></textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="forIndividual">
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label class="labelStyle">Customer Code</label>
+                            <input type="text" name="individual_customer_code" class="inputForm form-control readonlyForm" value = "<?= $customerCode ?>" id="individualCustomerCode" readonly = "readonly" />
+                        </div>
+                    </div>
+                    <br/>
+
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Fullname</label>
@@ -271,8 +305,16 @@ $gridColumns = [
 
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
-                            <label class="labelStyle">Personal Address</label>
-                            <textarea name="individual_address" rows="3" class="inputForm form-control" placeholder="Enter Personal address here." id="customerAddress" ></textarea>
+                            <label class="labelStyle">Location</label>
+                            <input type="text" name="update_individual_location" class="inputForm form-control" placeholder="Enter Customer location here." id="updateIndividualLocation" />
+                        </div>
+                    </div>
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label class="labelStyle">Billing Address</label>
+                            <textarea name="individual_address" rows="5" class="inputForm form-control" placeholder="Enter Billing address here." id="customerAddress" ></textarea>
                         </div>
                     </div>
                     <br/>
@@ -280,7 +322,7 @@ $gridColumns = [
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Shipping Address</label>
-                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="customerShippingAddress" ></textarea>
+                            <textarea name="shipping_address" rows="5" class="inputForm form-control" placeholder="Enter Shipping address here." id="customerShippingAddress" ></textarea>
                         </div>
                     </div>
                     <br/>
@@ -310,7 +352,15 @@ $gridColumns = [
                             <label class="labelStyle">Fax Number</label>
                             <input type="text" name="person_faxno" class="inputForm form-control" placeholder="Write Fax number here." id="customerFaxNumber" />
                         </div>
-                    </div>        
+                    </div>     
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label class="labelStyle">Remarks</label>
+                            <textarea name="individual_remarks" rows="5" class="inputForm form-control" placeholder="Enter Customer remarks here." id="customerRemarks" ></textarea>
+                        </div>
+                    </div>     
                 </div>
 
             <?php ActiveForm::end(); ?>
@@ -352,11 +402,11 @@ $gridColumns = [
                         <label class="labelStyle"><i class="fa fa-user-circle-o"></i> Sales Person </label>
                         <?= $form->field($model, 'user_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataUser, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'value' => $salesPerson, 'id' => 'salesPerson', 'data-placeholder' => 'CHOOSE SALES PERSON HERE'])->label(false) ?>
                         
-                        <label class="labelStyle"><i class="fa fa-user-money"></i> Payment Type </label>
+                        <label class="labelStyle"><i class="fa fa-money"></i> Payment Type </label>
                         <?= $form->field($model, 'payment_type_id')->dropdownList(['0' => ' - PLEASE SELECT PAYMENT TYPE HERE - '] + $dataPaymentType, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'paymentType', 'data-placeholder' => 'CHOOSE PAYMENT TYPE HERE'])->label(false) ?>
 
                         <label class="labelStyle"><i class="fa fa-comments"></i> Remarks</label>
-                        <?= $form->field($model, 'remarks')->textarea(['rows' => 4, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
+                        <?= $form->field($model, 'remarks')->textarea(['rows' => 5, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
                         <br/>
 
                     </div>
@@ -367,7 +417,7 @@ $gridColumns = [
                         <?= $form->field($model, 'date_issue')->textInput(['class' => 'transactionForm form-control date_issue', 'id' => 'datepicker', 'value' => $dateNow, 'readonly' => 'readonly'])->label(false) ?>
                         
                         <label class="labelStyle"><i class="fa fa-users"></i> Customer Name</label>
-                        <?= $form->field($model, 'customer_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataCustomer, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'quoteCustomerName', 'data-placeholder' => 'CHOOSE CUSTOMER NAME HERE' ])->label(false) ?>   
+                        <?= $form->field($model, 'customer_id')->dropdownList(['0' => ' - PLEASE SELECT CUSTOMER HERE - '] + $dataCustomer, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'quoteCustomerName', 'data-placeholder' => 'CHOOSE CUSTOMER HERE' ])->label(false) ?>   
                         
                         <div id="customer-information" class="customer-information" ></div>
                         <br/>
@@ -396,7 +446,7 @@ $gridColumns = [
                         <select name="parts" class="inputForm select2" id="parts" style="width: 95%;" onchange="getPartsPriceAndQty()" data-placeholder="CHOOSE AUTO-PARTS HERE" >
                                 <option value="0"> - PLEASE SELECT AUTO-PARTS HERE - </option>
                             <?php foreach($partsResult as $partsRow): ?>
-                                <option value="<?= $partsRow['id']; ?>" >[ <?= $partsRow['name']; ?> ] <?= $partsRow['parts_name']; ?> </option>
+                                <option value="<?= $partsRow['id']; ?>" > <?= $partsRow['parts_name']; ?> </option>
                             <?php endforeach; ?>
                         </select>
 
@@ -512,7 +562,7 @@ $gridColumns = [
 
                 <div class="col-md-8 col-xs-8 col-sm-8">
                     <span class="labelStyle"><i class="fa fa-commenting"></i> Discount Remarks</span>
-                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 2 ])->label(false) ?>
+                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 5 ])->label(false) ?>
                 </div>
                 <br/>
 
@@ -614,7 +664,7 @@ $gridColumns = [
                         <select name="parts" class="inputForm select2" id="update_parts" style="width: 95%;" onchange="getUpdatePartsPriceAndQty()" data-placeholder="CHOOSE AUTO-PARTS HERE" >
                                 <option value="0"> - PLEASE SELECT AUTO-PARTS HERE - </option>
                             <?php foreach($partsResult as $partsRow): ?>
-                                <option value="<?= $partsRow['id']; ?>" >[<?= $partsRow['name']; ?>] <?= $partsRow['parts_name']; ?> </option>
+                                <option value="<?= $partsRow['id']; ?>" > <?= $partsRow['parts_name']; ?> </option>
                             <?php endforeach; ?>
                         </select>
 

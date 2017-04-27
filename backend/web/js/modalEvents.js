@@ -2208,16 +2208,20 @@ $('._showCreateSupplierModal').click(function(){
 	$('label.error').remove();
 
 	$('#name').val('');	
+	$('#location').val('');	
     $('#address').val('');
     $('#contactNumber').val('');
+    $('#remarks').val('');	
 
 });
 
 $('#submitSupplierFormCreate').click(function(){
 	var supplierCode = $('#supplierCode').val();
 	var name = $('#name').val();
+	var location = $('#location').val();
 	var address = $('#address').val();
 	var contactNumber = $('#contactNumber').val();
+	var remarks = $('#remarks').val();
 
 	if( !onlyLetter(name) ) {
 		alert('Invalid supplier name format.');
@@ -2237,8 +2241,10 @@ $('#submitSupplierFormCreate').click(function(){
 	$.post("?r=supplier/create",{
 		supplierCode : supplierCode,
 		name : name,
+		location : location,
 		address : address,
 		contactNumber : contactNumber,
+		remarks : remarks
 
 	}, 
 	function(data) {
@@ -2250,8 +2256,10 @@ $('#submitSupplierFormCreate').click(function(){
 
 		    $('#supplierCode').val('');	
 		    $('#name').val('');	
+		    $('#location').val('');	
 		    $('#address').val('');
 		    $('#contactNumber').val('');
+		    $('#remarks').val('');	
 		    $('#modal-launcher-create-supplier').toggle('fast');
 
 			alert(data.message);
@@ -2312,8 +2320,10 @@ $('._showUpdateSupplierModal').each(function(){
 				$('#supplierFormUpdate').find('input:hidden[name=id]').val(result.id);
 				$('#supplierFormUpdate').find('input:text[id=updateSupplierCode]').val(result.supplier_code.toUpperCase());
 				$('#supplierFormUpdate').find('input:text[id=updateName]').val(result.name.toUpperCase());
+				$('#supplierFormUpdate').find('input:text[id=updateLocation]').val(result.location.toUpperCase());
 				$('#supplierFormUpdate').find('textarea[id=updateAddress]').val(result.address.toUpperCase());
 				$('#supplierFormUpdate').find('input:text[id=updateContactNumber]').val(result.contact_number);
+				$('#supplierFormUpdate').find('textarea[id=updateRemarks]').val(result.remarks.toUpperCase());
 			}
 
 		});
@@ -2326,8 +2336,10 @@ $('#submitSupplierFormUpdate').click(function(){
 	var id = $('#id').val();
 	var supplierCode = $('#updateSupplierCode').val();
 	var name = $('#updateName').val();
+	var location = $('#updateLocation').val();
 	var address = $('#updateAddress').val();
 	var contactNumber = $('#updateContactNumber').val();
+	var remarks = $('#updateRemarks').val();
 
 	if( !onlyLetter(name) ) {
 		alert('Invalid supplier name format.');
@@ -2348,8 +2360,10 @@ $('#submitSupplierFormUpdate').click(function(){
 		id : id,
 		supplierCode : supplierCode,
 		name : name,
+		location : location,
 		address : address,
 		contactNumber : contactNumber,
+		remarks : remarks
 
 	}, 
 	function(data) {
@@ -2362,8 +2376,10 @@ $('#submitSupplierFormUpdate').click(function(){
 		    $('#id').val('');
 		    $('#updateSupplierCode').val('');	
 		    $('#updateName').val('');
+		    $('#updateLocation').val('');
 		    $('#updateAddress').val('');
 		    $('#updateContactNumber').val('');
+		    $('#updateRemarks').val('');
 		    $('#modal-launcher-update-supplier').toggle('fast');
 
 			alert(data.message);
@@ -2465,12 +2481,20 @@ $('._showViewSupplierModal').each(function(){
 							'<td>'+result.name.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
+							'<td><b>LOCATION</b></td>' +
+							'<td>'+result.location.toUpperCase()+'</td>'
+						+'</tr>'+
+						'<tr>'+
 							'<td><b>ADDRESS</b></td>' +
 							'<td>'+result.address.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
 							'<td><b>CONTACT NUMBER</b></td>' +
 							'<td>'+result.contact_number+'</td>'
+						+'</tr>'+
+						'<tr>'+
+							'<td><b>REMARKS</b></td>' +
+							'<td>'+result.remarks.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
 							'<td><b>STATUS</b></td>' +
@@ -2498,8 +2522,10 @@ $('.closeViewSupplier').click(function(e){
 $('#clearSupplierForms').click(function(){
 
 	$('#supplierFormCreate').find('input:text[id=name]').val('');
+	$('#supplierFormCreate').find('input:text[id=location]').val('');
 	$('#supplierFormCreate').find('textarea[id=address]').val('');
 	$('#supplierFormCreate').find('input:text[id=contactNumber]').val('');
+	$('#supplierFormCreate').find('textarea[id=remarks]').val('');
 
 	$('#supplierFormUpdate').find('input:hidden[name=id]').val('');
 	$('#supplierFormUpdate').find('input:text[id=updateName]').val('');
@@ -4018,7 +4044,6 @@ $('._showCreatePartsModal').click(function(){
 
 	$('#storageLocation').val('');	
 	$('#supplier').val('');	
-    $('#partsCategory').val('');
     $('#partsName').val('');
     $('#quantity').val('');
     $('#uom').val('');
@@ -4034,7 +4059,7 @@ $('#submitPartsFormCreate').click(function(){
 	var storageLocation = $('#storageLocation').val();
 	var supplier = $('#supplier').val();
 	var partsCode = $('#partsCode').val();
-	var partsCategory = $('#partsCategory').val();
+	var partsCategory = $('input.partsCategory').serializeArray();
 	var partsName = $('#partsName').val();
 	var quantity = $('#quantity').val();
 	var uom = $('#uom').val();
@@ -4098,7 +4123,7 @@ $('#submitPartsFormCreate').click(function(){
 
 		    $('#storageLocation').val('');
 		    $('#supplier').val('');
-			$('#partsCategory').val('');
+			$('input.partsCategory').prop('unchecked');
 			$('#partsName').val('');
 			$('#quantity').val('');
 			$('#uom').val('');
@@ -4167,7 +4192,6 @@ $('._showUpdatePartsModal').each(function(){
 				$('#partsFormUpdate').find('input:hidden[name=id]').val(result.id);
 				$('#partsFormUpdate').find('select[id=updateStorageLocation]').val(result.storage_location_id).change();
 				$('#partsFormUpdate').find('select[id=updateSupplier]').val(result.supplier_id).change();
-				$('#partsFormUpdate').find('select[id=updatePartsCategory]').val(result.parts_category_id).change();
 				$('#partsFormUpdate').find('input:text[id=updatePartsCode]').val(result.parts_code.toUpperCase());
 				$('#partsFormUpdate').find('input:text[id=updatePartsName]').val(result.parts_name.toUpperCase());
 				$('#partsFormUpdate').find('input:text[id=updateQuantity]').val(parseInt(result.quantity));
@@ -4177,6 +4201,16 @@ $('._showUpdatePartsModal').each(function(){
 				$('#partsFormUpdate').find('input:text[id=updateGstPrice]').val(parseInt(result.gst_price));
 				$('#partsFormUpdate').find('input:text[id=updateSellingPrice]').val(parseFloat(result.selling_price).toFixed(2));
 				$('#partsFormUpdate').find('textarea[id=updateRemarks]').val(result.remarks.toUpperCase());
+			
+				var partsCategory = data.parts_categories;
+
+				$.each(partsCategory, function(key, pcValue){
+					var category_id = pcValue['parts_category_id'];
+					var category_name = pcValue['name'];
+
+					$('#partsFormUpdate').find('input:checkbox[id=updatePartsCategory-'+ category_id +']').prop('checked', true);
+				
+				});
 			}
 
 		});
@@ -4190,7 +4224,7 @@ $('#submitPartsFormUpdate').click(function(){
 	var storageLocation = $('#updateStorageLocation').val();
 	var supplier = $('#updateSupplier').val();
 	var partsCode = $('#updatePartsCode').val();
-	var partsCategory = $('#updatePartsCategory').val();
+	var partsCategory = $('input.updatePartsCategory').serializeArray();
 	var partsName = $('#updatePartsName').val();
 	var quantity = $('#updateQuantity').val();
 	var uom = $('#updateUom').val();
@@ -4256,7 +4290,7 @@ $('#submitPartsFormUpdate').click(function(){
 		    $('#id').val('');
 		    $('#updateStorageLocation').val();
 			$('#updateSupplier').val();
-			$('#updatePartsCategory').val();
+			$('#updatePartsCategory').prop('unchecked');
 			$('#updatePartsName').val();
 			$('#updateQuantity').val();
 			$('#updateUom').val();
@@ -4352,7 +4386,26 @@ $('._showViewPartsModal').each(function(){
 			}
 
 			if( data.status == 'Success' ) {
-				var html = '<table class="table table-hover table-striped viewTableContent">'+
+
+				var partsCategory = data.parts_categories;
+
+				$.each(partsCategory, function(pckey, pcValue){
+					
+					var partsCategoryId = pcValue['parts_category_id'];
+					var partsCategoryName = pcValue['name'];
+
+					var html = '<table class="table table-hover table-striped viewTableContent">'+
+								'<tr>'+
+									'<td style="width: 40%;"><b>AUTO-PARTS CATEGORY NAME</b></td>' +
+									'<td style="width: 60%;"><i class="fa fa-cube"></i> '+ partsCategoryName.toUpperCase() +'</td>'
+								+'</tr>'
+							+'</table>';
+
+						$('#viewPartsCategory').append(html);
+
+				});
+
+				var html = '<table style="margin-top: -25px;" class="table table-hover table-striped viewTableContent">'+
 						'<tr>'+
 							'<td><b>ID</b></td>' +
 							'<td>'+result.id+'</td>'
@@ -4368,10 +4421,6 @@ $('._showViewPartsModal').each(function(){
 						'<tr>'+
 							'<td><b>AUTO-PARTS CODE</b></td>' +
 							'<td>'+result.parts_code.toUpperCase()+'</td>'
-						+'</tr>'+
-						'<tr>'+
-							'<td><b>AUTO-PARTS CATEGORY</b></td>' +
-							'<td>'+result.parts_category_name.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
 							'<td><b>AUTO-PARTS NAME</b></td>' +
