@@ -9,6 +9,7 @@ use common\models\Supplier;
 use common\models\Race;
 use common\models\PaymentType;
 
+$dataCustomer = ArrayHelper::map($dataCustomerList,'id', 'customerInfo');
 $dataSupplier = ArrayHelper::map(Supplier::find()->where(['status' => 1])->all(),'id', 'name');
 $dataRace = ArrayHelper::map(Race::find()->where(['status' => 1])->all(),'id', 'name');
 $dataPaymentType = ArrayHelper::map(PaymentType::find()->where(['status' => 1])->all(),'id', 'name');
@@ -47,45 +48,68 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="row containerContentWrapper">
 <?php
 $gridColumns = [
-    ['class' => 'yii\grid\SerialColumn'],
-        'invoice_no',
-        'date_issue',
+    [
+        'class' => 'yii\grid\SerialColumn',
+        'options' => ['style' => 'color: #444']
+    ],
+        [
+            'label' => 'DELIVERY ORDER CODE',
+            'value' => 'delivery_order_code',
+            'options' => ['style' => 'color: #444']
+        ],
+        [
+            'label' => 'DATE ISSUE',
+            'value' => 'date_issue',
+            'options' => ['style' => 'color: #444']
+        ],
         [
             'attribute' => 'customer_id',
-            'value' => 'customer.fullname',
-            'label' => 'Customer Name'
+            'value' => ('customer.type' == 2)? 'customer.fullname' : 'customer.company_name',
+            'header' => 'CUSTOMER NAME',
+            'options' => ['style' => 'color: #444']
         ],
         [
-            'attribute' => 'user_id',
-            'value' => 'user.fullname',
-            'label' => 'Sales Person'
-        ],
-        [
-            'attribute' => 'condition',
+            'header' => 'STATUS',
+            'options' => ['style' => 'color: #444'],
             'value' => function($model)
             {   
                 switch($model->condition){
                     case 1:
-                        return 'Approved Deliver Order';
+                        return 'Approved Delivery Order';
                     break;
 
                     case 2:
-                        return 'Cancelled Deliver Order';
+                        return 'Cancelled Delivery Order';
                     break;
 
                     case 3:
-                        return 'Closed Deliver Order';
+                        return 'Closed Delivery Order';
                     break;
 
                     default:
-                        return 'Pending Deliver Order';
+                        return 'Pending Delivery Order';
                 }
-            },
-            'label' => 'Condition',
+            }
+        ],
+        [
+            'header' => 'PAYMENT STATUS',
+            'options' => ['style' => 'color: #444'],
+            'value' => function($model)
+            {   
+                if($model->paid){
+                    return 'Paid';
+
+                }else{
+                    return 'Not yet';
+
+                }
+            }
         ],
 
     [
         'class' => 'yii\grid\ActionColumn',
+        'header' => 'ACTION',
+        'options' => ['style' => 'color: #444'],
         'template' => '{preview}{update}{delete}',
         'buttons' => [
             'preview' => function ($url, $model) {
@@ -93,8 +117,14 @@ $gridColumns = [
                 ]);
             },
             'update' => function ($url, $model) {
-                return Html::a(' <span class="glyphicon glyphicon-pencil"></span> ', $url, ['class' => '_showUpdateDeliveryOrderModal', 'id' => $model->id, 'title' => Yii::t('app', 'Update'),
-                ]);
+                if($model->condition == 0 && $model->paid == 0){
+                    return Html::a(' <span class="glyphicon glyphicon-pencil"></span> ', $url, ['class' => '_showUpdateDeliveryOrderModal', 'id' => $model->id, 'title' => Yii::t('app', 'Update'),
+                    ]);
+
+                }else{
+                    return false;
+
+                }
             },
             'delete' => function ($url, $model) {
                 return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, ['class' => 'deliveryorderDeleteColumn', 'id' => $model->id, 'title' => Yii::t('app', 'Delete'),
@@ -103,7 +133,7 @@ $gridColumns = [
         ],
         'urlCreator' => function ($action, $model, $key, $index) {
             if ($action === 'preview') {
-                $url ='#';
+                $url ='?r=delivery-order/view&id='.$model->id;
                 return $url;
             }   
             if ($action === 'update') {
@@ -140,13 +170,13 @@ $gridColumns = [
             'class' => 'table table-hover',
             'dataProvider' => $dataProvider,
             'columns' => $gridColumns,
-            'showFooter'=>true,
+            'showFooter'=> false,
         ]); 
     ?>
-</div>
 <br/>
+</div>
 
-<div class="col-md-12 col-sm-12 col-xs-12">
+<!-- <div class="col-md-12 col-sm-12 col-xs-12">
 <div class="row">
 
 <div class="col-md-4 pull-right">
@@ -166,7 +196,7 @@ $gridColumns = [
 </div>
 <br/><br/>
 
-</div>
+</div> -->
 
 </div>
 
@@ -193,6 +223,14 @@ $gridColumns = [
                 <div id="forCompany">
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label class="labelStyle">Customer Code</label>
+                            <input type="text" name="customer_code" class="inputForm form-control readonlyForm" value = "<?= $customerCode ?>" id="companyCustomerCode" readonly = "readonly" />
+                        </div>
+                    </div>
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Company Name</label>
                             <?= $form->field($customerModel, 'company_name')->textInput(['class' => 'inputForm form-control', 'id' => 'companyName', 'placeholder' => 'Enter Company name here.'])->label(false) ?>
                         </div>
@@ -200,19 +238,29 @@ $gridColumns = [
 
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
-                            <label class="labelStyle">Company Address</label>
-                            <textarea name="company_address" rows="3" class="inputForm form-control" placeholder="Enter Company address here." id="companyAddress" ></textarea>
+                            <label class="labelStyle">Location</label>
+                            <input type="text" name="company_location" class="inputForm form-control" placeholder="Enter Company location here." id="companyLocation" />
                         </div>
                     </div>
                     <br/>
 
+                    <label class="labelStyle">Contact Person</label>
+                    <input type="text" name="contact_person" class="inputForm form-control" placeholder="Enter Contact person here." id="companyContactPerson" />
+                    <br/>
+
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
-                            <label class="labelStyle">Shipping Address</label>
-                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="companyShippingAddress" ></textarea>
+                            <label class="labelStyle">Billing Address</label>
+                            <textarea name="company_address" rows="5" class="inputForm form-control" placeholder="Enter Billing address here." id="companyAddress" ></textarea>
+                        </div>
+                        <div style="margin-top: 10px;" class="col-md-3 col-xs-3 col-sm-3 pull-right">
+                            <button type="button" class="formBtn btn btn-block btn-flat btn-info btn-xs" id="btnDOAddInformation" ><i class="fa fa-plus-circle"></i> Add Information - </button>
                         </div>
                     </div>
-                    <br/>
+                    <hr/>
+
+                    <input type="hidden" id="ctr" value="0" />
+                    <div class="company-contactperson-address" id="company-contactperson-address" ></div>
 
                     <div class="row">
                         <div class="col-md-6 col-xs-6 col-sm-6">
@@ -220,20 +268,15 @@ $gridColumns = [
                             <input type="text" name="uen_no" class="inputForm form-control" placeholder="Enter UEN number here." id="companyUenNo" />
                             <br/>
 
-                            <label class="labelStyle">Contact Person</label>
-                            <input type="text" name="contact_person" class="inputForm form-control" placeholder="Enter Contact person here." id="companyContactPerson" />
-                            <br/>
-
                             <label class="labelStyle">E-mail Address</label>
                             <input type="text" name="company_email" class="inputForm form-control" placeholder="Enter Email address here." id="companyEmail"  />
                             <br/>
+
+                            <label class="labelStyle">Phone Number</label>
+                            <input type="text" name="company_hanphone" class="inputForm form-control" placeholder="Enter Phone number here." id="companyPhoneNumber" />
                         </div>
         
                         <div class="col-md-6 col-xs-6 col-sm-6">
-                            <label class="labelStyle">Phone Number</label>
-                            <input type="text" name="company_hanphone" class="inputForm form-control" placeholder="Enter Phone number here." id="companyPhoneNumber" />
-                            <br/>
-
                             <label class="labelStyle">Office Number</label>
                             <input type="text" name="company_officeno" class="inputForm form-control" placeholder="Enter Office number here." id="companyOfficeNumber" />
                             <br/>
@@ -242,9 +285,25 @@ $gridColumns = [
                             <input type="text" name="company_faxno" class="inputForm form-control" placeholder="Enter Fax number here." id="companyFaxNumber" />
                         </div>
                     </div>
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label class="labelStyle">Remarks</label>
+                            <textarea name="company_remarks" rows="5" class="inputForm form-control" placeholder="Enter Company remarks here." id="companyRemarks" ></textarea>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="forIndividual">
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label class="labelStyle">Customer Code</label>
+                            <input type="text" name="individual_customer_code" class="inputForm form-control readonlyForm" value = "<?= $customerCode ?>" id="individualCustomerCode" readonly = "readonly" />
+                        </div>
+                    </div>
+                    <br/>
+
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Fullname</label>
@@ -253,9 +312,8 @@ $gridColumns = [
                     </div>
 
                     <div class="row">
-                        <div class="col-md-12 col-xs-12 col-sm-12">
-                            <label class="labelStyle">Personal Address</label>
-                            <textarea name="individual_address" rows="3" class="inputForm form-control" placeholder="Enter Personal address here." id="customerAddress" ></textarea>
+                        <div class="col-md-12 col-xs-12 Billing Address</label>
+                            <textarea name="individual_address" rows="5" class="inputForm form-control" placeholder="Enter Billing address here." id="customerAddress" ></textarea>
                         </div>
                     </div>
                     <br/>
@@ -263,7 +321,7 @@ $gridColumns = [
                     <div class="row">
                         <div class="col-md-12 col-xs-12 col-sm-12">
                             <label class="labelStyle">Shipping Address</label>
-                            <textarea name="shipping_address" rows="3" class="inputForm form-control" placeholder="Enter Shipping address here." id="customerShippingAddress" ></textarea>
+                            <textarea name="shipping_address" rows="5" class="inputForm form-control" placeholder="Enter Shipping address here." id="customerShippingAddress" ></textarea>
                         </div>
                     </div>
                     <br/>
@@ -293,7 +351,15 @@ $gridColumns = [
                             <label class="labelStyle">Fax Number</label>
                             <input type="text" name="person_faxno" class="inputForm form-control" placeholder="Write Fax number here." id="customerFaxNumber" />
                         </div>
-                    </div>        
+                    </div>    
+                    <br/>
+
+                    <div class="row">
+                        <div class="col-md-12 col-xs-12 col-sm-12">
+                            <label class="labelStyle">Remarks</label>
+                            <textarea name="individual_remarks" rows="5" class="inputForm form-control" placeholder="Enter Customer remarks here." id="customerRemarks" ></textarea>
+                        </div>
+                    </div>    
                 </div>
 
             <?php ActiveForm::end(); ?>
@@ -335,11 +401,11 @@ $gridColumns = [
                         <label class="labelStyle"><i class="fa fa-user-circle-o"></i> Sales Person </label>
                         <?= $form->field($model, 'user_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataUser, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'sales_person', 'data-placeholder' => 'CHOOSE SALES PERSON HERE'])->label(false) ?>
                         
-                        <label class="labelStyle"><i class="fa fa-user-money"></i> Payment Type </label>
+                        <label class="labelStyle"><i class="fa fa-money"></i> Payment Type </label>
                         <?= $form->field($model, 'payment_type_id')->dropdownList(['0' => ' - PLEASE SELECT PAYMENT TYPE HERE - '] + $dataPaymentType, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'paymentType', 'data-placeholder' => 'CHOOSE PAYMENT TYPE HERE'])->label(false) ?>
 
                         <label class="labelStyle"><i class="fa fa-comments"></i> Remarks</label>
-                        <?= $form->field($model, 'remarks')->textarea(['rows' => 4, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
+                        <?= $form->field($model, 'remarks')->textarea(['rows' => 5, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
                         <br/>
 
                     </div>
@@ -379,7 +445,7 @@ $gridColumns = [
                         <select name="parts" class="inputForm select2" id="parts" style="width: 95%;" onchange="getPartsPriceAndQtyDeliveryOrder()" data-placeholder="CHOOSE AUTO-PARTS HERE" >
                                 <option value="0"> - PLEASE SELECT AUTO-PARTS HERE - </option>
                             <?php foreach($partsResult as $partsRow): ?>
-                                <option value="<?= $partsRow['id']; ?>" >[ <?= $partsRow['name']; ?> ] <?= $partsRow['parts_name']; ?> </option>
+                                <option value="<?= $partsRow['id']; ?>" > <?= $partsRow['parts_name']; ?> </option>
                             <?php endforeach; ?>
                         </select>
 
@@ -431,7 +497,7 @@ $gridColumns = [
                         <br/><br/>
 
                         <input type="hidden" id="serviceCategory" class="serviceCategory" />
-                        <textarea class="transactionTxtAreaForm form-control editFormServiceDetails hidden" id="editFormServiceDetails" placeholder="Write service details"></textarea>
+                        <textarea class="transactionTxtAreaForm form-control editFormServiceDetails hidden" rows="5" id="editFormServiceDetails" placeholder="Write service details"></textarea>
 
                         <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-database"></i> Quantity</label>
                         <input type="text" name="servicesQty" id="servicesQty" class="transactionForm inputboxWidth form-control" onchange="updateServicesSubtotalDeliveryOrder()" placeholder="0" />
@@ -495,7 +561,7 @@ $gridColumns = [
 
                 <div class="col-md-8 col-xs-8 col-sm-8">
                     <span class="labelStyle"><i class="fa fa-commenting"></i> Discount Remarks</span>
-                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 2 ])->label(false) ?>
+                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 5 ])->label(false) ?>
                 </div>
                 <br/>
 
@@ -523,4 +589,224 @@ $gridColumns = [
 
         </div>
     </div>
+</div>
+
+<!-- Update Delivery Order -->
+<div class="modal fade modalBackground" id="modal-launcher-update-delivery-order" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+    <div class="modal-dialog modalInventoryDesign" >
+        <div class="modal-content"> 
+            <div class="modal-header">
+                <button type="button" class="close closeUpdateDeliveryOrder" >&times;</button>
+                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Edit Delivery Order Form </h5>
+            </div>
+
+       <div class="modal-body">
+            <?php $form = ActiveForm::begin(['method' => 'post', 'id' => 'deliveryorderFormUpdate']); ?>
+                
+                <div class="row informationsContainer">
+                
+                <div class="headerLabelContainer" >
+                    <span class="headerLabel" > <i class="fa fa-info-circle"></i> Customer Information</span>
+                </div>
+                <br/>
+
+                    <div class="col-md-6">
+                        <input type="hidden" id="delivery_order_id" class="delivery_order_id" />
+
+                        <label class="labelStyle"><i class="fa fa-barcode"></i> Delivery Order Code</label>
+                        <?= $form->field($model, 'delivery_order_code')->textInput(['class' => 'transactionForm form-control', 'id' => 'update_delivery_order_code', 'readonly' => 'readonly'])->label(false) ?>
+
+                        <label class="labelStyle"><i class="fa fa-user-circle-o"></i> Sales Person </label>
+                        <?= $form->field($model, 'user_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataUser, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'value' => $salesPerson, 'id' => 'update_sales_person', 'data-placeholder' => 'CHOOSE SALES PERSON HERE'])->label(false) ?>
+                        
+                        <label class="labelStyle"><i class="fa fa-money"></i> Payment Type </label>
+                        <?= $form->field($model, 'payment_type_id')->dropdownList(['0' => ' - PLEASE SELECT PAYMENT TYPE HERE - '] + $dataPaymentType, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'update_paymentType', 'data-placeholder' => 'CHOOSE PAYMENT TYPE HERE'])->label(false) ?>
+
+                        <label class="labelStyle"><i class="fa fa-comments"></i> Remarks</label>
+                        <?= $form->field($model, 'remarks')->textarea(['rows' => 5, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'update_remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
+                        <br/>
+
+                    </div>
+
+                    <div class="col-md-6">
+                        
+                        <label class="labelStyle"><i class="fa fa-calendar-plus-o"></i> Date Issue</label>
+                        <?= $form->field($model, 'date_issue')->textInput(['class' => 'transactionForm form-control update_date_issue', 'id' => 'datepicker', 'value' => $dateNow, 'readonly' => 'readonly'])->label(false) ?>
+                        
+                        <label class="labelStyle"><i class="fa fa-users"></i> Customer Name</label>
+                        <?= $form->field($model, 'customer_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataCustomer, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'update_customer', 'data-placeholder' => 'CHOOSE CUSTOMER NAME HERE' ])->label(false) ?>   
+                        
+                        <div id="update-delivery-order-customer-information" class="update-delivery-order-customer-information" ></div>
+                        <br/>
+
+                    </div>
+
+                </div>
+                <br/><br/>
+
+                <div class="row informationsContainer">
+                
+                <div class="headerLabelContainer" >
+                    <span class="headerLabel" > <i class="fa fa-subway"></i> Auto-Parts and Service Information</span>
+                </div>
+                    
+                    <div class="col-md-4 modalInventoryDesignRside">
+                    <br/>
+
+                        <div class="headerLabelContainer" >
+                            <span class="headerLabel" > <i class="fa fa-chain"></i> Auto-Parts Information</span>
+                        </div>
+                        <br/>
+
+                        <label class="labelStyle labelAlignment"><i class="fa fa-wrench"></i> Auto-Parts</label>
+                        <br/>
+                        <select name="parts" class="inputForm select2" id="update_parts" style="width: 95%;" onchange="getUpdatePartsPriceAndQtyDeliveryOrder()" data-placeholder="CHOOSE AUTO-PARTS HERE" >
+                                <option value="0"> - PLEASE SELECT AUTO-PARTS HERE - </option>
+                            <?php foreach($partsResult as $partsRow): ?>
+                                <option value="<?= $partsRow['id']; ?>" > <?= $partsRow['parts_name']; ?> </option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-database"></i> Quantity</label>
+                        <input type="text" name="partsQty" id="update_partsQty" class="transactionForm inputboxWidth form-control" onchange="editPartsSubtotalDeliveryOrder()" placeholder="0" />
+                        <input type="hidden" id="currentUpdateQtyValue" class="currentUpdateQtyValue" />
+                        <label class="labelStyle inputboxAlignment labelAlignment" id="currentDOQtyStyle" >*Current Stock : </label> <span class="currentDOQtyContent" id="currentUpdateQty" >0</span>
+                        <br/>
+
+                        <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-gg-circle"></i> Unit-Price</label>
+                        <input type="text" name="partsPrice" id="update_partsPrice" class="transactionForm inputboxWidth form-control" onchange="editPartsSubtotalDeliveryOrder()" placeholder="$ 0.00" readonly/>
+
+                        <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-dollar"></i> Sub-Total</label>
+                        <input type="text" name="partsSubtotal" id="update_partsSubtotal" class="transactionForm inputboxWidth form-control" placeholder="$ 0.00" readonly/>
+
+                        <div class="btnAlignment pull-right" > 
+                            <button type="button" class=" formBtn btn btn-success btn-sm btn-flat autoparts_update_delivery_order" >
+                                <i class="fa fa-cart-plus"></i> <b> - Insert Item in List - </b> 
+                            </button>
+                        </div>
+
+                        <input type="hidden" id="n" class="n" value="0" />
+
+                        <div class="headerLabelContainer servicesContainerAlignment" >
+                            <span class="headerLabel" > <i class="fa fa-tachometer"></i> Services Information</span>
+                        </div>
+                        <br/>
+                        
+                        <label class="labelStyle labelAlignment"><i class="fa fa-wheelchair-alt"></i> Services</label>
+                        <br/>
+                        <select name="services" class="inputForm selectboxWidth select2" id="update_services" style="width: 95%;" onchange="getUpdateServicesPriceAndQtyDeliveryOrder()" data-placeholder="CHOOSE SERVICES HERE" >
+                                 <option value="0"> - PLEASE SELECT SERVICES HERE - </option>
+                            <?php foreach($servicesResult as $servicesRow): ?>
+                                <option value="<?= $servicesRow['id']; ?>">[ <?= $servicesRow['name']; ?> ] <?= $servicesRow['service_name']; ?> </option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <span class="pull-right btn btn-link" id="updateServiceDetailsBtn" style="font-size: 11px;">
+                            <a href="javascript:editServiceDetailsDeliveryOrder()" class="selectedBtns" >
+                                <b><i class="fa fa-pencil"></i> Update Service Details</b>
+                            </a>
+                        </span>
+
+                        <span class="pull-right btn btn-link hidden" id="saveUpdateServiceDetailsBtn" style="font-size: 11px;">
+                            <a href="javascript:saveUpdateServiceDetailsDeliveryOrder()" class="selectedBtns" >
+                                <b><i class="fa fa-save"></i> Save Service Details</b>
+                            </a>
+                        </span>
+                        <br/><br/>
+
+                        <input type="hidden" id="serviceCategoryUpdate" class="serviceCategoryUpdate" />
+                        <textarea class="transactionTxtAreaForm form-control updateFormServiceDetails hidden" id="updateFormServiceDetails" placeholder="Write service details"></textarea>
+
+                        <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-database"></i> Quantity</label>
+                        <input type="text" name="servicesQty" id="update_servicesQty" class="transactionForm inputboxWidth form-control" onchange="editServicesSubtotalDeliveryOrder()" placeholder="0" />
+
+                        <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-gg-circle"></i> Unit-Price</label>
+                        <input type="text" name="servicesPrice" id="update_servicesPrice" class="transactionForm inputboxWidth form-control" onchange="editServicesSubtotalDeliveryOrder()" placeholder="$ 0.00" />
+
+                        <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-dollar"></i> Sub-Total</label>
+                        <input type="text" name="servicesSubtotal" id="update_servicesSubtotal" class="transactionForm inputboxWidth form-control" placeholder="$ 0.00" readonly/>
+                        
+                        <div class="btnAlignment pull-right" > 
+                            <button type="button" class=" formBtn btn btn-danger btn-sm btn-flat services_update_delivery_order" >
+                                <i class="fa fa-cart-plus"></i> <b> - Insert Item in List - </b> 
+                            </button>
+                            <br/><br/>
+                        </div>
+                
+
+                    </div>
+
+                     <div class="col-md-8 modalInventoryDesignLside">
+                     <br/>
+
+                        <div class="update-item-in-list-delivery-order selectedItemContainer" id="update-item-in-list-delivery-order">
+                            <div class="selectedItemContent">
+                               <span class="selectedItemLabel" >
+                                    <i class="fa fa-opencart"></i> Selected Auto-Parts & Services
+                                </span>
+                            </div>  
+                            <hr/>
+                        </div>
+                        <br/>
+
+                        <div class="pull-right" style="width: 25%;">
+                            <span class="labelStyle"><center><b><i class="fa fa-dedent"></i> Gross Total </b></center></span>
+                            <?= $form->field($model, 'grand_total')->textInput(['class' => 'inputForm inputboxTotalAlignment form-control', 'id' => 'update_grandTotal', 'placeholder' => '$ 0.00', 'readonly' => 'readonly'])->label(false) ?>
+
+                            <span class="labelStyle"><center><b><i class="fa fa-percent"></i> GST </b></center></span>
+                            <?= $form->field($model, 'gst')->textInput(['class' => 'inputForm inputboxTotalAlignment form-control', 'id' => 'update_gst', 'onchange' => 'getUpdateNetTotal()', 'value' => '0', 'placeholder' => '0.00'])->label(false) ?>
+                            <input type="hidden" id="update_gst_amount" class="update_gst_amount" />
+
+                            <span class="labelStyle"><center><b><i class="fa fa-globe"></i> Nett Total </b></center></span>
+                            <?= $form->field($model, 'net')->textInput(['class' => 'inputForm inputboxTotalAlignment form-control', 'id' => 'update_netTotal', 'placeholder' => '$ 0.00', 'readonly' => 'readonly'])->label(false) ?>
+                        </div>
+                    </div>
+
+                </div>
+                <br/>
+
+                <div class="row informationsContainer">
+                
+                <div class="headerLabelContainer" >
+                    <span class="headerLabel" > <i class="fa fa-battery-1"></i> Discount Information</span>
+                </div>
+                <br/>
+
+                <div class="col-md-4 col-xs-4 col-sm-4">
+                    <label class="labelStyle"><i class="fa fa-minus-circle"></i> Discount Amount</label>
+                    <?= $form->field($model, 'discount_amount')->textInput(['class' => 'inputForm form-control', 'id' => 'update_discountAmount', 'placeholder' => 'Write Discount amount here.', 'readonly' => 'readonly' ])->label(false) ?>
+                </div>
+
+                <div class="col-md-8 col-xs-8 col-sm-8">
+                    <span class="labelStyle"><i class="fa fa-commenting"></i> Discount Remarks</span>
+                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'update_discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 5 ])->label(false) ?>
+                </div>
+                <br/>
+
+                <div class="col-md-12 col-xs-12 col-sm-12">
+                    <div style="margin-top: -1px;">
+                        <button type="button" class="btnUpdateDiscount formBtn btn btn-info pull-right" id="btnUpdateDiscount" ><i class="fa fa-battery-4"></i> Add Discount - </button>
+                        <button type="button" class="submitUpdateDiscount formBtn btn btn-primary pull-right hidden" id="submitUpdateDiscount"><i class="fa fa-save"></i> Save Discount - </button>
+                        <button type="button" class="clearUpdateDiscount formBtn btn btn-danger pull-right hidden" id="clearUpdateDiscount"><i class="fa fa-refresh"></i> Cancel - </button>
+                    </div>
+                </div>
+                <br/>
+
+                <div class="col-md-12 col-xs-12 col-sm-12"><br/></div>
+
+                </div>
+                
+            <?php ActiveForm::end(); ?>
+        </div>
+
+        <div class="modal-footer">
+            <?= Html::button('<li class=\'fa fa-refresh\'></li> Clear', ['id' => 'clearPIForms', 'class' => 'formBtn btn btn-default']) ?>
+            <?= Html::submitButton('<li class=\'fa fa-paper-plane-o\'></li> Save Delivery Order', ['id' => 'saveUpdateDeliveryOrderForm', 'class' => 'formBtn btn btn-primary']) ?>
+        </div>
+        <br/>
+
+        </div>
+    </div>
+</div>
+
 </div>

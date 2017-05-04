@@ -9,6 +9,7 @@ use common\models\Supplier;
 use common\models\Race;
 use common\models\PaymentType;
 
+$dataCustomer = ArrayHelper::map($dataCustomerList,'id', 'customerInfo');
 $dataSupplier = ArrayHelper::map(Supplier::find()->where(['status' => 1])->all(),'id', 'name');
 $dataRace = ArrayHelper::map(Race::find()->where(['status' => 1])->all(),'id', 'name');
 $dataPaymentType = ArrayHelper::map(PaymentType::find()->where(['status' => 1])->all(),'id', 'name');
@@ -40,7 +41,6 @@ $n = 0;
         <?php if( $getQuoteInfo['invoice_created'] == 1 ): ?>
             <div class="row">    
                 <div class="col-md-12 invoice-col">
-                <br/>
                     <h3><b> <i class="fa fa-ioxhost"></i> INVOICE <i class="fa fa-contao"></i>REATED </b></h3>
                 </div>
             </div>
@@ -234,21 +234,25 @@ $n = 0;
             <div class="col-md-12">
                 
                 <?php if($roleId <= 2): ?>
-                    <a class="quotationApproveColumn" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-primary btn-sm" ><i class="fa fa-check-circle"></i> Approve</button></a>
-
-                    <a class="quotationCancelColumn" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-danger btn-sm" ><i class="fa fa-times-circle"></i> Cancel</button></a>
+                    <?php if( $getQuoteInfo['condition'] == 0 ): ?>
+                        <a class="quotationApproveColumn" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-primary btn-sm" ><i class="fa fa-check-circle"></i> Approve</button></a>
+                    <?php endif; ?>
 
                     <?php if( $getQuoteInfo['condition'] == 1 ): ?>
-                        <a class="quotationCloseColumn" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-success btn-sm" ><i class="fa fa-minus-circle"></i> Close</button></a>
+                        <a class="quotationCloseColumn" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-primary btn-sm" ><i class="fa fa-minus-circle"></i> Close</button></a>
                     <?php endif; ?>
+
+                    <a class="quotationCancelColumn" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-danger btn-sm" ><i class="fa fa-times-circle"></i> Cancel</button></a>
                 <?php endif; ?>
-                
-                <!-- <a class="quotationDeleteColumn" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-danger btn-sm" style=""><i class="fa fa-trash"></i> Delete Quotation</button></a> -->
 
                 <div class="pull-right">
-                    <a class="_showUpdateQuotationModal" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-warning btn-sm"><i class="fa fa-edit"></i> Update Quotation</button></a>
+                    <?php if( $getQuoteInfo['condition'] == 0 && $getQuoteInfo['invoice_created'] == 0): ?>
+                        <a class="_showUpdateQuotationModal" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-warning btn-sm"><i class="fa fa-edit"></i> Update Quotation</button></a>
+                    <?php endif; ?>
                     
-                    <a class="_quotationInsertIntoInvoice" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-info btn-sm"><i class="fa fa-pencil-square-o"></i> Generate Invoice</button></a>
+                    <?php if( $getQuoteInfo['condition'] == 1 && $getQuoteInfo['invoice_created'] == 0): ?>
+                        <a class="_quotationInsertIntoInvoice" id="<?= $getQuoteInfo['id'] ?>" ><button class="form-btn btn btn-info btn-sm"><i class="fa fa-pencil-square-o"></i> Generate Invoice</button></a>
+                    <?php endif; ?>
 
                     <a href="?r=quotation/preview&id=<?= $getQuoteInfo['id'] ?>"><button class="form-btn btn btn-success btn-sm " ><i class="fa fa-print"></i> Print Quotation</button></a>
 
@@ -270,7 +274,7 @@ $n = 0;
         <div class="modal-content"> 
             <div class="modal-header">
                 <button type="button" class="close closeUpdateQuotation" >&times;</button>
-                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Update Quotation Form </h5>
+                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Edit Quotation Form </h5>
             </div>
 
         <div class="modal-body">
@@ -292,7 +296,7 @@ $n = 0;
                         <label class="labelStyle"><i class="fa fa-user-circle-o"></i> Sales Person </label>
                         <?= $form->field($model, 'user_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataUser, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'value' => $salesPerson, 'id' => 'update_sales_person', 'data-placeholder' => 'CHOOSE SALES PERSON HERE'])->label(false) ?>
                         
-                        <label class="labelStyle"><i class="fa fa-user-money"></i> Payment Type </label>
+                        <label class="labelStyle"><i class="fa fa-money"></i> Payment Type </label>
                         <?= $form->field($model, 'payment_type_id')->dropdownList(['0' => ' - PLEASE SELECT PAYMENT TYPE HERE - '] + $dataPaymentType, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'update_paymentType', 'data-placeholder' => 'CHOOSE PAYMENT TYPE HERE'])->label(false) ?>
 
                         <label class="labelStyle"><i class="fa fa-comments"></i> Remarks</label>
@@ -388,7 +392,7 @@ $n = 0;
                         <br/><br/>
 
                         <input type="hidden" id="serviceCategoryUpdate" class="serviceCategoryUpdate" />
-                        <textarea class="transactionTxtAreaForm form-control updateFormServiceDetails hidden" id="updateFormServiceDetails" placeholder="Write service details"></textarea>
+                        <textarea class="transactionTxtAreaForm form-control updateFormServiceDetails hidden" rows="5" id="updateFormServiceDetails" placeholder="Write service details"></textarea>
 
                         <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-database"></i> Quantity</label>
                         <input type="text" name="servicesQty" id="update_servicesQty" class="transactionForm inputboxWidth form-control" onchange="editServicesSubtotal()" placeholder="0" />

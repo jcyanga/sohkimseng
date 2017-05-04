@@ -9,6 +9,7 @@ use common\models\Supplier;
 use common\models\Race;
 use common\models\PaymentType;
 
+$dataCustomer = ArrayHelper::map($dataCustomerList,'id', 'customerInfo');
 $dataSupplier = ArrayHelper::map(Supplier::find()->where(['status' => 1])->all(),'id', 'name');
 $dataRace = ArrayHelper::map(Race::find()->where(['status' => 1])->all(),'id', 'name');
 $dataPaymentType = ArrayHelper::map(PaymentType::find()->where(['status' => 1])->all(),'id', 'name');
@@ -40,8 +41,13 @@ $n = 0;
         <?php if( $getDeliveryOrderInfo['paid'] == 1 ): ?>
             <div class="row">    
                 <div class="col-md-12 invoice-col">
-                <br/>
-                    <h3><b> <i class="fa fa-ioxhost"></i> DELIVERY ORDER <i class="fa fa-contao"></i>PAID </b></h3>
+                    <h3><b> <i class="fa fa-hashtag"></i> PAID </h3>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="row">    
+                <div class="col-md-12 invoice-col">
+                    <h3><b> <i class="fa fa-hashtag"></i> NOT PAID </h3>
                 </div>
             </div>
         <?php endif; ?>
@@ -85,10 +91,9 @@ $n = 0;
                     <address class="customerRowContainer" >
                         <b>Sold To :</b>
                         <br/><b><?= $getDeliveryOrderInfo['company_name'] ?></b> 
-                        <br><?= $getDeliveryOrderInfo['address'] ?>
                         <br><b>TEL :</b>  <?= $getDeliveryOrderInfo['phone_number'] ?> / <?= $getDeliveryOrderInfo['mobile_number'] ?>
                         <br><b>FAX :</b>  <?= $getDeliveryOrderInfo['fax_number'] ?>
-                        <br><b>ATTN :</b> <?= $getDeliveryOrderInfo['customerName'] ?> 
+                        <br><b>ATTN :</b>  
                     </address>
                 </div>
             </div>
@@ -101,10 +106,9 @@ $n = 0;
                     <address class="customerRowContainer" >
                         <b>Ship To / Remark :</b>
                         <br/><b><?= $getDeliveryOrderInfo['company_name'] ?></b> 
-                        <br><?= $getDeliveryOrderInfo['shipping_address'] ?>
                         <br><b>TEL :</b>  <?= $getDeliveryOrderInfo['phone_number'] ?> / <?= $getDeliveryOrderInfo['mobile_number'] ?>
                         <br><b>FAX :</b>  <?= $getDeliveryOrderInfo['fax_number'] ?>
-                        <br><b>ATTN :</b> <?= $getDeliveryOrderInfo['customerName'] ?> 
+                        <br><b>ATTN :</b>  
                     </address>
                 </div>
             </div>
@@ -194,7 +198,7 @@ $n = 0;
                 <p class="text-muted well well-sm no-shadow quoPreviewRemarks remarksContent" >
                     - <?= $getDeliveryOrderInfo['remarks'] ?>
                 </p>
-            <br/>
+            
                 <p class="lead remarksamountdueHeader"><i class="fa fa-comments-o"></i> Discount Remarks.</p>
                 <p class="text-muted well well-sm no-shadow quoPreviewRemarks remarksContent" >
                     - <?= $getDeliveryOrderInfo['discount_remarks'] ?>
@@ -209,7 +213,7 @@ $n = 0;
                         <tbody>
                             <tr>
                                 <th style="width:40%;" class="amountdueTh" >Sub-Total :</th>
-                                <td class="amountdueTd" > <?= number_format($getDeliveryOrderInfo['grand_total'],2) ?> </td>
+                                <td class="amountdueTd" >$ <?= number_format($getDeliveryOrderInfo['grand_total'],2) ?> </td>
                             </tr>
                             <tr>
                                 <th class="amountdueTh" >Less Pert. Discount :</th>
@@ -217,11 +221,11 @@ $n = 0;
                             </tr>
                             <tr>
                                 <th class="amountdueTh" >GST(7.00%) :</th>
-                                <td class="amountdueTd" > <?= number_format($getDeliveryOrderInfo['gst'],2) ?> </td>
+                                <td class="amountdueTd" >$ <?= number_format($getDeliveryOrderInfo['gst'],2) ?> </td>
                             </tr>
                             <tr>
                                 <th class="amountdueTh" style="font-size: 12px;" >Amount Due :</th>
-                                <td class="amountdueTd" > <?= number_format($getDeliveryOrderInfo['net'],2) ?> </td>
+                                <td class="amountdueTd" >$ <?= number_format($getDeliveryOrderInfo['net'],2) ?> </td>
                             </tr>
                         </tbody>
                     </table>
@@ -236,19 +240,23 @@ $n = 0;
             <div class="col-md-12">
                 
                 <?php if($roleId <= 2): ?>
-                    <a class="deliveryorderApproveColumn" id="<?= $getDeliveryOrderInfo['id'] ?>" ><button class="form-btn btn btn-primary btn-sm" ><i class="fa fa-check-circle"></i> Approve</button></a>
-
-                    <a class="deliveryorderCancelColumn" id="<?= $getDeliveryOrderInfo['id'] ?>" ><button class="form-btn btn btn-danger btn-sm" ><i class="fa fa-times-circle"></i> Cancel</button></a>
+                    <?php if( $getDeliveryOrderInfo['condition'] == 0 ): ?>
+                        <a class="deliveryorderApproveColumn" id="<?= $getDeliveryOrderInfo['id'] ?>" ><button class="form-btn btn btn-primary btn-sm" ><i class="fa fa-check-circle"></i> Approve</button></a>
+                    <?php endif; ?>
 
                     <?php if( $getDeliveryOrderInfo['condition'] == 1 ): ?>
-                        <a class="deliveryorderCloseColumn" id="<?= $getDeliveryOrderInfo['id'] ?>" ><button class="form-btn btn btn-success btn-sm" ><i class="fa fa-minus-circle"></i> Close</button></a>
+                        <a class="deliveryorderCloseColumn" id="<?= $getDeliveryOrderInfo['id'] ?>" ><button class="form-btn btn btn-primary btn-sm" ><i class="fa fa-minus-circle"></i> Close</button></a>
                     <?php endif; ?>
+
+                    <a class="deliveryorderCancelColumn" id="<?= $getDeliveryOrderInfo['id'] ?>" ><button class="form-btn btn btn-danger btn-sm" ><i class="fa fa-times-circle"></i> Cancel</button></a>
                 <?php endif; ?>
-                
-                <!-- <a class="invoiceDeleteColumn" id="<?= $getDeliveryOrderInfo['id'] ?>" ><button class="form-btn btn btn-danger btn-sm" style=""><i class="fa fa-trash"></i> Delete Quotation</button></a> -->
 
                 <div class="pull-right">
-                    <a class="_showUpdateDeliveryOrderModal" id="<?= $getDeliveryOrderInfo['id'] ?>" ><button class="form-btn btn btn-warning btn-sm"><i class="fa fa-edit"></i> Update Delivery Order </button></a>
+                    <?php if($getDeliveryOrderInfo['condition'] == 0 && $getDeliveryOrderInfo['paid'] == 0): ?>
+                        <a class="_showUpdateDeliveryOrderModal" id="<?= $getDeliveryOrderInfo['id'] ?>" ><button class="form-btn btn btn-warning btn-sm"><i class="fa fa-edit"></i> Update Delivery Order </button></a>
+                    <?php endif; ?>
+
+                    <a href="?r=quotation/preview&id=<?= $getDeliveryOrderInfo['id'] ?>"><button class="form-btn btn btn-default btn-sm " ><i class="fa fa-paw"></i> Proceed to Payment</button></a>
 
                     <a href="?r=delivery-order/preview&id=<?= $getDeliveryOrderInfo['id'] ?>"><button class="form-btn btn btn-success btn-sm " ><i class="fa fa-print"></i> Print Delivery Order </button></a>
 
@@ -270,7 +278,7 @@ $n = 0;
         <div class="modal-content"> 
             <div class="modal-header">
                 <button type="button" class="close closeUpdateDeliveryOrder" >&times;</button>
-                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Update Delivery Order Form </h5>
+                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Edit Delivery Order Form </h5>
             </div>
 
        <div class="modal-body">
@@ -292,11 +300,11 @@ $n = 0;
                         <label class="labelStyle"><i class="fa fa-user-circle-o"></i> Sales Person </label>
                         <?= $form->field($model, 'user_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataUser, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'value' => $salesPerson, 'id' => 'update_sales_person', 'data-placeholder' => 'CHOOSE SALES PERSON HERE'])->label(false) ?>
                         
-                        <label class="labelStyle"><i class="fa fa-user-money"></i> Payment Type </label>
+                        <label class="labelStyle"><i class="fa fa-money"></i> Payment Type </label>
                         <?= $form->field($model, 'payment_type_id')->dropdownList(['0' => ' - PLEASE SELECT PAYMENT TYPE HERE - '] + $dataPaymentType, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'update_paymentType', 'data-placeholder' => 'CHOOSE PAYMENT TYPE HERE'])->label(false) ?>
 
                         <label class="labelStyle"><i class="fa fa-comments"></i> Remarks</label>
-                        <?= $form->field($model, 'remarks')->textarea(['rows' => 4, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'update_remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
+                        <?= $form->field($model, 'remarks')->textarea(['rows' => 5, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'update_remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
                         <br/>
 
                     </div>
@@ -336,7 +344,7 @@ $n = 0;
                         <select name="parts" class="inputForm select2" id="update_parts" style="width: 95%;" onchange="getUpdatePartsPriceAndQtyDeliveryOrder()" data-placeholder="CHOOSE AUTO-PARTS HERE" >
                                 <option value="0"> - PLEASE SELECT AUTO-PARTS HERE - </option>
                             <?php foreach($partsResult as $partsRow): ?>
-                                <option value="<?= $partsRow['id']; ?>" >[<?= $partsRow['name']; ?>] <?= $partsRow['parts_name']; ?> </option>
+                                <option value="<?= $partsRow['id']; ?>" > <?= $partsRow['parts_name']; ?> </option>
                             <?php endforeach; ?>
                         </select>
 
@@ -452,7 +460,7 @@ $n = 0;
 
                 <div class="col-md-8 col-xs-8 col-sm-8">
                     <span class="labelStyle"><i class="fa fa-commenting"></i> Discount Remarks</span>
-                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'update_discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 2 ])->label(false) ?>
+                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'update_discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 5 ])->label(false) ?>
                 </div>
                 <br/>
 

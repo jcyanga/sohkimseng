@@ -22,11 +22,11 @@ use yii\helpers\ArrayHelper;
     </div>
     <br/>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <?= $form->field($model, 'company_name')->textInput(['class' => 'inputForm form-control', 'id' => 'customerCompanyName', 'placeholder' => 'Enter customer company name here.'])->label(false) ?>
     </div>
 
-    <div class="col-md-3">
+    <div class="col-md-4">
         <?= $form->field($model, 'fullname')->textInput(['class' => 'inputForm form-control', 'id' => 'customerName', 'placeholder' => 'Enter customer name here.'])->label(false) ?>
     </div>
 
@@ -34,7 +34,7 @@ use yii\helpers\ArrayHelper;
 
 <div class="row">
 
-    <div class="col-md-6">
+    <div class="col-md-8">
         <div style="text-align: right;">
             <?= Html::resetButton('<li class=\'fa fa-refresh\'></li> Clear', ['class' => 'formBtn btn btn-default']) ?>
             <?= Html::submitButton('<li class=\'fa fa-search\'></li> Search', ['class' => 'formBtn btn btn-primary']) ?>

@@ -14,9 +14,13 @@ use yii\helpers\ArrayHelper;
 use common\models\InvoiceDetail;
 use common\models\Customer;
 use common\models\User;
-use  common\models\Service;
+use common\models\Service;
 use common\models\Parts;
 use common\models\PartsInventory;
+use common\models\CustomerContactpersonAddress;
+use common\models\DeliveryOrder;
+use common\models\DeliveryOrderDetail;
+
 /**
  * InvoiceController implements the CRUD actions for Invoice model.
  */
@@ -49,15 +53,19 @@ class InvoiceController extends Controller
         $model = new Invoice();
         $customerModel = new Customer();
 
+        $getLastId = $customerModel->getLastId();
+        $yearNow = date('Y');
+        $customerCode = 'CUSTOMER' . $yearNow . sprintf('%005d', $getLastId);
+
         // Last ID and code for invoice no // 
         $invoiceId = $model->getInvoiceId();
         $yrNow = date('Y');
         $monthNow = date('m');
-        $invoiceNo = 'INV' . $yrNow . $monthNow . sprintf('%003d', $invoiceId); 
+        $invoiceNo = 'INV' . $yrNow . $monthNow . sprintf('%005d', $invoiceId); 
         // for date issue //
         $dateNow = date('d-m-Y');
         // get customer list //
-        $dataCustomer = ArrayHelper::map(Customer::find()->where('status = 1')->all(),'id', 'fullname');
+        $dataCustomerList = $model->getCustomerList();
         // get user list //
         $dataUser = ArrayHelper::map(User::find()->where('role_id <> 1', ['status' => 1])->all(),'id', 'fullname');
         // get parts //
@@ -71,11 +79,13 @@ class InvoiceController extends Controller
                         'model' => $model,
                         'invoiceNo' => $invoiceNo,
                         'dateNow' => $dateNow,
-                        'dataCustomer' => $dataCustomer,
+                        'dataCustomerList' => $dataCustomerList,
                         'dataUser' => $dataUser,
                         'partsResult' => $partsResult,
                         'servicesResult' => $servicesResult,
                         'customerModel' => $customerModel,
+                        'customerCode' => $customerCode,
+
                     ]);
     }
 
@@ -94,7 +104,7 @@ class InvoiceController extends Controller
         // for date issue //
         $dateNow = date('d-m-Y');
         // get customer list //
-        $dataCustomer = ArrayHelper::map(Customer::find()->where('status = 1')->all(),'id', 'fullname');
+        $dataCustomerList = $model->getCustomerList();
         // get user list //
         $dataUser = ArrayHelper::map(User::find()->where('role_id <> 1', ['status' => 1])->all(),'id', 'fullname');
         // get parts //
@@ -108,7 +118,7 @@ class InvoiceController extends Controller
             'getInvoiceServicesInfo' => $getInvoiceServicesInfo,
             'getInvoicePartsInfo' => $getInvoicePartsInfo,
             'dateNow' => $dateNow,
-            'dataCustomer' => $dataCustomer,
+            'dataCustomerList' => $dataCustomerList,
             'dataUser' => $dataUser,
             'partsResult' => $partsResult,
             'servicesResult' => $servicesResult,
@@ -139,13 +149,14 @@ class InvoiceController extends Controller
             $model->remarks = strtolower(Yii::$app->request->post('remarks'));
             $model->payment_type_id = Yii::$app->request->post('paymentType');
             $model->discount_amount = Yii::$app->request->post('discountAmount');
-            $model->discount_remarks = Yii::$app->request->post('discountRemarks');
+            $model->discount_remarks = strtolower(Yii::$app->request->post('discountRemarks'));
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
             $model->do = 0;
             $model->paid = 0;
             $model->deleted = 0;
+            $model->condition = 0;
 
             if($model->validate()) {
                 $model->save();
@@ -219,24 +230,42 @@ class InvoiceController extends Controller
     {
         $model = new Customer();
 
-        if ( Yii::$app->request->post() ) {
+         if ( Yii::$app->request->post() ) {
             
             $model->type = 1;
+            $model->customer_code = strtolower(Yii::$app->request->post('companyCode'));
             $model->company_name = strtolower(Yii::$app->request->post('companyName'));
+            $model->location = strtolower(Yii::$app->request->post('companyLocation'));
             $model->uen_no = strtolower(Yii::$app->request->post('companyUenNo'));
-            $model->fullname = strtolower(Yii::$app->request->post('companyContactPerson'));
-            $model->address = strtolower(Yii::$app->request->post('companyAddress'));
-            $model->shipping_address = strtolower(Yii::$app->request->post('companyShippingAddress'));
             $model->email = strtolower(Yii::$app->request->post('companyEmail'));
             $model->phone_number = Yii::$app->request->post('companyPhoneNumber');
             $model->mobile_number = Yii::$app->request->post('companyOfficeNumber');
             $model->fax_number = Yii::$app->request->post('companyFaxNumber');
+            $model->remarks = strtolower(Yii::$app->request->post('companyRemarks'));
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
-            $model->created_by = Yii::$app->user->identity->id;
+            $model->created_by = Yii::$app->user->identity->id;            
 
             if($model->validate()) {
                $model->save();
+
+               $contactPerson = Yii::$app->request->post('companyContactPerson');
+               $companyAddress = Yii::$app->request->post('companyAddress');
+
+               foreach($contactPerson as $cKey => $cValue){
+                    
+                    $companyInfo = new CustomerContactpersonAddress();
+                    
+                    $companyInfo->customer_id = $model->id;
+                    $companyInfo->address = $companyAddress[$cKey]['value'];
+                    $companyInfo->contact_person = $contactPerson[$cKey]['value'];
+                    $companyInfo->status = 1;
+                    $companyInfo->created_at = date('Y-m-d H:i:s');
+                    $companyInfo->created_by = Yii::$app->user->identity->id;
+                    $companyInfo->save();
+
+               }
+
                return json_encode(['message' => 'Your record was successfully added in the database.', 'status' => 'Success', 'id' => $model->id ]);
 
             } else {
@@ -303,13 +332,14 @@ class InvoiceController extends Controller
             $model->remarks = strtolower(Yii::$app->request->post('remarks'));
             $model->payment_type_id = Yii::$app->request->post('paymentType');
             $model->discount_amount = Yii::$app->request->post('discountAmount');
-            $model->discount_remarks = Yii::$app->request->post('discountRemarks');
+            $model->discount_remarks = strtolower(Yii::$app->request->post('discountRemarks'));
             $model->status = 1;
             $model->updated_at = date('Y-m-d H:i:s');
             $model->updated_by = Yii::$app->user->identity->id;
             $model->do = 0;
             $model->paid = 0;
             $model->deleted = 0;
+            $model->condition = 0;
 
             if($model->validate()) {
                 $model->save();
@@ -710,12 +740,14 @@ class InvoiceController extends Controller
         $data['uen_no'] = $customerInfo['uen_no'];
         $data['fullname'] = $customerInfo['fullname'];
         $data['nric'] = $customerInfo['nric'];
+        $data['location'] = $customerInfo['location'];
         $data['address'] = $customerInfo['address'];
         $data['shipping_address'] = $customerInfo['shipping_address'];
         $data['email'] = $customerInfo['email'];
         $data['phone_number'] = $customerInfo['phone_number'];
         $data['mobile_number'] = $customerInfo['mobile_number'];
         $data['fax_number'] = $customerInfo['fax_number'];
+        $data['remarks'] = $customerInfo['remarks'];
 
         return json_encode([ 'status' => 'Success', 'result' => $data ]);
     }
@@ -732,7 +764,7 @@ class InvoiceController extends Controller
         $invoiceId = $model->getInvoiceId();
         $yrNow = date('Y');
         $monthNow = date('m');
-        $invoiceNo = 'QUO' . $yrNow . $monthNow . sprintf('%003d', $invoiceId); 
+        $invoiceNo = 'QUO' . $yrNow . $monthNow . sprintf('%005d', $invoiceId); 
         // for date issue //
         $dateNow = date('d-m-Y');
         // get customer list //
@@ -756,6 +788,147 @@ class InvoiceController extends Controller
                         'dataCustomer' => $dataCustomer,
                         
                     ]);
+    }
+
+    public function actionInsertCompanyContactpersonAddress()
+    {
+        $contact_person = Yii::$app->request->post('companyContactPerson');
+        $address = Yii::$app->request->post('companyAddress');
+        $ctr = Yii::$app->request->post('ctr');
+
+        $this->layout = false;
+
+        return $this->render('_insert-company-contactperson-address', [
+                'contact_person' => $contact_person,
+                'address' => $address,
+                'ctr' => $ctr,
+            ]);
+    }
+
+    // =============== Create Delivery Order =============== //
+
+    public function actionInsertIntoDeliveryOrder()
+    {
+        $model = new Invoice();
+
+        $getInvoiceInfo = $model->getInvoiceByIdForPreview(Yii::$app->request->post('id'));
+        $getInvoiceServicesInfo = $model->getInvoiceServiceForPreview(Yii::$app->request->post('id'));
+        $getInvoicePartsInfo = $model->getInvoicePartsForPreview(Yii::$app->request->post('id')); 
+        
+        // Last ID and code for delivery order no // 
+        $deliveryorderId = $model->getDeliveryOrderId();
+        $yrNow = date('Y');
+        $monthNow = date('m');
+        $deliveryorderCode = 'DO' . $yrNow . $monthNow . sprintf('%005d', $deliveryorderId); 
+
+        $getDeliveryOrder = DeliveryOrder::find()->where(['invoice_no' => $getInvoiceInfo['invoice_no'] ])->one();
+
+        if( empty($getDeliveryOrder) ) {
+
+            $deliveryorderModel = new DeliveryOrder();
+
+            $deliveryorderModel->delivery_order_code = $deliveryorderCode;
+            $deliveryorderModel->invoice_no = $getInvoiceInfo['invoice_no'];
+            $deliveryorderModel->user_id = $getInvoiceInfo['user_id'];
+            $deliveryorderModel->customer_id = $getInvoiceInfo['customer_id'];
+            $deliveryorderModel->date_issue = date('Y-m-d', strtotime($getInvoiceInfo['date_issue']));
+            $deliveryorderModel->grand_total = $getInvoiceInfo['grand_total'];
+            $deliveryorderModel->gst = $getInvoiceInfo['gst'];
+            $deliveryorderModel->gst_value = $getInvoiceInfo['gst_value'];
+            $deliveryorderModel->net = $getInvoiceInfo['net'];
+            $deliveryorderModel->remarks = strtolower($getInvoiceInfo['remarks']);
+            $deliveryorderModel->payment_type_id = $getInvoiceInfo['payment_type_id'];
+            $deliveryorderModel->discount_amount = $getInvoiceInfo['discount_amount'];
+            $deliveryorderModel->discount_remarks = $getInvoiceInfo['discount_remarks'];
+            $deliveryorderModel->status = $getInvoiceInfo['status'];
+            $deliveryorderModel->created_at = date('Y-m-d H:i:s');
+            $deliveryorderModel->created_by = Yii::$app->user->identity->id;
+            $deliveryorderModel->paid = 0;
+            $deliveryorderModel->deleted = 0;
+            $deliveryorderModel->condition = 0;
+            $deliveryorderModel->action_by = 0;
+            
+            $deliveryorderModel->save();
+
+            $deliveryorderId = $deliveryorderModel->id;
+
+            if( !empty($getInvoiceServicesInfo) ){
+
+                foreach($getInvoiceServicesInfo as $serviceRow){
+                    $doSD = new DeliveryOrderDetail();
+
+                    $doSD->delivery_order_id = $deliveryorderId;
+                    $doSD->description = $serviceRow['description'];
+                    $doSD->quantity = $serviceRow['quantity'];
+                    $doSD->unit_price = $serviceRow['unit_price'];
+                    $doSD->sub_total = $serviceRow['sub_total'];
+                    $doSD->type = $serviceRow['type'];
+                    $doSD->status = $serviceRow['status'];
+                    $doSD->created_at = date('Y-m-d H:i:s');
+                    $doSD->created_by = Yii::$app->user->identity->id;
+                    $doSD->deleted = 0;
+
+                    $doSD->save();
+                }
+
+            }
+
+            if( !empty($getInvoicePartsInfo) ){
+
+                foreach($getInvoicePartsInfo as $partsRow){
+                    $doPD = new DeliveryOrderDetail();
+
+                    $doPD->delivery_order_id = $deliveryorderId;
+                    $doPD->description = $partsRow['description'];
+                    $doPD->quantity = $partsRow['quantity'];
+                    $doPD->unit_price = $partsRow['unit_price'];
+                    $doPD->sub_total = $partsRow['sub_total'];
+                    $doPD->type = $partsRow['type'];
+                    $doPD->status = $partsRow['status'];
+                    $doPD->created_at = date('Y-m-d H:i:s');
+                    $doPD->created_by = Yii::$app->user->identity->id;
+                    $doPD->deleted = 0;
+
+                    $doPD->save();
+
+                    $getPart = Parts::find()->where(['id' => $partsRow['description'] ])->one();
+                    $old_qty = $getPart->quantity;
+                    $new_qty = $getPart->quantity - $partsRow['quantity'];
+
+                    $partsinventoryModel = new PartsInventory();
+                                
+                    $partsinventoryModel->parts_id = $partsRow['description'];
+                    $partsinventoryModel->old_quantity = $old_qty;
+                    $partsinventoryModel->new_quantity = $new_qty;
+                    $partsinventoryModel->qty_purchased = $partsRow['quantity'];
+                    $partsinventoryModel->type = 3;
+                    $partsinventoryModel->invoice_no = $getInvoiceInfo['invoice_no'];
+                    $partsinventoryModel->datetime_purchased = date('Y-m-d H:i:s', strtotime($getInvoiceInfo['date_issue']));
+                    $partsinventoryModel->created_at = date('Y-m-d H:i:s');
+                    $partsinventoryModel->created_by = Yii::$app->user->identity->id;
+                    $partsinventoryModel->status = 1;
+                    
+                    $partsinventoryModel->save();
+
+                    $getPart = Parts::find()->where(['id' => $partsRow['description'] ])->one();
+                    $getPart->quantity -= $partsRow['quantity'];
+                    $getPart->save();
+
+                }
+
+            }
+
+            $doModel = $this->findModel($deliveryorderId);
+            $doModel->do = 1;
+            $doModel->save();
+
+            return json_encode(['status' => 'Success', 'message' => 'Delivery order was successfully created.', 'id' => $deliveryorderId ]);
+
+        }else{
+            
+            return json_encode(['status' => 'Success', 'message' => 'Delivery order was successfully created.', 'id' => $deliveryorderId ]);
+        }
+
     }
 
     // =============== payment =============== //

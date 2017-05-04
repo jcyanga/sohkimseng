@@ -64,18 +64,26 @@ $gridColumns = [
         ],
         [
             'attribute' => 'customer_id',
-            'value' => 'customer.fullname',
+            'value' => ('customer.type' == 2)? 'customer.fullname' : 'customer.company_name',
             'header' => 'CUSTOMER NAME',
             'options' => ['style' => 'color: #444']
         ],
         [
-            'attribute' => 'user_id',
-            'value' => 'user.fullname',
-            'header' => 'SALES PERSON',
-            'options' => ['style' => 'color: #444']
+            'header' => 'INVOICE STATUS',
+            'options' => ['style' => 'color: #444'],
+            'value' => function($model)
+            {   
+                if($model->invoice_created == 1){
+                    return 'Invoice Created';
+
+                }else{
+                    return 'Not yet';
+
+                }
+            },
         ],
         [
-            'attribute' => 'STATUS',
+            'header' => 'STATUS',
             'options' => ['style' => 'color: #444'],
             'value' => function($model)
             {   
@@ -96,7 +104,6 @@ $gridColumns = [
                         return 'Pending Quotation';
                 }
             },
-            'label' => 'Condition',
         ],
 
     
@@ -111,8 +118,15 @@ $gridColumns = [
                 ]);
             },
             'update' => function ($url, $model) {
-                return Html::a(' <span class="glyphicon glyphicon-pencil"></span> ', $url, ['class' => '_showUpdateQuotationModal', 'id' => $model->id, 'title' => Yii::t('app', 'Update'),
-                ]);
+                if($model->condition == 0 && $model->invoice_created == 0){
+                    return Html::a(' <span class="glyphicon glyphicon-pencil"></span> ', $url, ['class' => '_showUpdateQuotationModal', 'id' => $model->id, 'title' => Yii::t('app', 'Update'),
+                    ]);
+                
+                }else{
+                    return false;
+                    
+                }
+
             },
             'delete' => function ($url, $model) {
                 return Html::a(' <span class="glyphicon glyphicon-trash"></span> ', $url, ['class' => 'quotationDeleteColumn', 'id' => $model->id, 'title' => Yii::t('app', 'Delete'),
@@ -162,9 +176,8 @@ $gridColumns = [
         ]); 
     ?>
 </div>
-<br/>
 
-<div class="col-md-12 col-sm-12 col-xs-12">
+<!-- <div class="col-md-12 col-sm-12 col-xs-12">
 <div class="row">
 
 <div class="col-md-4 pull-right">
@@ -184,7 +197,7 @@ $gridColumns = [
 </div>
 <br/><br/>
 
-</div>
+</div> -->
 
 </div>
 
@@ -246,7 +259,7 @@ $gridColumns = [
                             <textarea name="company_address" rows="5" class="inputForm form-control" placeholder="Enter Billing address here." id="companyAddress" ></textarea>
                         </div>
                         <div style="margin-top: 10px;" class="col-md-3 col-xs-3 col-sm-3 pull-right">
-                            <button type="button" class="formBtn btn btn-block btn-flat btn-info btn-xs" id="btnAddInformation" ><i class="fa fa-plus-circle"></i> Add Information - </button>
+                            <button type="button" class="formBtn btn btn-block btn-flat btn-info btn-xs" id="btnQuoteAddInformation" ><i class="fa fa-plus-circle"></i> Add Information - </button>
                         </div>
                     </div>
                     <hr/>
@@ -598,7 +611,7 @@ $gridColumns = [
         <div class="modal-content"> 
             <div class="modal-header">
                 <button type="button" class="close closeUpdateQuotation" >&times;</button>
-                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Update Quotation Form </h5>
+                <h5 class="modal-title" id="myModalLabel"><i class="fa fa-edit"></i> Edit Quotation Form </h5>
             </div>
 
         <div class="modal-body">
@@ -620,11 +633,11 @@ $gridColumns = [
                         <label class="labelStyle"><i class="fa fa-user-circle-o"></i> Sales Person </label>
                         <?= $form->field($model, 'user_id')->dropdownList(['0' => ' - PLEASE SELECT NAME HERE - '] + $dataUser, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'value' => $salesPerson, 'id' => 'update_sales_person', 'data-placeholder' => 'CHOOSE SALES PERSON HERE'])->label(false) ?>
                         
-                        <label class="labelStyle"><i class="fa fa-user-money"></i> Payment Type </label>
+                        <label class="labelStyle"><i class="fa fa-money"></i> Payment Type </label>
                         <?= $form->field($model, 'payment_type_id')->dropdownList(['0' => ' - PLEASE SELECT PAYMENT TYPE HERE - '] + $dataPaymentType, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'update_paymentType', 'data-placeholder' => 'CHOOSE PAYMENT TYPE HERE'])->label(false) ?>
 
                         <label class="labelStyle"><i class="fa fa-comments"></i> Remarks</label>
-                        <?= $form->field($model, 'remarks')->textarea(['rows' => 4, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'update_remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
+                        <?= $form->field($model, 'remarks')->textarea(['rows' => 5, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'update_remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
                         <br/>
 
                     </div>
@@ -716,7 +729,7 @@ $gridColumns = [
                         <br/><br/>
 
                         <input type="hidden" id="serviceCategoryUpdate" class="serviceCategoryUpdate" />
-                        <textarea class="transactionTxtAreaForm form-control updateFormServiceDetails hidden" id="updateFormServiceDetails" placeholder="Write service details"></textarea>
+                        <textarea class="transactionTxtAreaForm form-control updateFormServiceDetails hidden" rows="5" id="updateFormServiceDetails" placeholder="Write service details"></textarea>
 
                         <label class="labelStyle inputboxAlignment labelAlignment" ><i class="fa fa-database"></i> Quantity</label>
                         <input type="text" name="servicesQty" id="update_servicesQty" class="transactionForm inputboxWidth form-control" onchange="editServicesSubtotal()" placeholder="0" />
@@ -780,7 +793,7 @@ $gridColumns = [
 
                 <div class="col-md-8 col-xs-8 col-sm-8">
                     <span class="labelStyle"><i class="fa fa-commenting"></i> Discount Remarks</span>
-                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'update_discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 2 ])->label(false) ?>
+                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'update_discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 5 ])->label(false) ?>
                 </div>
                 <br/>
 

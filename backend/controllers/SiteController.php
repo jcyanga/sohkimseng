@@ -93,8 +93,14 @@ class SiteController extends Controller
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+        $session = Yii::$app->session;
+        if($session->isActive){
+            $session->destroy();
+            Yii::$app->cache->flush();
+            
+            Yii::$app->user->logout();
 
-        return $this->goHome();
+            return $this->goHome();
+        }
     }
 }

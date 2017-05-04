@@ -133,9 +133,8 @@ class DeliveryOrder extends \yii\db\ActiveRecord
     {
         $query = new Query();
 
-        $result = $query->select(['parts.id', 'parts.parts_code', 'parts.parts_name', 'parts.quantity', 'parts.cost_price', 'parts.gst_price', 'parts.selling_price', 'parts.reorder_level', 'parts.unit_of_measure', 'parts_category.name', 'supplier.name as supplierName', 'storage_location.rack', 'storage_location.bay', 'storage_location.level', 'storage_location.position' ])
+        $result = $query->select(['parts.id', 'parts.parts_code', 'parts.parts_name', 'parts.quantity', 'parts.cost_price', 'parts.gst_price', 'parts.selling_price', 'parts.reorder_level', 'parts.unit_of_measure', 'supplier.name as supplierName', 'storage_location.rack', 'storage_location.bay', 'storage_location.level', 'storage_location.position' ])
                         ->from('parts')
-                        ->leftJoin('parts_category', 'parts.parts_category_id = parts_category.id')
                         ->leftJoin('supplier', 'parts.supplier_id = supplier.id')
                         ->leftJoin('storage_location', 'parts.storage_location_id = storage_location.id')
                         ->where(['parts.status' => 1])
@@ -148,9 +147,8 @@ class DeliveryOrder extends \yii\db\ActiveRecord
     {
         $query = new Query();
 
-        $result = $query->select(['parts.id', 'parts.parts_code', 'parts.parts_name', 'parts.quantity', 'parts.cost_price', 'parts.gst_price', 'parts.selling_price', 'parts.reorder_level', 'parts.unit_of_measure', 'parts_category.name', 'supplier.name as supplierName', 'storage_location.rack', 'storage_location.bay', 'storage_location.level', 'storage_location.position' ])
+        $result = $query->select(['parts.id', 'parts.parts_code', 'parts.parts_name', 'parts.quantity', 'parts.cost_price', 'parts.gst_price', 'parts.selling_price', 'parts.reorder_level', 'parts.unit_of_measure', 'supplier.name as supplierName', 'storage_location.rack', 'storage_location.bay', 'storage_location.level', 'storage_location.position' ])
                         ->from('parts')
-                        ->leftJoin('parts_category', 'parts.parts_category_id = parts_category.id')
                         ->leftJoin('supplier', 'parts.supplier_id = supplier.id')
                         ->leftJoin('storage_location', 'parts.storage_location_id = storage_location.id')
                         ->where(['parts.id' => $id])
@@ -234,5 +232,20 @@ class DeliveryOrder extends \yii\db\ActiveRecord
         return $result;
     }
 
+    // get customer list
+    public function getCustomerList()
+    {
+        $result = Yii::$app->db->createCommand('
+                            SELECT customer.id as id, CONCAT(customer.company_name, " / ", customer.location) as customerInfo FROM customer WHERE customer.type = 1 AND customer.status = 1 
 
+                            UNION ALL 
+
+                            SELECT customer.id as id, CONCAT(customer.fullname, " / ", customer.location) as customerInfo FROM customer WHERE customer.type = 2 AND customer.status = 1 
+
+                        ')->queryAll();
+
+        return $result;
+        
+    }
+    
 }

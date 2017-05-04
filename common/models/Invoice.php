@@ -133,9 +133,8 @@ class Invoice extends \yii\db\ActiveRecord
     {
         $query = new Query();
 
-        $result = $query->select(['parts.id', 'parts.parts_code', 'parts.parts_name', 'parts.quantity', 'parts.cost_price', 'parts.gst_price', 'parts.selling_price', 'parts.reorder_level', 'parts.unit_of_measure', 'parts_category.name', 'supplier.name as supplierName', 'storage_location.rack', 'storage_location.bay', 'storage_location.level', 'storage_location.position' ])
+        $result = $query->select(['parts.id', 'parts.parts_code', 'parts.parts_name', 'parts.quantity', 'parts.cost_price', 'parts.gst_price', 'parts.selling_price', 'parts.reorder_level', 'parts.unit_of_measure', 'supplier.name as supplierName', 'storage_location.rack', 'storage_location.bay', 'storage_location.level', 'storage_location.position' ])
                         ->from('parts')
-                        ->leftJoin('parts_category', 'parts.parts_category_id = parts_category.id')
                         ->leftJoin('supplier', 'parts.supplier_id = supplier.id')
                         ->leftJoin('storage_location', 'parts.storage_location_id = storage_location.id')
                         ->where(['parts.status' => 1])
@@ -148,9 +147,8 @@ class Invoice extends \yii\db\ActiveRecord
     {
         $query = new Query();
 
-        $result = $query->select(['parts.id', 'parts.parts_code', 'parts.parts_name', 'parts.quantity', 'parts.cost_price', 'parts.gst_price', 'parts.selling_price', 'parts.reorder_level', 'parts.unit_of_measure', 'parts_category.name', 'supplier.name as supplierName', 'storage_location.rack', 'storage_location.bay', 'storage_location.level', 'storage_location.position' ])
+        $result = $query->select(['parts.id', 'parts.parts_code', 'parts.parts_name', 'parts.quantity', 'parts.cost_price', 'parts.gst_price', 'parts.selling_price', 'parts.reorder_level', 'parts.unit_of_measure', 'supplier.name as supplierName', 'storage_location.rack', 'storage_location.bay', 'storage_location.level', 'storage_location.position' ])
                         ->from('parts')
-                        ->leftJoin('parts_category', 'parts.parts_category_id = parts_category.id')
                         ->leftJoin('supplier', 'parts.supplier_id = supplier.id')
                         ->leftJoin('storage_location', 'parts.storage_location_id = storage_location.id')
                         ->where(['parts.id' => $id])
@@ -191,7 +189,7 @@ class Invoice extends \yii\db\ActiveRecord
     {
         $query = new Query();
 
-        $result = $query->select([ 'invoice.id', 'invoice.invoice_no', 'invoice.quotation_code', 'invoice.customer_id', 'customer.fullname as customerName', 'invoice.user_id', 'user.fullname as salesPerson', 'invoice.date_issue', 'invoice.grand_total', 'invoice.gst', 'invoice.net', 'invoice.remarks', 'invoice.status', 'invoice.created_at', 'invoice.created_by', 'payment_type.name as paymenttypeName', 'customer.type', 'customer.nric', 'customer.company_name', 'customer.uen_no', 'customer.address', 'customer.shipping_address', 'customer.email', 'customer.phone_number', 'customer.mobile_number', 'customer.fax_number', 'invoice.discount_amount', 'invoice.discount_remarks', 'invoice.condition', 'invoice.payment_type_id', 'invoice.gst_value', 'invoice.paid' ])
+        $result = $query->select([ 'invoice.id', 'invoice.invoice_no', 'invoice.quotation_code', 'invoice.customer_id', 'customer.fullname as customerName', 'invoice.user_id', 'user.fullname as salesPerson', 'invoice.date_issue', 'invoice.grand_total', 'invoice.gst', 'invoice.net', 'invoice.remarks', 'invoice.status', 'invoice.created_at', 'invoice.created_by', 'payment_type.name as paymenttypeName', 'customer.type', 'customer.nric', 'customer.company_name', 'customer.uen_no', 'customer.address', 'customer.shipping_address', 'customer.email', 'customer.phone_number', 'customer.mobile_number', 'customer.fax_number', 'invoice.discount_amount', 'invoice.discount_remarks', 'invoice.condition', 'invoice.payment_type_id', 'invoice.gst_value', 'invoice.paid', 'invoice.do' ])
                     ->from('invoice')
                     ->leftJoin('customer', 'invoice.customer_id = customer.id')
                     ->leftJoin('user', 'invoice.user_id = user.id')
@@ -232,5 +230,37 @@ class Invoice extends \yii\db\ActiveRecord
                     ->all();
 
         return $result;
+    }
+
+    // get customer list
+    public function getCustomerList()
+    {
+        $result = Yii::$app->db->createCommand('
+                            SELECT customer.id as id, CONCAT(customer.company_name, " / ", customer.location) as customerInfo FROM customer WHERE customer.type = 1 AND customer.status = 1 
+
+                            UNION ALL 
+
+                            SELECT customer.id as id, CONCAT(customer.fullname, " / ", customer.location) as customerInfo FROM customer WHERE customer.type = 2 AND customer.status = 1 
+
+                        ')->queryAll();
+
+        return $result;
+        
+    }
+
+    // get delivery order Id
+    public function getDeliveryOrderId()
+    {
+        $query = new Query();
+
+        $result = $query->select(['Max(id) as delivery_order_id'])
+                        ->from('delivery_order')
+                        ->one();
+               
+        if( count($result) > 0 ) {
+            return $result['delivery_order_id'] + 1;
+        }else {
+            return 0;
+        }      
     }
 }

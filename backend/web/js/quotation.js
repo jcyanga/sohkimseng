@@ -39,7 +39,7 @@ $('._showCreateCustomerByQuoteModal').click(function(){
 
 // ========== Company Customer ========== //
 
-$('#btnAddInformation').click(function(){
+$('#btnQuoteAddInformation').click(function(){
 	var companyContactPerson = $('#companyContactPerson').val();
 	var companyAddress = $('#companyAddress').val(); 
 
@@ -53,7 +53,7 @@ $('#btnAddInformation').click(function(){
 
 		ctr++;
 
-		$.post('?r=customer/insert-company-contactperson-address',{
+		$.post('?r=quotation/insert-company-contactperson-address',{
 			companyContactPerson : companyContactPerson,
 			companyAddress : companyAddress,
 			ctr : ctr,
@@ -69,7 +69,7 @@ $('#btnAddInformation').click(function(){
 	}
 });
 
-function editSelectedContactPersonAddress(n)
+function editQuoteSelectedContactPersonAddress(n)
 {
 	var contact_person = $('#customer-contactperson-in-list-'+n).val();
 	var address = $('#customer-address-in-list-'+n).val();
@@ -79,7 +79,7 @@ function editSelectedContactPersonAddress(n)
 	$('.inserted-contactperson-address-in-list-'+n).detach();
 }
 
-function removeSelectedContactPersonAddress(n)
+function removeQuoteSelectedContactPersonAddress(n)
 {
 	$('.inserted-contactperson-address-in-list-'+n).remove();
 }
@@ -397,7 +397,7 @@ $('#quoteCustomerName').change(function(){
                             '<td>'+result.nric.toUpperCase()+'</td>'+
                         '</tr>'+
                         '<tr>'+
-                            '<td><b>ADDRESS</b></td>' +
+                            '<td><b>BILLING ADDRESS</b></td>' +
                             '<td>'+result.address.toUpperCase()+'</td>'+
                         '</tr>'+
                         '<tr>'+
@@ -1171,18 +1171,6 @@ $('._showUpdateQuotationModal').click(function(){
                                 '<td>'+result.uen_no.toUpperCase()+'</td>'
                             +'</tr>'+
                             '<tr>'+
-                                '<td><b>CONTACT PERSON</b></td>' +
-                                '<td>'+result.fullname.toUpperCase()+'</td>'
-                            +'</tr>'+
-                            '<tr>'+
-                                '<td><b>ADDRESS</b></td>' +
-                                '<td>'+result.address.toUpperCase()+'</td>'
-                            +'</tr>'+
-                            '<tr>'+
-                                '<td><b>SHIPPING ADDRESS</b></td>' +
-                                '<td>'+result.shipping_address.toUpperCase()+'</td>'
-                            +'</tr>'+
-                            '<tr>'+
                                 '<td><b>EMAIL</b></td>' +
                                 '<td>'+result.email.toUpperCase()+'</td>'
                             +'</tr>'+
@@ -1405,18 +1393,6 @@ $('#update_customer').change(function(){
                         '<tr>'+
                             '<td><b>UEN NUMBER</b></td>' +
                             '<td>'+result.uen_no.toUpperCase()+'</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td><b>CONTACT PERSON</b></td>' +
-                            '<td>'+result.fullname.toUpperCase()+'</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td><b>ADDRESS</b></td>' +
-                            '<td>'+result.address.toUpperCase()+'</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td><b>SHIPPING ADDRESS</b></td>' +
-                            '<td>'+result.shipping_address.toUpperCase()+'</td>'+
                         '</tr>'+
                         '<tr>'+
                             '<td><b>EMAIL</b></td>' +
@@ -2187,7 +2163,7 @@ $('._quotationInsertIntoInvoice').click(function(){
 			
 		if( data.status == 'Success' ) {
 			alert(data.message);
-			window.location = domain + '?r=invoice/invoice-payment&id=' + data.id;	
+			window.location = domain + '?r=invoice/view&id=' + data.id;	
 		}
 	});
 

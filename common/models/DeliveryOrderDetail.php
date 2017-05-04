@@ -39,10 +39,10 @@ class DeliveryOrderDetail extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['delivery_order_id', 'description', 'quantity', 'unit_price', 'sub_total', 'type', 'status', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted'], 'required'],
+            [['delivery_order_id', 'description', 'quantity', 'unit_price', 'sub_total', 'type'], 'required'],
             [['delivery_order_id', 'description', 'quantity', 'type', 'status', 'created_by', 'updated_by', 'deleted'], 'integer'],
             [['unit_price', 'sub_total'], 'number'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['status', 'created_at', 'created_by', 'updated_at', 'updated_by', 'deleted'], 'safe'],
             [['delivery_order_id'], 'exist', 'skipOnError' => true, 'targetClass' => DeliveryOrder::className(), 'targetAttribute' => ['delivery_order_id' => 'id']],
         ];
     }

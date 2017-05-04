@@ -12,6 +12,8 @@ use common\models\Invoice;
  */
 class SearchInvoice extends Invoice
 {
+    public $company_name;
+    public $fullname;
     /**
      * @inheritdoc
      */
@@ -19,7 +21,7 @@ class SearchInvoice extends Invoice
     {
         return [
             [['id', 'user_id', 'customer_id', 'status', 'created_by', 'updated_by', 'do', 'paid', 'deleted'], 'integer'],
-            [['quotation_code', 'invoice_no', 'date_issue', 'remarks', 'created_at', 'updated_at'], 'safe'],
+            [['quotation_code', 'invoice_no', 'date_issue', 'remarks', 'created_at', 'updated_at', 'fullname', 'company_name'], 'safe'],
             [['grand_total', 'gst', 'net'], 'number'],
         ];
     }
@@ -42,7 +44,9 @@ class SearchInvoice extends Invoice
      */
     public function search($params)
     {
-        $query = Invoice::find();
+        $query = Invoice::find()->where(['invoice.status' => 1])->andWhere('invoice.condition <= 1');
+        $query->joinWith(['user']);    
+        $query->joinWith(['customer']); 
 
         // add conditions that should always apply here
 
@@ -79,7 +83,9 @@ class SearchInvoice extends Invoice
 
         $query->andFilterWhere(['like', 'quotation_code', $this->quotation_code])
             ->andFilterWhere(['like', 'invoice_no', $this->invoice_no])
-            ->andFilterWhere(['like', 'remarks', $this->remarks]);
+            ->andFilterWhere(['like', 'remarks', $this->remarks])
+            ->andFilterWhere(['like', 'customer.company_name', $this->company_name])
+            ->andFilterWhere(['like', 'customer.fullname', $this->fullname]);
 
         return $dataProvider;
     }

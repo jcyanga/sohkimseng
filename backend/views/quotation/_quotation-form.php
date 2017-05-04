@@ -18,7 +18,7 @@ $salesPerson = Yii::$app->user->identity->id;
 /* @var $model common\models\Quotation */
 
 $this->title = 'Create Quotation for Customer';
-$this->params['breadcrumbs'][] = ['label' => 'Quotations', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Quotation', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $n = 0;

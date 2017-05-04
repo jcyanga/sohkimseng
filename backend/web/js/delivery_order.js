@@ -15,7 +15,6 @@ $('._showCreateCustomerByDeliveryOrderModal').click(function(){
 
 	$('#companyName').val('');	
     $('#companyAddress').val('');
-    $('#companyShippingAddress').val('');
     $('#companyUenNo').val('');
     $('#companyContactPerson').val('');
     $('#companyEmail').val('');
@@ -35,6 +34,55 @@ $('._showCreateCustomerByDeliveryOrderModal').click(function(){
 
 });
 
+// ========== Company Customer ========== //
+
+$('#btnDOAddInformation').click(function(){
+	var companyContactPerson = $('#companyContactPerson').val();
+	var companyAddress = $('#companyAddress').val(); 
+
+	if(companyContactPerson == '' || companyAddress == ''){
+		alert('Please key contact person or company address.');
+		return false;
+
+	}else{
+
+		var ctr = $('#ctr').val();
+
+		ctr++;
+
+		$.post('?r=delivery-order/insert-company-contactperson-address',{
+			companyContactPerson : companyContactPerson,
+			companyAddress : companyAddress,
+			ctr : ctr,
+
+		},function(data){
+			$('#ctr').val(ctr);
+			$('#companyContactPerson').val('');
+			$('#companyAddress').val('');
+
+			$('#company-contactperson-address').append(data); 
+		});
+
+	}
+});
+
+function editDOSelectedContactPersonAddress(n)
+{
+	var contact_person = $('#customer-contactperson-in-list-'+n).val();
+	var address = $('#customer-address-in-list-'+n).val();
+	
+	$('#companyContactPerson').val(contact_person);
+	$('#companyAddress').val(address);
+	$('.inserted-contactperson-address-in-list-'+n).detach();
+}
+
+function removeDOSelectedContactPersonAddress(n)
+{
+	$('.inserted-contactperson-address-in-list-'+n).remove();
+}
+
+// ============================================== //
+
 $('#submitCustomerFormCreateByDeliveryOrder').click(function(){
 	var type = $('#customerType').val();
 	
@@ -46,29 +94,23 @@ $('#submitCustomerFormCreateByDeliveryOrder').click(function(){
 
 	if(type == 1){
 
+		var companyCode = $('#companyCustomerCode').val();
 		var companyName = $('#companyName').val();
-		var companyAddress = $('#companyAddress').val();
-		var companyShippingAddress = $('#companyShippingAddress').val();
+		var companyLocation = $('#companyLocation').val();
+
+		var companyContactPerson = $('input.selectedContactPerson').serializeArray();
+		var companyAddress = $('input.selectedAddress').serializeArray();
+
 		var companyUenNo = $('#companyUenNo').val();
-		var companyContactPerson = $('#companyContactPerson').val();
 		var companyEmail = $('#companyEmail').val();
 		var companyPhoneNumber = $('#companyPhoneNumber').val();
 		var companyOfficeNumber = $('#companyOfficeNumber').val();
 		var companyFaxNumber = $('#companyFaxNumber').val();
+		var companyRemarks = $('#companyRemarks').val();
 
 		if( !onlyLetterAndNumber(companyName) ) {
 			alert('Invalid company name format.');
 			companyName.focus();
-		}
-
-		if( !onlyLetterAndNumber(companyAddress) ) {
-			alert('Invalid company address format.');
-			companyAddress.focus();
-		}
-
-		if( !onlyLetterAndNumber(companyShippingAddress) ) {
-			alert('Invalid company shipping address format.');
-			companyShippingAddress.focus();
 		}
 
 		if( !onlyLetterAndNumber(companyUenNo) ) {
@@ -92,15 +134,17 @@ $('#submitCustomerFormCreateByDeliveryOrder').click(function(){
 		}
 
 		$.post("?r=delivery-order/create-company",{
+			companyCode : companyCode,
 			companyName : companyName,
-			companyAddress : companyAddress,
-			companyShippingAddress : companyShippingAddress,
-			companyUenNo : companyUenNo,
+			companyLocation : companyLocation,
 			companyContactPerson : companyContactPerson,
+			companyAddress : companyAddress,
+			companyUenNo : companyUenNo,
 			companyEmail : companyEmail,
 			companyPhoneNumber : companyPhoneNumber,
 			companyOfficeNumber : companyOfficeNumber,
-			companyFaxNumber : companyFaxNumber
+			companyFaxNumber : companyFaxNumber,
+			companyRemarks : companyRemarks,
 
 		}, 
 		function(data) {
@@ -110,15 +154,17 @@ $('#submitCustomerFormCreateByDeliveryOrder').click(function(){
 				$('form input, textarea').removeClass('inputTxtError');
 			    $('label.error').remove();
 
+			    $('#companyCustomerCode').val('');
 			    $('#companyName').val('');	
+			    $('#companyLocation').val('');
 			    $('#companyAddress').val('');
-			    $('#companyShippingAddress').val('');
 			    $('#companyUenNo').val('');
 			    $('#companyContactPerson').val('');
 			    $('#companyEmail').val('');
 			    $('#companyPhoneNumber').val('');
 			    $('#companyOfficeNumber').val('');
 			    $('#companyFaxNumber').val('');
+			    $('#companyRemarks').val('');
 			    $('#modal-launcher-create-customer').toggle('fast');
 
 				alert(data.message);
@@ -306,18 +352,6 @@ $('#deliveryorderCustomerName').change(function(){
                         '<tr>'+
                             '<td><b>UEN NUMBER</b></td>' +
                             '<td>'+result.uen_no.toUpperCase()+'</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td><b>CONTACT PERSON</b></td>' +
-                            '<td>'+result.fullname.toUpperCase()+'</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td><b>ADDRESS</b></td>' +
-                            '<td>'+result.address.toUpperCase()+'</td>'+
-                        '</tr>'+
-                        '<tr>'+
-                            '<td><b>SHIPPING ADDRESS</b></td>' +
-                            '<td>'+result.shipping_address.toUpperCase()+'</td>'+
                         '</tr>'+
                         '<tr>'+
                             '<td><b>EMAIL</b></td>' +
@@ -1119,18 +1153,6 @@ $('._showUpdateDeliveryOrderModal').click(function(){
                                 '<td>'+result.uen_no.toUpperCase()+'</td>'
                             +'</tr>'+
                             '<tr>'+
-                                '<td><b>CONTACT PERSON</b></td>' +
-                                '<td>'+result.fullname.toUpperCase()+'</td>'
-                            +'</tr>'+
-                            '<tr>'+
-                                '<td><b>ADDRESS</b></td>' +
-                                '<td>'+result.address.toUpperCase()+'</td>'
-                            +'</tr>'+
-                            '<tr>'+
-                                '<td><b>SHIPPING ADDRESS</b></td>' +
-                                '<td>'+result.shipping_address.toUpperCase()+'</td>'
-                            +'</tr>'+
-                            '<tr>'+
                                 '<td><b>EMAIL</b></td>' +
                                 '<td>'+result.email.toUpperCase()+'</td>'
                             +'</tr>'+
@@ -1325,7 +1347,7 @@ $('._showUpdateDeliveryOrderModal').click(function(){
 });
 
 $('.closeUpdateDeliveryOrder').click(function(e){
-    if( confirm('Are you want to close this Quotation Form?') ){	
+    if( confirm('Are you want to close this Delivery Order Form?') ){	
     	$('#modal-launcher-update-delivery-order').modal('hide');
     	e.preventDefault();
     }

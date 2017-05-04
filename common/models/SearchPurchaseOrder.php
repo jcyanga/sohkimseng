@@ -5,24 +5,22 @@ namespace common\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\DeliveryOrder;
+use common\models\PurchaseOrder;
 
 /**
- * SearchDeliveryOrder represents the model behind the search form about `common\models\DeliveryOrder`.
+ * SearchPurchaseOrder represents the model behind the search form about `common\models\PurchaseOrder`.
  */
-class SearchDeliveryOrder extends DeliveryOrder
+class SearchPurchaseOrder extends PurchaseOrder
 {
-    public $company_name;
-    public $fullname;
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-            [['id', 'user_id', 'customer_id', 'payment_type_id', 'status', 'created_by', 'updated_by', 'paid', 'deleted', 'condition', 'action_by'], 'integer'],
-            [['delivery_order_code', 'invoice_no', 'date_issue', 'remarks', 'discount_remarks', 'created_at', 'updated_at', 'fullname', 'company_name'], 'safe'],
-            [['grand_total', 'gst', 'gst_value', 'net', 'discount_amount'], 'number'],
+            [['id', 'user_id', 'supplier_id', 'payment_type_id', 'status', 'created_by', 'paid', 'deleted'], 'integer'],
+            [['purchase_order_code', 'date_issue', 'remarks', 'created_at'], 'safe'],
+            [['grand_total', 'gst', 'gst_value', 'net'], 'number'],
         ];
     }
 
@@ -44,9 +42,7 @@ class SearchDeliveryOrder extends DeliveryOrder
      */
     public function search($params)
     {
-        $query = DeliveryOrder::find()->where(['delivery_order.status' => 1])->andWhere('delivery_order.condition <= 1');
-        $query->joinWith(['user']);    
-        $query->joinWith(['customer']); 
+        $query = PurchaseOrder::find();
 
         // add conditions that should always apply here
 
@@ -66,31 +62,22 @@ class SearchDeliveryOrder extends DeliveryOrder
         $query->andFilterWhere([
             'id' => $this->id,
             'user_id' => $this->user_id,
-            'customer_id' => $this->customer_id,
+            'supplier_id' => $this->supplier_id,
             'date_issue' => $this->date_issue,
             'grand_total' => $this->grand_total,
             'gst' => $this->gst,
             'gst_value' => $this->gst_value,
             'net' => $this->net,
             'payment_type_id' => $this->payment_type_id,
-            'discount_amount' => $this->discount_amount,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'created_by' => $this->created_by,
-            'updated_at' => $this->updated_at,
-            'updated_by' => $this->updated_by,
             'paid' => $this->paid,
             'deleted' => $this->deleted,
-            'condition' => $this->condition,
-            'action_by' => $this->action_by,
         ]);
 
-        $query->andFilterWhere(['like', 'delivery_order_code', $this->delivery_order_code])
-            ->andFilterWhere(['like', 'invoice_no', $this->invoice_no])
-            ->andFilterWhere(['like', 'remarks', $this->remarks])
-            ->andFilterWhere(['like', 'discount_remarks', $this->discount_remarks])
-            ->andFilterWhere(['like', 'customer.company_name', $this->company_name])
-            ->andFilterWhere(['like', 'customer.fullname', $this->fullname]);
+        $query->andFilterWhere(['like', 'purchase_order_code', $this->purchase_order_code])
+            ->andFilterWhere(['like', 'remarks', $this->remarks]);
 
         return $dataProvider;
     }

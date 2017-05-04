@@ -10,6 +10,7 @@ use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use common\widgets\Alert;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 AppAsset::register($this);
 
@@ -41,6 +42,7 @@ $isProducts = false;
 $isProductCategory = false;
 $isProduct = false;
 $isProductInventory = false;
+$isPurchaseOrder = false;
 $isQuotation = false;
 $isInvoice = false;
 $isDeliveryOrder = false;
@@ -145,7 +147,11 @@ $isPaymentType = false;
       }
 
       if ( $getClass == 'quotation' ) {
-            $isQuotation = true; 
+            $isStockInAndOut = true; 
+      }
+
+      if ( $getClass == 'purchase-order' ) {
+            $isPurchaseOrder = true; 
       }
 
       if ( $getClass == 'invoice' ) {
@@ -277,9 +283,9 @@ $isPaymentType = false;
   <div class="pull-left info">
     <p><?= $userFullname ?></p>
     <div style="margin-top: -10px; margin-left: -10px">
-    <?php Html::beginForm(['/site/logout'], 'post',['id' => 'logout-form']); ?>
-      <a href="#" onclick="document.getElementById(\'logout-form\').submit(); return false;" class="form-btn btn btn-link btn-flat"><i class="fa fa-power-off"></i> SIGN-OUT  
-    <?php Html::endForm(); ?>
+    <?php ActiveForm::begin(['action' => '?r=site/logout', 'method' => 'POST', 'id' => 'logout-form']); ?>
+      <a href="#" onclick="document.getElementById('logout-form').submit(); return false;" class="form-btn btn btn-link btn-flat"><i class="fa fa-power-off"></i> SIGN-OUT  
+    <?php ActiveForm::end(); ?>
      </div>  
     </a>
   </div>
@@ -424,6 +430,12 @@ $isPaymentType = false;
 
 </li>
 
+<li class="<?php if( $isPurchaseOrder ) { echo 'activeMenu'; }?>" >
+  <a href="?r=purchase-order" id="purchaseorderMenu">
+    <i class="fa fa-credit-card-alt"></i> <span>Purchase Order</span>
+  </a>
+</li>
+
 <li class="<?php if( $isQuotation ) { echo 'activeMenu'; }?>" >
   <a href="?r=quotation" id="quotationMenu">
     <i class="fa fa-clipboard"></i> <span>Quotation</span>
@@ -445,6 +457,24 @@ $isPaymentType = false;
 <li class="treeview <?php if( $isUtilities   ) { echo 'active'; }?>" >
   <a href="#" id="partsMenus" >
     <i class="fa fa-globe"></i> <span>Utilities</span>
+    <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
+  </a>
+
+  <ul class="treeview-menu">
+    <li>
+      <a href="?r=race/" id="<?php if( $isRace ) { echo 'raceMenu'; }?>" ><span class="subMenu"><i class="fa fa-angle-double-right"></i> Set Race </span></a>
+    </li>
+
+    <li>
+      <a href="?r=payment-type/" id="<?php if( $isPaymentType ) { echo 'paymenttypeMenu'; }?>" ><span class="subMenu"><i class="fa fa-angle-double-right"></i> Set Payment Type </span></a>
+    </li>
+  </ul>
+
+</li>
+
+<li class="treeview <?php if( $isUtilities   ) { echo 'active'; }?>" >
+  <a href="#" id="partsMenus" >
+    <i class="fa fa-globe"></i> <span>Reports</span>
     <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
   </a>
 
@@ -555,6 +585,9 @@ $isPaymentType = false;
 
     <!-- Select2 -->
     <script src="assets/plugins/select2/select2.full.min.js"></script>
+
+    <!-- Form submit -->
+    <script src="js/form-submit.js"></script>
 
     <script>
       $(function () {

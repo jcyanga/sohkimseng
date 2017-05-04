@@ -18,7 +18,7 @@ $salesPerson = Yii::$app->user->identity->id;
 /* @var $model common\models\Invoice */
 
 $this->title = 'Create Invoice for Customer';
-$this->params['breadcrumbs'][] = ['label' => 'Invoices', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Invoice', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $n = 0;
@@ -65,7 +65,7 @@ $n = 0;
                         <?= $form->field($model, 'payment_type_id')->dropdownList(['0' => ' - PLEASE SELECT PAYMENT TYPE HERE - '] + $dataPaymentType, ['style' => 'width: 65%;', 'class' => 'inputForm select2', 'id' => 'paymentType', 'data-placeholder' => 'CHOOSE PAYMENT TYPE HERE'])->label(false) ?>
 
                         <label class="labelStyle"><i class="fa fa-comments"></i> Remarks</label>
-                        <?= $form->field($model, 'remarks')->textarea(['rows' => 4, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
+                        <?= $form->field($model, 'remarks')->textarea(['rows' => 5, 'class' => 'transactionTxtAreaForm form-control', 'id' => 'remarks', 'placeholder' => 'Write your remarks here.'])->label(false) ?> 
                         <br/>
 
                     </div>
@@ -77,13 +77,13 @@ $n = 0;
                         <br/>
 
                         <?php if( $customerInfo->type == 1 ): ?>
-                            <h4 class="divHeaderLabel">
+                            <h5 class="divHeaderLabel">
                                 <i class="fa fa-users"></i> CUSTOMER NAME | <i class="fa fa-user-circle"></i> <?= strtoupper($customerInfo->company_name) ?> -
-                            </h4>
+                            </h5>
                         <?php else: ?>
-                            <h4 class="divHeaderLabel">
+                            <h5 class="divHeaderLabel">
                                 <i class="fa fa-users"></i> CUSTOMER NAME | <i class="fa fa-user-circle"></i> <?= strtoupper($customerInfo->fullname) ?> -
-                            </h4>
+                            </h5>
                         <?php endif; ?>
 
                         <div id="invoice-customer-information" class="invoice-customer-information" >
@@ -94,18 +94,6 @@ $n = 0;
                                     <tr>
                                         <td><b>UEN NO.</b></td>
                                         <td><?= strtoupper($customerInfo->uen_no) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>ADDRESS</b></td>
-                                        <td><?= strtoupper($customerInfo->address) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>SHIPPING ADDRESS</b></td>
-                                        <td><?= strtoupper($customerInfo->shipping_address) ?></td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>CONTACT PERSON</b></td>
-                                        <td><?= strtoupper($customerInfo->fullname) ?></td>
                                     </tr>
                                     <tr>
                                         <td><b>EMAIL</b></td>
@@ -187,7 +175,7 @@ $n = 0;
                         <select name="parts" class="inputForm select2" id="parts" style="width: 95%;" onchange="getPartsPriceAndQtyInvoice()" data-placeholder="CHOOSE AUTO-PARTS HERE" >
                                 <option value="0"> - PLEASE SELECT AUTO-PARTS HERE - </option>
                             <?php foreach($partsResult as $partsRow): ?>
-                                <option value="<?= $partsRow['id']; ?>" >[ <?= $partsRow['name']; ?> ] <?= $partsRow['parts_name']; ?> </option>
+                                <option value="<?= $partsRow['id']; ?>" > <?= $partsRow['parts_name']; ?> </option>
                             <?php endforeach; ?>
                         </select>
 
@@ -303,7 +291,7 @@ $n = 0;
 
                 <div class="col-md-8 col-xs-8 col-sm-8">
                     <span class="labelStyle"><i class="fa fa-commenting"></i> Discount Remarks</span>
-                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 2 ])->label(false) ?>
+                    <?= $form->field($model, 'discount_remarks')->textArea(['class' => 'transactionDiscountTxtAreaForm form-control', 'id' => 'discountRemarks', 'placeholder' => 'Write Discount remarks here.', 'readonly' => 'readonly', 'rows' => 5 ])->label(false) ?>
                 </div>
                 <br/>
 

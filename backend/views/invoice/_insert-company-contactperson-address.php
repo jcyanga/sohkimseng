@@ -15,11 +15,11 @@ use yii\grid\GridView;
 	<div class="col-md-6">
 		<div style="text-align: right;">
 			<span class="edit-contactperson-address-button-<?= $ctr ?> edit-button">
-                <a href="javascript:editQuoteSelectedContactPersonAddress(<?= $ctr ?>)" class="selectedBtns" ><i class="fa fa-edit"></i> Edit</a>
+                <a href="javascript:editInvoiceSelectedContactPersonAddress(<?= $ctr ?>)" class="selectedBtns" ><i class="fa fa-edit"></i> Edit</a>
             </span>
             &nbsp;
             <span class="remove-button">
-                <a href="javascript:removeQuoteSelectedContactPersonAddress(<?= $ctr ?>)" class="selectedBtns" ><i class="fa fa-trash"></i> Remove</a>
+                <a href="javascript:removeInvoiceSelectedContactPersonAddress(<?= $ctr ?>)" class="selectedBtns" ><i class="fa fa-trash"></i> Remove</a>
             </span>	
 		</div>
 	</div>

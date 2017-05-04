@@ -61,7 +61,7 @@ class QuotationController extends Controller
         $quotationId = $model->getQuotationId();
         $yrNow = date('Y');
         $monthNow = date('m');
-        $quotationCode = 'QUO' . $yrNow . $monthNow . sprintf('%003d', $quotationId); 
+        $quotationCode = 'QUO' . $yrNow . $monthNow . sprintf('%005d', $quotationId); 
         // for date issue //
         $dateNow = date('d-m-Y');
         // get customer list //
@@ -148,7 +148,7 @@ class QuotationController extends Controller
             $model->remarks = strtolower(Yii::$app->request->post('remarks'));
             $model->payment_type_id = Yii::$app->request->post('paymentType');
             $model->discount_amount = Yii::$app->request->post('discountAmount');
-            $model->discount_remarks = Yii::$app->request->post('discountRemarks');
+            $model->discount_remarks = strtolower(Yii::$app->request->post('discountRemarks'));
             $model->status = 1;
             $model->created_at = date('Y-m-d H:i:s');
             $model->created_by = Yii::$app->user->identity->id;
@@ -303,7 +303,7 @@ class QuotationController extends Controller
             $model->remarks = strtolower(Yii::$app->request->post('remarks'));
             $model->payment_type_id = Yii::$app->request->post('paymentType');
             $model->discount_amount = Yii::$app->request->post('discountAmount');
-            $model->discount_remarks = Yii::$app->request->post('discountRemarks');
+            $model->discount_remarks = strtolower(Yii::$app->request->post('discountRemarks'));
             $model->status = 1;
             $model->updated_at = date('Y-m-d H:i:s');
             $model->updated_by = Yii::$app->user->identity->id;
@@ -672,7 +672,7 @@ class QuotationController extends Controller
         $quotationId = $model->getQuotationId();
         $yrNow = date('Y');
         $monthNow = date('m');
-        $quotationCode = 'QUO' . $yrNow . $monthNow . sprintf('%003d', $quotationId); 
+        $quotationCode = 'QUO' . $yrNow . $monthNow . sprintf('%005d', $quotationId); 
         // for date issue //
         $dateNow = date('d-m-Y');
         // get customer list //
@@ -704,15 +704,15 @@ class QuotationController extends Controller
     {
         $model = new Quotation();
 
-        $getQuoteInfo = $model->getQuotationByIdForPreview(2);
-        $getQuoteServicesInfo = $model->getQuotationServiceForPreview(2);
-        $getQuotePartsInfo = $model->getQuotationPartsForPreview(2); 
+        $getQuoteInfo = $model->getQuotationByIdForPreview(Yii::$app->request->post('id'));
+        $getQuoteServicesInfo = $model->getQuotationServiceForPreview(Yii::$app->request->post('id'));
+        $getQuotePartsInfo = $model->getQuotationPartsForPreview(Yii::$app->request->post('id')); 
         
         // Last ID and code for invoice no // 
         $invoiceId = $model->getInvoiceId();
         $yrNow = date('Y');
         $monthNow = date('m');
-        $invoiceNo = 'INV' . $yrNow . $monthNow . sprintf('%003d', $invoiceId); 
+        $invoiceNo = 'INV' . $yrNow . $monthNow . sprintf('%005d', $invoiceId); 
 
         $getInvoice = Invoice::find()->where(['quotation_code' => $getQuoteInfo['quotation_code'] ])->one();
 
@@ -746,64 +746,76 @@ class QuotationController extends Controller
 
             $invoiceId = $invoiceModel->id;
 
-            foreach($getQuoteServicesInfo as $serviceRow){
-                $invSD = new InvoiceDetail();
+            if( !empty($getQuoteServicesInfo) ){
 
-                $invSD->invoice_id = $invoiceId;
-                $invSD->description = $serviceRow['description'];
-                $invSD->quantity = $serviceRow['quantity'];
-                $invSD->unit_price = $serviceRow['unit_price'];
-                $invSD->sub_total = $serviceRow['sub_total'];
-                $invSD->type = $serviceRow['type'];
-                $invSD->status = $serviceRow['status'];
-                $invSD->created_at = date('Y-m-d H:i:s');
-                $invSD->created_by = Yii::$app->user->identity->id;
-                $invSD->deleted = 0;
+                foreach($getQuoteServicesInfo as $serviceRow){
+                    $invSD = new InvoiceDetail();
 
-                $invSD->save();
-            }
+                    $invSD->invoice_id = $invoiceId;
+                    $invSD->description = $serviceRow['description'];
+                    $invSD->quantity = $serviceRow['quantity'];
+                    $invSD->unit_price = $serviceRow['unit_price'];
+                    $invSD->sub_total = $serviceRow['sub_total'];
+                    $invSD->type = $serviceRow['type'];
+                    $invSD->status = $serviceRow['status'];
+                    $invSD->created_at = date('Y-m-d H:i:s');
+                    $invSD->created_by = Yii::$app->user->identity->id;
+                    $invSD->deleted = 0;
 
-            foreach($getQuotePartsInfo as $partsRow){
-                $invPD = new InvoiceDetail();
-
-                $invPD->invoice_id = $invoiceId;
-                $invPD->description = $partsRow['description'];
-                $invPD->quantity = $partsRow['quantity'];
-                $invPD->unit_price = $partsRow['unit_price'];
-                $invPD->sub_total = $partsRow['sub_total'];
-                $invPD->type = $partsRow['type'];
-                $invPD->status = $partsRow['status'];
-                $invPD->created_at = date('Y-m-d H:i:s');
-                $invPD->created_by = Yii::$app->user->identity->id;
-                $invPD->deleted = 0;
-
-                $invPD->save();
-
-                $getPart = Parts::find()->where(['id' => $partsRow['description'] ])->one();
-                $old_qty = $getPart->quantity;
-                $new_qty = $getPart->quantity - $partsRow['quantity'];
-
-                $partsinventoryModel = new PartsInventory();
-                            
-                $partsinventoryModel->parts_id = $partsRow['description'];
-                $partsinventoryModel->old_quantity = $old_qty;
-                $partsinventoryModel->new_quantity = $new_qty;
-                $partsinventoryModel->qty_purchased = $partsRow['quantity'];
-                $partsinventoryModel->type = 3;
-                $partsinventoryModel->invoice_no = $invoiceNo;
-                $partsinventoryModel->datetime_purchased = date('Y-m-d H:i:s', strtotime($getQuoteInfo['date_issue']));
-                $partsinventoryModel->created_at = date('Y-m-d H:i:s');
-                $partsinventoryModel->created_by = Yii::$app->user->identity->id;
-                $partsinventoryModel->status = 1;
-                
-                $partsinventoryModel->save();
-
-                $getPart = Parts::find()->where(['id' => $partsRow['description'] ])->one();
-                $getPart->quantity -= $partsRow['quantity'];
-                $getPart->save();
+                    $invSD->save();
+                }
 
             }
 
+            if( !empty($getQuotePartsInfo) ){
+
+                foreach($getQuotePartsInfo as $partsRow){
+                    $invPD = new InvoiceDetail();
+
+                    $invPD->invoice_id = $invoiceId;
+                    $invPD->description = $partsRow['description'];
+                    $invPD->quantity = $partsRow['quantity'];
+                    $invPD->unit_price = $partsRow['unit_price'];
+                    $invPD->sub_total = $partsRow['sub_total'];
+                    $invPD->type = $partsRow['type'];
+                    $invPD->status = $partsRow['status'];
+                    $invPD->created_at = date('Y-m-d H:i:s');
+                    $invPD->created_by = Yii::$app->user->identity->id;
+                    $invPD->deleted = 0;
+
+                    $invPD->save();
+
+                    $getPart = Parts::find()->where(['id' => $partsRow['description'] ])->one();
+                    $old_qty = $getPart->quantity;
+                    $new_qty = $getPart->quantity - $partsRow['quantity'];
+
+                    $partsinventoryModel = new PartsInventory();
+                                
+                    $partsinventoryModel->parts_id = $partsRow['description'];
+                    $partsinventoryModel->old_quantity = $old_qty;
+                    $partsinventoryModel->new_quantity = $new_qty;
+                    $partsinventoryModel->qty_purchased = $partsRow['quantity'];
+                    $partsinventoryModel->type = 3;
+                    $partsinventoryModel->invoice_no = $invoiceNo;
+                    $partsinventoryModel->datetime_purchased = date('Y-m-d H:i:s', strtotime($getQuoteInfo['date_issue']));
+                    $partsinventoryModel->created_at = date('Y-m-d H:i:s');
+                    $partsinventoryModel->created_by = Yii::$app->user->identity->id;
+                    $partsinventoryModel->status = 1;
+                    
+                    $partsinventoryModel->save();
+
+                    $getPart = Parts::find()->where(['id' => $partsRow['description'] ])->one();
+                    $getPart->quantity -= $partsRow['quantity'];
+                    $getPart->save();
+
+                }
+
+            }
+
+            $quoteModel = $this->findModel($invoiceId);
+            $quoteModel->invoice_created = 1;
+            $quoteModel->save();
+            
             return json_encode(['status' => 'Success', 'message' => 'Invoice was successfully created.', 'id' => $invoiceId ]);
 
         }else{

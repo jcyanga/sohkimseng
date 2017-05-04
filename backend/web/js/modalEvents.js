@@ -4397,7 +4397,7 @@ $('._showViewPartsModal').each(function(){
 					var html = '<table class="table table-hover table-striped viewTableContent">'+
 								'<tr>'+
 									'<td style="width: 40%;"><b>AUTO-PARTS CATEGORY NAME</b></td>' +
-									'<td style="width: 60%;"><i class="fa fa-cube"></i> '+ partsCategoryName.toUpperCase() +'</td>'
+									'<td style="width: 60%;"> '+ partsCategoryName.toUpperCase() +'</td>'
 								+'</tr>'
 							+'</table>';
 
@@ -4406,10 +4406,6 @@ $('._showViewPartsModal').each(function(){
 				});
 
 				var html = '<table style="margin-top: -25px;" class="table table-hover table-striped viewTableContent">'+
-						'<tr>'+
-							'<td><b>ID</b></td>' +
-							'<td>'+result.id+'</td>'
-						+'</tr>'+
 						'<tr>'+
 							'<td><b>STORAGE LOCATION</b></td>' +
 							'<td>'+result.storage_location_name.toUpperCase()+'</td>'
@@ -4633,10 +4629,6 @@ $('._showUpdatePartsQtyModal').each(function(){
 						'<tr>'+
 							'<td><b>SUPPLIER NAME</b></td>' +
 							'<td>'+result.supplier_name.toUpperCase()+'</td>'
-						+'</tr>'+
-						'<tr>'+
-							'<td><b>CATEGORY NAME</b></td>' +
-							'<td>'+result.parts_category_name.toUpperCase()+'</td>'
 						+'</tr>'+
 						'<tr>'+
 							'<td><b>PARTS CODE</b></td>' +
